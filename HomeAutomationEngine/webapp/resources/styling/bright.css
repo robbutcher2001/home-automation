@@ -1,0 +1,132 @@
+@CHARSET "UTF-8";
+
+html {
+	overflow-y: scroll;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: black;
+	background-color: white;
+	overflow: hidden;
+	font-family: Georgia, "Bitstream Charter", serif;
+	font-size: 16px;
+	height: 100%;
+}
+
+.accordion {
+	height: 450px;
+}
+
+/* .text-center { */
+/* 	text-align: center; */
+/* } */
+
+.statusBar {
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+	font-size: 14px !important; 
+	top: 0;
+	left: 0;
+	display: none;
+}
+
+.error {
+	background-color: #FF8C8C !important; /*red*/ /*#1FDE1F; 34E02B*/
+}
+
+.error-text {
+	color: #FF8C8C !important;
+}
+
+.success {
+	background-color: #34E02B !important;
+}
+
+.success-text {
+	color: #34E02B !important;
+}
+
+.button {
+	height: 70px;
+	line-height: 70px;
+	background-color: #65ADD0;
+	color: black;
+	cursor: pointer;
+	display: block;
+	border: none;
+	padding: 0;
+}
+
+.extraMargin {
+	margin-top: 25px;
+}
+
+#loungeCamera {
+	cursor: pointer;
+}
+
+.title {
+	width: 100%;
+	height: 35px;
+	line-height: 35px;
+	background-color: #0B6FA0;
+	text-align: center;
+	margin: 10px 0px;
+	color: white;
+	cursor: pointer;
+	display: block;
+	border: none;
+	padding: 0;
+}
+
+.top-title {
+	margin: 0px 0px 10px 0px !important; 
+}
+
+button:hover {
+/* 	color: #F0B423; */
+}
+
+.floatCenterScreen {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.subTitle {
+	font-style: italic;
+	-webkit-margin-before: 0em;
+	-webkit-margin-after: 0em;
+	margin-bottom: 1%;
+}
+
+/* .statusBlock { */
+/* 	margin-top: 30px; */
+/* 	margin-left: 60px; */
+/* } */
+
+.loginPage input {
+	width: 188px;
+	height: 1.8em;
+	font-size: 1em;
+	margin-top: 18px;
+	display: block;
+	padding: 0px 5px;
+	border: 1px solid #dfddde;
+}
+
+.loginButton {
+	width: 200px;
+	margin-top: 30px;
+}
+
+.loginButton:disabled, .button:disabled {
+	background-color: #D3D3D3;
+	color: white !important;
+	cursor: default;
+}

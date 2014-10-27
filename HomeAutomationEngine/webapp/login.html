@@ -1,0 +1,22 @@
+<!DOCTYPE html><html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+	<title>Rob's Apartment | Explicit Login</title>
+	<link rel="shortcut icon" href="resources/images/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="resources/styling/responsive.css">
+	<link rel="stylesheet" type="text/css" href="resources/styling/bright.css">
+	<!-- media="only screen and (max-width: 1024px) and (min-width: 769px)" -->
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0"/>
+	<script type="text/javascript" src="resources/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="resources/js/jquery-ui-1.10.4.custom.min.js"></script>
+	<script type="text/javascript" src="resources/js/loginHelper.js"></script>
+</head>
+<body class="loginPage">
+	<div class="statusBar"></div>
+	<form id="loginForm" action="login" autocomplete="on" method="post">
+		<input type="text" id="uname" name="uname" placeholder="Name" autofocus tabindex="1" class="floatCenterScreen"></input>
+		<input type="password" id="pword" name="pword" placeholder="Password" tabindex="2" class="floatCenterScreen"></input>
+	</form>
+	<button tabindex="3" class="button loginButton floatCenterScreen"><span>Login (one month)</span></button>
+</body>
+</html>

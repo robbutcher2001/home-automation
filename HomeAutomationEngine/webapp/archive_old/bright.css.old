@@ -1,0 +1,90 @@
+@CHARSET "UTF-8";
+
+html {
+	overflow-y: scroll;
+	width: 320px;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: black;
+	width: 320px;
+	background-color: white;
+	overflow: hidden;
+	font-family: Georgia, "Bitstream Charter", serif;
+	font-size: 16px;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.statusBar {
+	position: absolute;
+	width: 320px;
+	height: 25px;
+	line-height: 25px;
+	font-size: 14px !important; 
+	top: 0;
+	left: 0;
+	display: none;
+}
+
+.error {
+	background-color: #FF8C8C; /*red*/ /*#1FDE1F; 34E02B*/
+}
+
+.error-text {
+	color: #FF8C8C;
+}
+
+.success {
+	background-color: #34E02B;
+}
+
+.success-text {
+	color: #34E02B;
+}
+
+button {
+	width: 200px;
+	height: 70px;
+	line-height: 70px;
+	margin-top: 30px;
+	background-color: #0B6FA0;
+	color: white;
+	cursor: pointer;
+	display: block;
+	border: none;
+	padding: 0;
+}
+
+button:hover {
+	color: #F0B423;
+}
+
+.floatCenterScreen {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.statusBlock {
+	margin-top: 30px;
+	margin-left: 60px;
+}
+
+.statusBlock .statusTitle {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.loginPage input {
+	width: 188px;
+	height: 1.8em;
+	font-size: 1em;
+	margin-top: 18px;
+	display: block;
+	padding: 0px 5px;
+	border: 1px solid #dfddde;
+}
