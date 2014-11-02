@@ -94,7 +94,7 @@ var DeliveryHelper = {
 				//Change title bars
 				$('.top-title').html('Lounge - not auto updating');
 				$('.top-title').addClass('error-text');
-				$('.rob-room-title').html('Rob\'s Room - not auto updating');
+				$('.rob-room-title').html($('.rob-room-title').html() + ' - not auto updating');
 				$('.rob-room-title').addClass('error-text');
 				$('.statusTitle').html('Apartment - not auto updating');
 				$('.statusTitle').addClass('error-text');
@@ -118,6 +118,17 @@ var DeliveryHelper = {
 					
 					//Enable buttons
 					$('.button').removeAttr('disabled');
+				}
+				
+				if (response.apartment.bedroom_to_render == 'bedroomOne') {
+					$('.rob-room-title').html('Rob\'s Room');
+				}
+				else if (response.apartment.bedroom_to_render == 'bedroomTwo') {
+					$('.rob-room-title').html('Scat\'s Room');
+					$('.bedroomButtons').hide();
+				}
+				else {
+					$('.bedroomButtons').attr('disabled', 'disabled');
 				}
 				
 				if (response.apartment.unexpected_occupancy == 'true') {
@@ -200,10 +211,10 @@ var DeliveryHelper = {
 				}
 				
 				if (response.rob_room.multisensor.occupied == 'true') {
-					$('.rob-room-title').html('Rob\'s Room | Occupied');
+					$('.rob-room-title').html($('.rob-room-title').html() + ' | Occupied');
 				}
 				else {
-					$('.rob-room-title').html('Rob\'s Room | Unoccupied');
+					$('.rob-room-title').html($('.rob-room-title').html() + ' | Unoccupied');
 				}
 				
 				$('.rob-room-title').html($('.rob-room-title').html() + ' | ' + response.rob_room.multisensor.temperature + '&deg;C');

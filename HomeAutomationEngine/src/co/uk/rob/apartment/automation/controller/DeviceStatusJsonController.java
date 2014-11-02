@@ -50,8 +50,14 @@ public class DeviceStatusJsonController extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = null;
+		String activeUser = (String) request.getSession().getAttribute("activeUser");
+		if (activeUser == null) {
+			activeUser = "";
+		}
+		
         String wrapper = request.getParameter("callback");
         this.responseCompiler.setWrapper(wrapper);
+        this.statusCompiler.setUser(activeUser);
 
         try {
             out = response.getWriter();

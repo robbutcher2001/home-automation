@@ -23,9 +23,11 @@ public class SimplifiedDeviceStatusCompiler {
 	
 	//utilities
 	private DateFormat dateFormat = null;
+	private String user;
 	
 	public SimplifiedDeviceStatusCompiler() {
 		this.dateFormat = new SimpleDateFormat("dd/MM HH:mm");
+		this.user = "unknown";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -113,6 +115,16 @@ public class SimplifiedDeviceStatusCompiler {
 			}
 		}
 		else {
+			if ("rbutcher".equals(user)) {
+				zoneStatuses.put("bedroom_to_render", "bedroomOne");
+			}
+			else if ("scat".equals(user)) {
+				zoneStatuses.put("bedroom_to_render", "bedroomTwo");
+			}
+			else {
+				zoneStatuses.put("bedroom_to_render", user);
+			}
+			
 			zoneStatuses.put("unexpected_occupancy", HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy"));
 			zoneStatuses.put("occupied", Boolean.toString(CommonQueries.isApartmentOccupied()));
 			Calendar lastOccupancy = CommonQueries.getLastApartmentOccupancyTime();
@@ -125,5 +137,9 @@ public class SimplifiedDeviceStatusCompiler {
 		}
 		
 		allZoneStatuses.put(zone.toString(), zoneStatuses);
+	}
+	
+	public void setUser(String user) {
+		this.user = user;
 	}
 }
