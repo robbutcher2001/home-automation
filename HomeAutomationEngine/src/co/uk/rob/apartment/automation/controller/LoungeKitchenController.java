@@ -42,6 +42,11 @@ public class LoungeKitchenController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		boolean successfulCall = false;
+		String activeUser = (String) request.getSession().getAttribute("activeUser");
+		if (activeUser == null) {
+			activeUser = "";
+		}
+		
 		List<ControllableDevice> devicesInLoungeAndKitchen = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE);
 		devicesInLoungeAndKitchen.addAll(DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN));
 		
@@ -59,7 +64,7 @@ public class LoungeKitchenController extends HttpServlet {
 			dispatch.forward(request, response);
 		}
 		else if (action.equals("fullOnLounge")) {
-			log.info("Request for all lights on in Lounge and Kitchen");
+			log.info("Request for all lights on in Lounge and Kitchen [" + activeUser + "]");
 			successfulCall = lampOneLounge.turnDeviceOn(true, "99");
 			lampOneLounge.resetAutoOverridden();
 			if (successfulCall) {
@@ -72,7 +77,7 @@ public class LoungeKitchenController extends HttpServlet {
 			}
 			
 			if (successfulCall) {
-				out.print("Lights now on full");
+				out.print("Lights now on full in lounge");
 			}
 			else {
 				out.print("Issue turning all lights on full");
@@ -80,11 +85,11 @@ public class LoungeKitchenController extends HttpServlet {
 		}
 		else if (action.equals("filmModeLounge")) {
 			if (patioDoor.isTriggered()) {
-				log.info("Request for film mode in Lounge and Kitchen but patio door is open");
+				log.info("Request for film mode in Lounge and Kitchen but patio door is open [" + activeUser + "]");
 				out.print("Close patio door");
 			}
 			else {
-				log.info("Request for film mode in Lounge and Kitchen, turning lamps off, LED on and blinds closed");
+				log.info("Request for film mode in Lounge and Kitchen, turning lamps off, LED on and blinds closed [" + activeUser + "]");
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
 					int movementTime = CommonQueries.calculateBlindMovementTime((Blind) loungeWindowBlind, "0");
 					successfulCall = loungeWindowBlind.turnDeviceOn(true);
@@ -108,7 +113,7 @@ public class LoungeKitchenController extends HttpServlet {
 				}
 				
 				if (successfulCall) {
-					out.print("Film mode now on");
+					out.print("Film mode now on in lounge");
 				}
 				else {
 					out.print("Issue turning film mode on");
@@ -116,7 +121,7 @@ public class LoungeKitchenController extends HttpServlet {
 			}
 		}
 		else if (action.equals("offLounge")) {
-			log.info("Request for all lights off and blinds up (resetting manual flag) in Lounge and Kitchen");
+			log.info("Request for all lights off and blinds up (resetting manual flag) in Lounge and Kitchen [" + activeUser + "]");
 			for (ControllableDevice device : devicesInLoungeAndKitchen) {
 				if (!(device instanceof Blind)) {
 					successfulCall = device.turnDeviceOff(true);
@@ -127,18 +132,21 @@ public class LoungeKitchenController extends HttpServlet {
 				}
 			}
 			
-			boolean blindsToOpen = false;
 			if (loungeWindowBlind.isDeviceOn()) {
 				loungeWindowBlind.resetManuallyOverridden();
+			}
+			
+			boolean blindsToOpen = false;
+			if (!CommonQueries.isBrightnessAt0()) {
 				blindsToOpen = true;
 			}
 			
 			if (successfulCall) {
 				if (blindsToOpen) {
-					out.print("Lights now off, blinds open if light");
+					out.print("Lights now off, blinds will open soon");
 				}
 				else {
-					out.print("Lights now off");
+					out.print("Lights now off in lounge");
 				}
 			}
 			else {
@@ -147,31 +155,31 @@ public class LoungeKitchenController extends HttpServlet {
 		}
 		else if (action.equals("blindToggle")) {
 			if (loungeWindowBlind.isDeviceOn()) {
-				log.info("Request for blinds fully open in lounge");
+				log.info("Request for blinds fully open in lounge [" + activeUser + "]");
 				successfulCall = loungeWindowBlind.turnDeviceOff(true);
 				loungeWindowBlind.resetAutoOverridden();
 				if (successfulCall) {
-					out.print("Blinds now opening");
+					out.print("Blinds now opening in lounge");
 				}
 			}
 			else {
-				log.info("Request for blinds fully closed in lounge");
+				log.info("Request for blinds fully closed in lounge [" + activeUser + "]");
 				successfulCall = loungeWindowBlind.turnDeviceOn(true);
 				loungeWindowBlind.resetAutoOverridden();
 				if (successfulCall) {
-					out.print("Blinds now closing");
+					out.print("Blinds now closing in lounge");
 				}
 			}
 		}
 		else if (action.equals("blindTiltToggle")) {
-			log.info("Request for blind tilt in lounge");
+			log.info("Request for blind tilt in lounge [" + activeUser + "]");
 			if (!CommonQueries.isBrightnessAt0()) {
 				Blind blindInstance = (Blind) loungeWindowBlind;
 				if (!blindInstance.isTilted()) {
 					successfulCall = blindInstance.tiltBlindDown();
 					if (successfulCall) {
-						out.print("Blinds tilted down");
-						log.info("Blinds tilted down in lounge");
+						out.print("Blinds tilted down in lounge");
+						log.info("Blinds tilted down in lounge [" + activeUser + "]");
 					}
 					else {
 						out.print("Issue tilting blinds");
@@ -180,8 +188,8 @@ public class LoungeKitchenController extends HttpServlet {
 				else {
 					successfulCall = blindInstance.tiltBlindUp();
 					if (successfulCall) {
-						out.print("Blinds tilted back up");
-						log.info("Blinds tilted up in lounge");
+						out.print("Blinds tilted back up in lounge");
+						log.info("Blinds tilted up in lounge [" + activeUser + "]");
 					}
 					else {
 						out.print("Issue tilting blinds");
@@ -196,13 +204,13 @@ public class LoungeKitchenController extends HttpServlet {
 			String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
 			if (loungeBedroomMode != null && "false".equals(loungeBedroomMode)) {
 				HomeAutomationProperties.setOrUpdateProperty("LoungeBedroomMode", "true");
-				log.info("Request for full bedroom mode in Lounge");
-				out.print("Bedroom mode now on");
+				log.info("Request for full bedroom mode in Lounge [" + activeUser + "]");
+				out.print("Lounge now in bedroom mode");
 			}
 			else {
 				HomeAutomationProperties.setOrUpdateProperty("LoungeBedroomMode", "false");
-				log.info("Request for normal bedroom mode in Lounge");
-				out.print("Lounge mode now on");
+				log.info("Request for normal bedroom mode in Lounge [" + activeUser + "]");
+				out.print("Lounge back to lounge mode");
 			}
 		}
 		else if (action.equals("atHomeModeLounge")) {
@@ -210,17 +218,17 @@ public class LoungeKitchenController extends HttpServlet {
 			if (atHomeModeLounge != null && "false".equals(atHomeModeLounge)) {
 				if (CommonQueries.isApartmentOccupied()) {
 					HomeAutomationProperties.setOrUpdateProperty("AtHomeTodayMode", "true");
-					log.info("Request for 'At Home Today' mode for full apartment");
+					log.info("Request for 'At Home Today' mode for full apartment [" + activeUser + "]");
 					out.print("'At Home Today' mode now on");
 				}
 				else {
-					log.info("Request for 'At Home Today' mode for full apartment but apartment has to be occupied");
+					log.info("Request for 'At Home Today' mode for full apartment but apartment has to be occupied [" + activeUser + "]");
 					out.print("Apartment has to be occupied");
 				}
 			}
 			else {
 				HomeAutomationProperties.setOrUpdateProperty("AtHomeTodayMode", "false");
-				log.info("Request for 'Normal Occupancy' mode for full apartment");
+				log.info("Request for 'Normal Occupancy' mode for full apartment [" + activeUser + "]");
 				out.print("'Normal Occupancy' mode now on");
 			}
 		}

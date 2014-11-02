@@ -43,6 +43,11 @@ public class BedroomOneController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		Boolean successfulCall = true;
+		String activeUser = (String) request.getSession().getAttribute("activeUser");
+		if (activeUser == null) {
+			activeUser = "";
+		}
+		
 		List<ControllableDevice> devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM);
 		
 		ControllableDevice lampRobEndpoint = devicesToControl.get(0);
@@ -57,7 +62,7 @@ public class BedroomOneController extends HttpServlet {
 			dispatch.forward(request, response);
 		}
 		else if (action.equals("fullOnRobRoom")) {
-			log.info("Request for full lights on in Rob's room");
+			log.info("Request for full lights on in Rob's room [" + activeUser + "]");
 			successfulCall = lampRobEndpoint.turnDeviceOff(true);
 			lampRobEndpoint.resetAutoOverridden();
 			if (successfulCall == true) {
@@ -77,7 +82,7 @@ public class BedroomOneController extends HttpServlet {
 			}
 		}
 		else if (action.equals("softMoodRobRoom")) {
-			log.info("Request for soft mood in Rob's room");
+			log.info("Request for soft mood in Rob's room [" + activeUser + "]");
 			successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
 			ceilingLightRobEndpoint.resetAutoOverridden();
 			if (successfulCall == true) {
@@ -97,7 +102,7 @@ public class BedroomOneController extends HttpServlet {
 			}
 		}
 		else if (action.equals("offRobRoom")) {
-			log.info("Request for all lights off in Rob's room");
+			log.info("Request for all lights off in Rob's room [" + activeUser + "]");
 			successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
 			ceilingLightRobEndpoint.resetAutoOverridden();
 			if (successfulCall == true) {
@@ -118,16 +123,16 @@ public class BedroomOneController extends HttpServlet {
 		}
 		else if (action.equals("dehumRobRoom")) {
 			if (dehumidifier.isDeviceOn() && hasDehumidifierBeenInStateForOverHour(dehumidifier.getLastInteractedTime())) {
-				log.info("Request for dehumidifier off in Rob's room - been on for over an hour so switching off");
+				log.info("Request for dehumidifier off in Rob's room - been on for over an hour so switching off [" + activeUser + "]");
 				dehumidifier.turnDeviceOff(true);
 				out.print("Dehumidifier is now off");
 			}
 			else if (!dehumidifier.isDeviceOn()) {
-				log.info("Request for dehumidifier off in Rob's room - dehumidifier is off");
+				log.info("Request for dehumidifier off in Rob's room - dehumidifier is off [" + activeUser + "]");
 				out.print("Dehumidifier is already off");
 			}
 			else {
-				log.info("Request for dehumidifier off in Rob's room - has not been on for over an hour so not switching off to protect compressor");
+				log.info("Request for dehumidifier off in Rob's room - has not been on for over an hour so not switching off to protect compressor [" + activeUser + "]");
 				DateFormat format = new SimpleDateFormat("HH:mm");
 				String lastUpdated = format.format(dehumidifier.getLastInteractedTime());
 				out.print("Dehumidifier only been on since " + lastUpdated);
@@ -137,12 +142,12 @@ public class BedroomOneController extends HttpServlet {
 			String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
 			if (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode)) {
 				HomeAutomationProperties.setOrUpdateProperty("RobRoomBedroomMode", "true");
-				log.info("Request for full bedroom mode in Rob's room");
+				log.info("Request for full bedroom mode in Rob's room [" + activeUser + "]");
 				out.print("Full bedroom mode now on");
 			}
 			else {
 				HomeAutomationProperties.setOrUpdateProperty("RobRoomBedroomMode", "false");
-				log.info("Request for normal bedroom mode in Rob's room");
+				log.info("Request for normal bedroom mode in Rob's room [" + activeUser + "]");
 				out.print("Normal bedroom mode now back on");
 			}
 		}

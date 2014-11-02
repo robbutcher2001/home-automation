@@ -95,7 +95,9 @@ public class AuthenticationManagementFilter implements Filter {
 		}
 		
 		if (implicitLogin) {
+			servletRequest.getSession().setAttribute("activeUser", "implicitLogin");
 			chain.doFilter(request, response);
+			
 			return;
 		}
 		else {
