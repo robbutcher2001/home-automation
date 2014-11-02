@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -197,7 +196,7 @@ public class UserManager {
 		return users;
 	}
 	
-	public static synchronized Cookie logUserIn(String username, String password, HttpSession session) {
+	public static synchronized Cookie logUserIn(String username, String password) {
 		boolean usersRead = false;
 		if (users == null) {
 			usersRead = readUsers();
@@ -222,7 +221,6 @@ public class UserManager {
 						if (cookie != null) {
 							user.setCookieHash(cookie.getValue());
 							if (storeUsers()) {
-								session.setAttribute("activeUser", user.getUsername());
 								log.info(user.getFirstName() + " " + user.getLastName() + " successfully logged in, user's cookie updated and saved to file");
 							}
 							else {

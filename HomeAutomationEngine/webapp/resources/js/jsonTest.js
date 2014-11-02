@@ -94,7 +94,7 @@ var DeliveryHelper = {
 				//Change title bars
 				$('.top-title').html('Lounge - not auto updating');
 				$('.top-title').addClass('error-text');
-				$('.rob-room-title').html($('.rob-room-title').html() + ' - not auto updating');
+				$('.rob-room-title').html('Bedroom - not auto updating');
 				$('.rob-room-title').addClass('error-text');
 				$('.statusTitle').html('Apartment - not auto updating');
 				$('.statusTitle').addClass('error-text');
@@ -128,6 +128,7 @@ var DeliveryHelper = {
 					$('.bedroomButtons').hide();
 				}
 				else {
+					$('.rob-room-title').html('Bedroom');
 					$('.bedroomButtons').attr('disabled', 'disabled');
 				}
 				

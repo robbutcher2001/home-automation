@@ -10,7 +10,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -47,10 +46,9 @@ public class LoginController extends HttpServlet {
 		String username = request.getParameter("uname");
 		String password = request.getParameter("pword");
 		Cookie cookie = null;
-		HttpSession session = request.getSession();
 		
 		if (username != null && password != null) {
-			cookie = UserManager.logUserIn(username, password, session);
+			cookie = UserManager.logUserIn(username, password);
 		}
 		
 		PrintWriter out = response.getWriter();
