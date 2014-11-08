@@ -1,12 +1,16 @@
 package co.uk.rob.apartment.automation.model.devices;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractReportingDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ActivityHandler;
+import co.uk.rob.apartment.automation.model.interfaces.MajorServiceOutageTriggerable;
 
-public class Multisensor extends AbstractReportingDevice {
+public class Multisensor extends AbstractReportingDevice implements MajorServiceOutageTriggerable{
 
 	private Logger log = Logger.getLogger(Multisensor.class);
 	
@@ -34,7 +38,6 @@ public class Multisensor extends AbstractReportingDevice {
 		applied = super.parseMotionValue(resultSet);
 		
 		Object result = super.parseReportedValue(this.dataEndpoint + this.temperatureEndpoint, resultSet, "val");
-		//Float newTemperature = parseSensorValue(this.dataEndpoint + this.temperatureEndpoint, resultSet, "val");
 		if (result != null) {
 			try {
 				Float newTemperature = Float.parseFloat(result.toString());
@@ -52,7 +55,6 @@ public class Multisensor extends AbstractReportingDevice {
 		}
 		
 		result = super.parseReportedValue(this.dataEndpoint + this.luminiscenceEndpoint, resultSet, "val");
-		//Float newLuminiscence = parseSensorValue(this.dataEndpoint + this.luminiscenceEndpoint, resultSet, "val");
 		if (result != null) {
 			try {
 				Float newLuminiscence = Float.parseFloat(result.toString());
@@ -70,7 +72,6 @@ public class Multisensor extends AbstractReportingDevice {
 		}
 		
 		result = super.parseReportedValue(this.dataEndpoint + this.humidityEndpoint, resultSet, "val");
-		//Float newHumidity = parseSensorValue(this.dataEndpoint + this.humidityEndpoint, resultSet, "val");
 		if (result != null) {
 			try {
 				Float newHumidity = Float.parseFloat(result.toString());
@@ -109,30 +110,11 @@ public class Multisensor extends AbstractReportingDevice {
 		return this.humidity;
 	}
 	
-//	private Float parseSensorValue(String endpoint, String resultSet, String key) {
-//		try {
-//			JSONObject parsedResults = (JSONObject) this.zWayResultParser.parse(resultSet);
-//			
-//			if (parsedResults.containsKey(endpoint)) {
-//				JSONObject result = (JSONObject) this.zWayResultParser.parse(parsedResults.get(endpoint).toString());
-//				result = (JSONObject) this.zWayResultParser.parse(result.get(key).toString());
-//				
-//				return Float.parseFloat(result.get("value").toString());
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return null;
-//	}
-	
 	private boolean shiftTemperature(Float newTemperature) {
 		if (!newTemperature.equals(this.temperature[2])) {
 			this.temperature[0] = this.temperature[1];
 			this.temperature[1] = this.temperature[2];
 			this.temperature[2] = newTemperature;
-			
-			//log.info("Temp readings for " + this.dataEndpoint + ": " + Arrays.toString(this.temperature));
 			
 			return true;
 		}
@@ -146,8 +128,6 @@ public class Multisensor extends AbstractReportingDevice {
 			this.luminiscence[1] = this.luminiscence[2];
 			this.luminiscence[2] = newLuminiscence;
 			
-			//log.info("Lux readings for " + this.dataEndpoint + ": " + Arrays.toString(this.luminiscence));
-			
 			return true;
 		}
 		
@@ -160,11 +140,25 @@ public class Multisensor extends AbstractReportingDevice {
 			this.humidity[1] = this.humidity[2];
 			this.humidity[2] = newHumidity;
 			
-			//log.info("Humidity readings for " + this.dataEndpoint + ": " + Arrays.toString(this.humidity));
-			
 			return true;
 		}
 		
 		return false;
+	}
+
+	@Override
+	public boolean hasCausedOutage() {
+		boolean offline = false;
+		
+		Calendar now = Calendar.getInstance();
+		Calendar lastDateOccupied = Calendar.getInstance();
+		lastDateOccupied.setTime(new Date(this.getLastUpdated()));
+		lastDateOccupied.add(Calendar.MINUTE, 60);
+		
+		if (now.after(lastDateOccupied)) {
+			offline = true;
+		}
+		
+		return offline;
 	}
 }

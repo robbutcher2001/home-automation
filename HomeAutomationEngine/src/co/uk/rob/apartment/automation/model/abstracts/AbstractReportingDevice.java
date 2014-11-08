@@ -67,7 +67,6 @@ public abstract class AbstractReportingDevice implements ReportingDevice {
 			try {
 				boolean newMotion = Boolean.parseBoolean(result.toString());
 				setTriggered(newMotion);
-				//log.info("Motion state of sensor " + this.dataEndpoint + ": " + this.isTriggered());
 				applied = true;
 			}
 			catch (Exception e) {
@@ -88,7 +87,6 @@ public abstract class AbstractReportingDevice implements ReportingDevice {
 			try {
 				int newBatteryLevel = Integer.parseInt(result.toString());
 				this.battery = newBatteryLevel;
-				//log.info("Battery level of sensor " + this.dataEndpoint + ": " + this.battery);
 				applied = true;
 			}
 			catch (Exception e) {
@@ -104,20 +102,6 @@ public abstract class AbstractReportingDevice implements ReportingDevice {
 	 * Apply update for a reported value
 	 */
 	protected synchronized Object parseReportedValue(String endpoint, String resultSet, String key) {
-//		try {
-//			JSONObject parsedResults = (JSONObject) this.zWayResultParser.parse(resultSet);
-//			if (parsedResults.containsKey(this.dataEndpoint + this.motionEndpoint)) {
-//				JSONObject motionResult = (JSONObject) this.zWayResultParser.parse(parsedResults.get(this.dataEndpoint + this.motionEndpoint).toString());
-//				motionResult = (JSONObject) this.zWayResultParser.parse(motionResult.get("level").toString());
-//				
-//				setTriggered(Boolean.parseBoolean(motionResult.get("value").toString()));
-//				
-//				return true;
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		
 		try {
 			JSONObject parsedResults = (JSONObject) this.zWayResultParser.parse(resultSet);
 			
@@ -126,7 +110,6 @@ public abstract class AbstractReportingDevice implements ReportingDevice {
 				result = (JSONObject) this.zWayResultParser.parse(result.get(key).toString());
 				
 				return result.get("value");
-				//setTriggered(Boolean.parseBoolean(result.get("value").toString()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
