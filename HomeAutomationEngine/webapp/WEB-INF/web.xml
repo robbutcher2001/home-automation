@@ -49,19 +49,11 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>deviceStatus</servlet-name>
-    <servlet-class>co.uk.rob.apartment.automation.controller.DeviceStatusController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>deviceStatus</servlet-name>
-    <url-pattern>/deviceStatus</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>deviceStatusJsonTest</servlet-name>
     <servlet-class>co.uk.rob.apartment.automation.controller.DeviceStatusJsonController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>deviceStatusJsonTest</servlet-name>
-    <url-pattern>/deviceStatusJsonTest/*</url-pattern>
+    <servlet-name>deviceStatus</servlet-name>
+    <url-pattern>/deviceStatus/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>lounge</servlet-name>

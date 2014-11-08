@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="resources/js/interactionHandler.js"></script>
 </head>
 <body>
+	<div class="msoBar"></div>
 	<div class="statusBar">Automation Engine not reachable</div>
 	<div class="accordion">
 		<button class="title top-title">Lounge</button>
@@ -20,35 +21,42 @@
 			<button id="fullOnLounge" class="button col span_1_of_3" disabled="disabled">Lights on Full</button>
 			<button id="filmModeLounge" class="button col span_1_of_3" disabled="disabled">Film/TV Mode</button>
 			<button id="offLounge" class="button col span_1_of_3" disabled="disabled">Lights off / Blinds Up</button>
-			<button id="blindTiltToggle" class="button col span_1_of_3" disabled="disabled">Toggle blind tilt</button>
+			<button id="blindTiltToggle" class="button col span_1_of_3" disabled="disabled">Tilt blinds</button>
 			<button id="bedroomModeLounge" class="button col span_1_of_3" disabled="disabled">Switch to bedroom mode</button>
 			<!-- space for one more button here -->
 		</div>
-		<button class="title rob-room-title">Rob's Room</button>
+		<button class="title rob-room-title">Bedroom</button>
 		<div class="section group bedroomOnePage">
-			<button id="fullOnRobRoom" class="button col span_1_of_3" disabled="disabled">Lights on Full</button>
-			<button id="softMoodRobRoom" class="button col span_1_of_3" disabled="disabled">Lights on Soft</button>
-			<button id="offRobRoom" class="button col span_1_of_3" disabled="disabled">Lights off</button>
-			<button id="dehumRobRoom" class="button col span_1_of_3" disabled="disabled">Dehumidifier Off</button>
-			<button id="bedroomModeRobRoom" class="button col span_1_of_3" disabled="disabled">Switch to full bedroom mode</button>
+			<button id="fullOnRobRoom" class="button col span_1_of_3 bedroomButtons" disabled="disabled">Lights on Full</button>
+			<button id="softMoodRobRoom" class="button col span_1_of_3 bedroomButtons" disabled="disabled">Lights on Soft</button>
+			<button id="offRobRoom" class="button col span_1_of_3 bedroomButtons" disabled="disabled">Lights off</button>
+			<button id="dehumRobRoom" class="button col span_1_of_3 bedroomButtons" disabled="disabled">Dehumidifier Off</button>
+			<button id="bedroomModeRobRoom" class="button col span_1_of_3 bedroomButtons" disabled="disabled">Switch to full bedroom mode</button>
 		</div>
 		<button class="title statusTitle">Apartment</button>
 		<div class="section group apartmentPage">
+			<p class="floatCenterScreen subTitle">Apartment Info</p>
+			<p id="flat-unexp-ocp" class="col span_1_of_3 error-text"></p>
 			<p id="flat-last-ocp" class="col span_1_of_3"></p>
-<!-- 			<p id="front-door" class="col span_1_of_3"></p> -->
-<!-- 			<p id="front-door-battery" class="col span_1_of_3"></p> -->
-<!-- 			<p id="lounge-ocp" class="col span_1_of_3"></p> -->
-<!-- 			<p id="lounge-temp" class="col span_1_of_3"></p> -->
+			<p id="flat-door-last-ocp" class="col span_1_of_3"></p>
+			<p id="patio-door-last-ocp" class="col span_1_of_3"></p>
+			
+			<p class="floatCenterScreen subTitle">Outside Info</p>
+			<p id="patio-last-ocp" class="col span_1_of_3"></p>
+			<p id="patio-lux" class="col span_1_of_3"></p>
+			<p id="patio-humidity" class="col span_1_of_3"></p>
+			<p id="patio-temp" class="col span_1_of_3"></p>
+			
+			<p class="floatCenterScreen subTitle">Lounge Info</p>
+			<p id="lounge-last-ocp" class="col span_1_of_3"></p>
 			<p id="lounge-lux" class="col span_1_of_3"></p>
 			<p id="lounge-humidity" class="col span_1_of_3"></p>
-<!-- 			<p id="lounge-sensor-battery" class="col span_1_of_3"></p> -->
-			<p id="rob-door" class="col span_1_of_3"></p>
-<!-- 			<p id="rob-ocp" class="col span_1_of_3"></p> -->
-<!-- 			<p id="rob-temp" class="col span_1_of_3"></p> -->
+			
+			<p class="floatCenterScreen subTitle">Rob's Room Info</p>
+			<p id="rob-last-ocp" class="col span_1_of_3"></p>
+			<p id="rob-door-last-ocp" class="col span_1_of_3"></p>
 			<p id="rob-lux" class="col span_1_of_3"></p>
 			<p id="rob-humidity" class="col span_1_of_3"></p>
-<!-- 			<p id="rob-sensor-battery" class="col span_1_of_3"></p> -->
-<!-- 			<p id="rob-door-battery" class="col span_1_of_3"></p> -->
 			<button id="atHomeModeLounge" class="button col span_1_of_3 extraMargin" disabled="disabled">Switch to 'At Home Today' mode</button>
 			<img id="loungeCamera" src="resources/images/camera.png" class="col span_1_of_3 extraMargin"></img>
 		</div>
