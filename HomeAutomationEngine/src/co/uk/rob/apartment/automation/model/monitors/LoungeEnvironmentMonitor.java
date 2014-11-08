@@ -151,25 +151,25 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 600-800 bucket, lounge lamp and stick lamp auto off");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween400and600()) {
+				else if (CommonQueries.isBrightnessBetween400and600() && now.after(fourPM)) {
 					if (!"30".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
 						loungeLamp.turnDeviceOnAutoOverride("30");
 						log.info("Outside brightness has fallen into 400-600 bucket, lounge lamp auto on 30%");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween200and400()) {
+				else if (CommonQueries.isBrightnessBetween200and400() && now.after(fourPM)) {
 					if (!"40".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
 						loungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 200-400 bucket, lounge lamp auto up to 40%");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween1and200()) {
+				else if (CommonQueries.isBrightnessBetween1and200() && now.after(fourPM)) {
 					if (lampsOnFull()) {
 						log.info("Outside brightness has fallen into 1-200 bucket, lounge lamp auto up to 55% (max)");
 						log.info("Outside brightness has fallen into 1-200 bucket, lounge stick lamp auto up to 40%");
 					}
 				}
-				else if (CommonQueries.isBrightnessAt0()) {
+				else if (CommonQueries.isBrightnessAt0() && now.after(fourPM)) {
 					if (lampsOnFull()) {
 						log.info("Outside brightness has fallen into < 1 bucket, lounge lamp auto up to 55% (max)");
 						log.info("Outside brightness has fallen into < 1 bucket, lounge stick lamp auto up to 40%");
