@@ -28,10 +28,10 @@ public class MSOMessageManager {
 					}
 					
 					if (count > 0) {
-						this.message.append(", " + device.getZone().toString().toLowerCase());
+						this.message.append(", " + device.getZone().toString().replace("_", " "));
 					}
 					else {
-						this.message.append(device.getZone().toString());
+						this.message.append(device.getZone().toString().replace("_", " "));
 					}
 					count++;
 				}
@@ -50,7 +50,9 @@ public class MSOMessageManager {
 	
 	public String getMessage() {
 		if (this.message != null) {
-			return this.message.toString();
+			String formatted = this.message.toString();
+			formatted = formatted.substring(0, 1).toUpperCase() + formatted.substring(1);
+			return formatted;
 		}
 		
 		return "Test - should be null";
