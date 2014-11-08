@@ -120,9 +120,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				else if (now.after(midday)) {
 					//tilt blinds if not tilted
 					if (!loungeWindowBlind.isTilted()) {
-						if (CommonQueries.isBrightnessGreaterThan800() && ("40".equals(loungeWindowBlind.getDeviceLevel()) ||
-								"55".equals(loungeWindowBlind.getDeviceLevel()) ||
-								"80".equals(loungeWindowBlind.getDeviceLevel()))) {
+						if (CommonQueries.isBrightnessGreaterThan800() && !"0".equals(loungeWindowBlind.getDeviceLevel())) {
 							log.info("Blinds aren't tilted and it's light enough outside, tilting now someone's home");
 							loungeWindowBlind.tiltBlindDown();
 						}

@@ -41,11 +41,14 @@ public class LoungeEnvironmentMonitor extends Thread {
 	public void run() {
 		while (!this.isInterrupted()) {
 			Calendar nineAM = Calendar.getInstance();
+			Calendar fourPM = Calendar.getInstance();
 			Calendar elevenPM = Calendar.getInstance();
 			Calendar now = Calendar.getInstance();
 			
 			nineAM.set(Calendar.HOUR_OF_DAY, 9);
 			nineAM.set(Calendar.MINUTE, 00);
+			fourPM.set(Calendar.HOUR_OF_DAY, 16);
+			fourPM.set(Calendar.MINUTE, 00);
 			elevenPM.set(Calendar.HOUR_OF_DAY, 23);
 			elevenPM.set(Calendar.MINUTE, 00);
 			
@@ -85,7 +88,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 400-600 bucket, moving blinds to 80% (max)");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween200and400()) {
+				else if (CommonQueries.isBrightnessBetween200and400() && now.after(fourPM)) {
 					if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						int movementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "55");
 						loungeWindowBlind.turnDeviceOnAutoOverride("55");
@@ -102,7 +105,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						}
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween1and200()) {
+				else if (CommonQueries.isBrightnessBetween1and200() && now.after(fourPM)) {
 					if (!"40".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						int movementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "40");
 						loungeWindowBlind.turnDeviceOnAutoOverride("40");
@@ -119,7 +122,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						}
 					}
 				}
-				else if (CommonQueries.isBrightnessAt0()) {
+				else if (CommonQueries.isBrightnessAt0() && now.after(fourPM)) {
 					if (!"0".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						loungeWindowBlind.turnDeviceOnAutoOverride("0");
 						log.info("Outside brightness has fallen into < 1 bucket, moving blinds to 0%");
