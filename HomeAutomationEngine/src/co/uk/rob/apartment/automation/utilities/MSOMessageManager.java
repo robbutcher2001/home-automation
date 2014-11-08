@@ -55,6 +55,6 @@ public class MSOMessageManager {
 			return formatted;
 		}
 		
-		return "Test - should be null";
+		return null;
 	}
 }
