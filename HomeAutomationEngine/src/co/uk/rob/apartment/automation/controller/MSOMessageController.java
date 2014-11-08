@@ -16,7 +16,7 @@ import co.uk.rob.apartment.automation.utilities.MSOMessageManager;
 /**
  * Servlet implementation class MSOMessageController
  */
-@WebServlet("/msoMessage")
+@WebServlet("/MSOMessageController")
 public class MSOMessageController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

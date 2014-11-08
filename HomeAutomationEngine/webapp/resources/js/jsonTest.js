@@ -27,7 +27,7 @@ $(document).ready(function(){
 		DeliveryHelper.refreshCamera();
 	});
 	
-	//window.setTimeout(function() { DeliveryHelper.checkMSO(); }, 4000);
+	window.setTimeout(function() { DeliveryHelper.checkMSO(); }, 4000);
 	
 	window.setInterval(function() { DeliveryHelper.getDeviceStatuses(); }, 1000);
 	

@@ -40,6 +40,14 @@
     <url-pattern>/verifyEngineOnline</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>msoMessage</servlet-name>
+    <servlet-class>co.uk.rob.apartment.automation.controller.MSOMessageController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>msoMessage</servlet-name>
+    <url-pattern>/msoMessage</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>deviceStatus</servlet-name>
     <servlet-class>co.uk.rob.apartment.automation.controller.DeviceStatusController</servlet-class>
   </servlet>
