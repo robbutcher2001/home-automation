@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractReportingDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ActivityHandler;
-import co.uk.rob.apartment.automation.model.interfaces.MajorServiceOutageTriggerable;
+import co.uk.rob.apartment.automation.model.interfaces.Inoperable;
 
-public class Multisensor extends AbstractReportingDevice implements MajorServiceOutageTriggerable{
+public class Multisensor extends AbstractReportingDevice implements Inoperable {
 
 	private Logger log = Logger.getLogger(Multisensor.class);
 	
@@ -147,18 +147,11 @@ public class Multisensor extends AbstractReportingDevice implements MajorService
 	}
 
 	@Override
-	public boolean hasCausedOutage() {
-		boolean offline = false;
+	public boolean isNotOperational() {
+		Calendar lastActivePlusHour = Calendar.getInstance();
+		lastActivePlusHour.setTime(new Date(this.getLastUpdated()));
+		lastActivePlusHour.add(Calendar.MINUTE, 60);
 		
-		Calendar now = Calendar.getInstance();
-		Calendar lastDateOccupied = Calendar.getInstance();
-		lastDateOccupied.setTime(new Date(this.getLastUpdated()));
-		lastDateOccupied.add(Calendar.MINUTE, 60);
-		
-		if (now.after(lastDateOccupied)) {
-			offline = true;
-		}
-		
-		return offline;
+		return Calendar.getInstance().after(lastActivePlusHour);
 	}
 }
