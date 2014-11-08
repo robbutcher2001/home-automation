@@ -45,7 +45,6 @@ public class JsonResponseCompiler {
             	this.jsonResponse.put(zone.getZone().toString(), resultList);
             }
             
-//            this.jsonResponse.put("data", resultList);
             this.jsonResponse.put("errorText", null);
         } else {
             createFailAsJson("No results found");

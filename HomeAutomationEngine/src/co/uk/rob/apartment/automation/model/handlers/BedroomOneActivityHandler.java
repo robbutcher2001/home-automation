@@ -11,6 +11,7 @@ import co.uk.rob.apartment.automation.model.abstracts.AbstractActivityHandler;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
+import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 public class BedroomOneActivityHandler extends AbstractActivityHandler {
@@ -44,8 +45,8 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		
 		if (reportingDeviceMotionSensor.isTriggered()) {
 			//door is open
-			if (reportingDeviceDoorSensor.isTriggered()) {
-				log.info("Rob room occupied and not bedtime mode, lamp off and ceiling light on");
+			if (reportingDeviceDoorSensor.isTriggered() && !CommonQueries.isBrightnessGreaterThan800()) {
+				log.info("Rob room occupied, dark enough outside and not bedtime mode, lamp off and ceiling light on");
 				
 				ceilingLightOnLampOff();
 			}

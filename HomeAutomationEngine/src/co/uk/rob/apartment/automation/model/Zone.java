@@ -1,7 +1,7 @@
 package co.uk.rob.apartment.automation.model;
 
 public enum Zone {
-	LOUNGE("lounge"), KITCHEN("kitchen"), BATHROOM("bathroom"), HALLWAY("hallway"), ROB_ROOM("rob_room"), SCARLETT_ROOM("scarlett_room"), PATIO("patio"), APARTMENT("apartment");
+	LOUNGE("Lounge"), KITCHEN("Kitchen"), BATHROOM("Bathroom"), HALLWAY("Hallway"), ROB_ROOM("Rob room"), SCARLETT_ROOM("Scarlett room"), PATIO("Patio"), APARTMENT("Apartment");
 	
 	private String value;
 	

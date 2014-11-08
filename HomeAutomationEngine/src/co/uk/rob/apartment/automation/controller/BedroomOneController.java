@@ -43,108 +43,118 @@ public class BedroomOneController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		Boolean successfulCall = true;
-		List<ControllableDevice> devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM);
-		
-		ControllableDevice lampRobEndpoint = devicesToControl.get(0);
-		ControllableDevice ceilingLightRobEndpoint = devicesToControl.get(1);
-		ControllableDevice dehumidifier = devicesToControl.get(2);
-		ControllableDevice ledRodRobEndpoint = devicesToControl.get(3);
+		String activeUser = (String) request.getSession().getAttribute("activeUser");
+		if (activeUser == null) {
+			activeUser = "";
+		}
 		
 		PrintWriter out = response.getWriter();
 		
-		if (action == null || action.equals("")) {
-			RequestDispatcher dispatch = request.getRequestDispatcher("index.html");
-			dispatch.forward(request, response);
-		}
-		else if (action.equals("fullOnRobRoom")) {
-			log.info("Request for full lights on in Rob's room");
-			successfulCall = lampRobEndpoint.turnDeviceOff(true);
-			lampRobEndpoint.resetAutoOverridden();
-			if (successfulCall == true) {
-				successfulCall = ledRodRobEndpoint.turnDeviceOff(true);
-				ledRodRobEndpoint.resetAutoOverridden();
-				if (successfulCall == true) {
-					successfulCall = ceilingLightRobEndpoint.turnDeviceOn(true, "99");
-					ceilingLightRobEndpoint.resetAutoOverridden();
-				}
-			}
+		if (activeUser.equalsIgnoreCase("rbutcher")) {
+			List<ControllableDevice> devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM);
 			
-			if (successfulCall) {
-				out.print("Lights now on full");
-			}
-			else {
-				out.print("Issue turning all lights on full");
-			}
-		}
-		else if (action.equals("softMoodRobRoom")) {
-			log.info("Request for soft mood in Rob's room");
-			successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
-			ceilingLightRobEndpoint.resetAutoOverridden();
-			if (successfulCall == true) {
-				successfulCall = lampRobEndpoint.turnDeviceOn(true, "35");
-				lampRobEndpoint.resetAutoOverridden();
-				if (successfulCall == true) {
-					successfulCall = ledRodRobEndpoint.turnDeviceOn(true);
-					ledRodRobEndpoint.resetAutoOverridden();
-				}
-			}
+			ControllableDevice lampRobEndpoint = devicesToControl.get(0);
+			ControllableDevice ceilingLightRobEndpoint = devicesToControl.get(1);
+			ControllableDevice dehumidifier = devicesToControl.get(2);
+			ControllableDevice ledRodRobEndpoint = devicesToControl.get(3);
 			
-			if (successfulCall) {
-				out.print("Light now on soft");
+			if (action == null || action.equals("")) {
+				RequestDispatcher dispatch = request.getRequestDispatcher("index.html");
+				dispatch.forward(request, response);
 			}
-			else {
-				out.print("Issue turning all lights on soft");
-			}
-		}
-		else if (action.equals("offRobRoom")) {
-			log.info("Request for all lights off in Rob's room");
-			successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
-			ceilingLightRobEndpoint.resetAutoOverridden();
-			if (successfulCall == true) {
+			else if (action.equals("fullOnRobRoom")) {
+				log.info("Request for full lights on in Rob's room [" + activeUser + "]");
 				successfulCall = lampRobEndpoint.turnDeviceOff(true);
 				lampRobEndpoint.resetAutoOverridden();
 				if (successfulCall == true) {
 					successfulCall = ledRodRobEndpoint.turnDeviceOff(true);
 					ledRodRobEndpoint.resetAutoOverridden();
+					if (successfulCall == true) {
+						successfulCall = ceilingLightRobEndpoint.turnDeviceOn(true, "99");
+						ceilingLightRobEndpoint.resetAutoOverridden();
+					}
+				}
+				
+				if (successfulCall) {
+					out.print("Lights now on full");
+				}
+				else {
+					out.print("Issue turning all lights on full");
 				}
 			}
-			
-			if (successfulCall) {
-				out.print("Lights now off");
+			else if (action.equals("softMoodRobRoom")) {
+				log.info("Request for soft mood in Rob's room [" + activeUser + "]");
+				successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
+				ceilingLightRobEndpoint.resetAutoOverridden();
+				if (successfulCall == true) {
+					successfulCall = lampRobEndpoint.turnDeviceOn(true, "35");
+					lampRobEndpoint.resetAutoOverridden();
+					if (successfulCall == true) {
+						successfulCall = ledRodRobEndpoint.turnDeviceOn(true);
+						ledRodRobEndpoint.resetAutoOverridden();
+					}
+				}
+				
+				if (successfulCall) {
+					out.print("Light now on soft");
+				}
+				else {
+					out.print("Issue turning all lights on soft");
+				}
 			}
-			else {
-				out.print("Issue turning all lights off");
+			else if (action.equals("offRobRoom")) {
+				log.info("Request for all lights off in Rob's room [" + activeUser + "]");
+				successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
+				ceilingLightRobEndpoint.resetAutoOverridden();
+				if (successfulCall == true) {
+					successfulCall = lampRobEndpoint.turnDeviceOff(true);
+					lampRobEndpoint.resetAutoOverridden();
+					if (successfulCall == true) {
+						successfulCall = ledRodRobEndpoint.turnDeviceOff(true);
+						ledRodRobEndpoint.resetAutoOverridden();
+					}
+				}
+				
+				if (successfulCall) {
+					out.print("Lights now off");
+				}
+				else {
+					out.print("Issue turning all lights off");
+				}
+			}
+			else if (action.equals("dehumRobRoom")) {
+				if (dehumidifier.isDeviceOn() && hasDehumidifierBeenInStateForOverHour(dehumidifier.getLastInteractedTime())) {
+					log.info("Request for dehumidifier off in Rob's room - been on for over an hour so switching off [" + activeUser + "]");
+					dehumidifier.turnDeviceOff(true);
+					out.print("Dehumidifier is now off");
+				}
+				else if (!dehumidifier.isDeviceOn()) {
+					log.info("Request for dehumidifier off in Rob's room - dehumidifier is off [" + activeUser + "]");
+					out.print("Dehumidifier is already off");
+				}
+				else {
+					log.info("Request for dehumidifier off in Rob's room - has not been on for over an hour so not switching off to protect compressor [" + activeUser + "]");
+					DateFormat format = new SimpleDateFormat("HH:mm");
+					String lastUpdated = format.format(dehumidifier.getLastInteractedTime());
+					out.print("Dehumidifier only been on since " + lastUpdated);
+				}
+			}
+			else if (action.equals("bedroomModeRobRoom")) {
+				String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
+				if (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode)) {
+					HomeAutomationProperties.setOrUpdateProperty("RobRoomBedroomMode", "true");
+					log.info("Request for full bedroom mode in Rob's room [" + activeUser + "]");
+					out.print("Full bedroom mode now on");
+				}
+				else {
+					HomeAutomationProperties.setOrUpdateProperty("RobRoomBedroomMode", "false");
+					log.info("Request for normal bedroom mode in Rob's room [" + activeUser + "]");
+					out.print("Normal bedroom mode now back on");
+				}
 			}
 		}
-		else if (action.equals("dehumRobRoom")) {
-			if (dehumidifier.isDeviceOn() && hasDehumidifierBeenInStateForOverHour(dehumidifier.getLastInteractedTime())) {
-				log.info("Request for dehumidifier off in Rob's room - been on for over an hour so switching off");
-				dehumidifier.turnDeviceOff(true);
-				out.print("Dehumidifier is now off");
-			}
-			else if (!dehumidifier.isDeviceOn()) {
-				log.info("Request for dehumidifier off in Rob's room - dehumidifier is off");
-				out.print("Dehumidifier is already off");
-			}
-			else {
-				log.info("Request for dehumidifier off in Rob's room - has not been on for over an hour so not switching off to protect compressor");
-				DateFormat format = new SimpleDateFormat("HH:mm");
-				String lastUpdated = format.format(dehumidifier.getLastInteractedTime());
-				out.print("Dehumidifier only been on since " + lastUpdated);
-			}
-		}
-		else if (action.equals("bedroomModeRobRoom")) {
-			String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
-			if (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode)) {
-				HomeAutomationProperties.setOrUpdateProperty("RobRoomBedroomMode", "true");
-				log.info("Request for full bedroom mode in Rob's room");
-				out.print("Full bedroom mode now on");
-			}
-			else {
-				HomeAutomationProperties.setOrUpdateProperty("RobRoomBedroomMode", "false");
-				log.info("Request for normal bedroom mode in Rob's room");
-				out.print("Normal bedroom mode now back on");
-			}
+		else {
+			out.print("Tut tut, you're not logged in as Rob");
 		}
 		
 		//response.setContentType("application/json");

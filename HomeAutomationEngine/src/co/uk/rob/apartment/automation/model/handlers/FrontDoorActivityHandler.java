@@ -41,22 +41,12 @@ public class FrontDoorActivityHandler extends AbstractActivityHandler {
 			if (lastApartmentOccupancyPlusHour != null && now.after(lastApartmentOccupancyPlusHour)) {
 				boolean darkOutside = false;
 				
-				if (CommonQueries.isBrightnessBetween1and200()) {
+				if (CommonQueries.isBrightnessAt0()) {
 					darkOutside = true;
 					log.info("Front door opened, apartment unoccupied for more than 1 hour and it's dark outside - welcoming people home with all lamps if not already on");
 					
 					loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
 					stickLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(2);
-					
-					if (!loungeLamp.isDeviceOn() && !loungeLamp.isAutoOverridden() && !loungeLamp.isManuallyOverridden()) {
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							//no op
-						}
-						
-						loungeLamp.turnDeviceOnAutoOverride("55");
-					}
 					
 					if (!stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isAutoOverridden() && !stickLoungeLamp.isManuallyOverridden()) {
 						try {
@@ -66,6 +56,16 @@ public class FrontDoorActivityHandler extends AbstractActivityHandler {
 						}
 						
 						stickLoungeLamp.turnDeviceOnAutoOverride("99");
+					}
+					
+					if (!loungeLamp.isDeviceOn() && !loungeLamp.isAutoOverridden() && !loungeLamp.isManuallyOverridden()) {
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+							//no op
+						}
+						
+						loungeLamp.turnDeviceOnAutoOverride("55");
 					}
 				}
 				

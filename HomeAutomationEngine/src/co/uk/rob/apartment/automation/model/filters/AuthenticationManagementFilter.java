@@ -54,7 +54,7 @@ public class AuthenticationManagementFilter implements Filter {
 		HttpServletRequest servletRequest = (HttpServletRequest) request;
 		String lat = request.getParameter("lat");
 		String lng = request.getParameter("lng");
-		boolean implicitLogin = false;
+		boolean login = false;
 		
 		//static content
 		if (isStaticOrAllowedContent(servletRequest.getRequestURI())) {
@@ -66,7 +66,8 @@ public class AuthenticationManagementFilter implements Filter {
 		if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
 			//within apartment + on Wifi
 			if (isNearToApartment(lat, lng) && isClientOnWifi(request)) {
-				implicitLogin = true;
+				servletRequest.getSession().setAttribute("activeUser", "implicitLogin");
+				login = true;
 			}
 			else {
 				Cookie[] cookies = servletRequest.getCookies();
@@ -76,7 +77,8 @@ public class AuthenticationManagementFilter implements Filter {
 					User user = UserManager.getUser(automationCookie);
 					
 					if (user != null) {
-						implicitLogin = true;
+						servletRequest.getSession().setAttribute("activeUser", user.getUsername());
+						login = true;
 					}
 					else {
 						log.info("Client does not have the correct cookie");
@@ -94,8 +96,9 @@ public class AuthenticationManagementFilter implements Filter {
 			}
 		}
 		
-		if (implicitLogin) {
+		if (login) {
 			chain.doFilter(request, response);
+			
 			return;
 		}
 		else {

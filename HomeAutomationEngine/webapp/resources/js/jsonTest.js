@@ -27,6 +27,8 @@ $(document).ready(function(){
 		DeliveryHelper.refreshCamera();
 	});
 	
+	//window.setTimeout(function() { DeliveryHelper.checkMSO(); }, 4000);
+	
 	window.setInterval(function() { DeliveryHelper.getDeviceStatuses(); }, 1000);
 	
 	window.setInterval(function() { DeliveryHelper.refreshCamera(); }, 2000);
@@ -44,6 +46,21 @@ var DeliveryHelper = {
 		DeliveryHelper.issueCommand('verifyEngineOnline', '?', 'Online');
 	},
 	
+	checkMSO: function() {
+		$.ajax({
+			url: "msoMessage?" + Location.addToRequest(),
+			type: "GET",
+			dataType: "json",
+			success: function(response) {
+				if (response.data.mso_message != null) {
+					$('.msoBar').html(response.data.mso_message);
+					$('.msoBar').slideDown(600);
+				}
+			}
+		});
+		return false;
+	},
+	
 	issueCommand: function(servlet, action, completedMessage) {
 		$.ajax({
 			url: servlet + action + Location.addToRequest(),
@@ -54,11 +71,11 @@ var DeliveryHelper = {
 			    	window.location = 'login';
 			    }
 			},
-			error: function(response){
+			error: function(response) {
 				$('.button').attr('disabled', 'disabled');
 				Utilities.createPermRedStatusBar('Currently offline');
 			},
-			success: function(response){
+			success: function(response) {
 				$('.button').removeAttr('disabled');
 				if (response == 'true' || response == true) {
 					Utilities.createTempGreenStatusBar(completedMessage);
@@ -90,11 +107,11 @@ var DeliveryHelper = {
 			    	window.location = 'login';
 			    }
 			},
-			error: function(response){
+			error: function(response) {
 				//Change title bars
 				$('.top-title').html('Lounge - not auto updating');
 				$('.top-title').addClass('error-text');
-				$('.rob-room-title').html('Rob\'s Room - not auto updating');
+				$('.rob-room-title').html('Bedroom - not auto updating');
 				$('.rob-room-title').addClass('error-text');
 				$('.statusTitle').html('Apartment - not auto updating');
 				$('.statusTitle').addClass('error-text');
@@ -105,7 +122,7 @@ var DeliveryHelper = {
 				//Disable buttons
 				$('.button').attr('disabled', 'disabled');
 			},
-			success: function(response){
+			success: function(response) {
 				
 				if ($('.statusBar').html() == 'Can\'t reach apartment - retrying') {
 					//Reset title bars
@@ -118,6 +135,18 @@ var DeliveryHelper = {
 					
 					//Enable buttons
 					$('.button').removeAttr('disabled');
+				}
+				
+				if (response.apartment.bedroom_to_render == 'bedroomOne') {
+					$('.rob-room-title').html('Rob\'s Room');
+				}
+				else if (response.apartment.bedroom_to_render == 'bedroomTwo') {
+					$('.rob-room-title').html('Scat\'s Room');
+					$('.bedroomButtons').hide();
+				}
+				else {
+					$('.rob-room-title').html('Bedroom');
+					$('.bedroomButtons').attr('disabled', 'disabled');
 				}
 				
 				if (response.apartment.unexpected_occupancy == 'true') {
@@ -200,10 +229,10 @@ var DeliveryHelper = {
 				}
 				
 				if (response.rob_room.multisensor.occupied == 'true') {
-					$('.rob-room-title').html('Rob\'s Room | Occupied');
+					$('.rob-room-title').html($('.rob-room-title').html() + ' | Occupied');
 				}
 				else {
-					$('.rob-room-title').html('Rob\'s Room | Unoccupied');
+					$('.rob-room-title').html($('.rob-room-title').html() + ' | Unoccupied');
 				}
 				
 				$('.rob-room-title').html($('.rob-room-title').html() + ' | ' + response.rob_room.multisensor.temperature + '&deg;C');
