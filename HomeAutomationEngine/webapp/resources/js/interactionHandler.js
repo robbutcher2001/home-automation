@@ -12,14 +12,17 @@ $(document).ready(function(){
 	
 	//bind action for all buttons
 	$('.loungePage button').bind('click', function() {
+		$(this).attr('disabled', 'disabled');
 		DeliveryHelper.issueCommand('lounge', '?action=' + $(this).attr('id') + '&', 'Done');
 	});
 	
 	$('.bedroomOnePage button').bind('click', function() {
+		$(this).attr('disabled', 'disabled');
 		DeliveryHelper.issueCommand('bedroom1', '?action=' + $(this).attr('id') + '&', 'Done');
 	});
 	
 	$('.apartmentPage button').bind('click', function() {
+		$(this).attr('disabled', 'disabled');
 		DeliveryHelper.issueCommand('lounge', '?action=' + $(this).attr('id') + '&', 'Done');
 	});
 	
