@@ -17,15 +17,44 @@ public class MSOMessageManager {
 	private StringBuilder message = null;
 
 	public MSOMessageManager() {
-		int count = 0;
 		List<ReportingDevice> apartmentReportingDevices = DeviceListManager.getReportingDevices();
 		
+		//call methods in order of precedence - lowest first
+		testForLowBatteries(apartmentReportingDevices);
+		testForOfflineSensors(apartmentReportingDevices);
+		testForUnexpectedOccupancy();
+		
+		//TODO: if windows are open and apartment marked as unoccupied, display as MSO (+ send text)
+	}
+	
+	/**
+	 * Will only show one Multisensor battery level if more than one have low batteries.
+	 * 
+	 * @param apartmentReportingDevices devices to check
+	 */
+	private void testForLowBatteries(List<ReportingDevice> apartmentReportingDevices) {
+		for (ReportingDevice device : apartmentReportingDevices) {
+			if (device instanceof Multisensor) {
+				if (device.getBatteryLevel() <= 10) {
+					this.message = new StringBuilder();
+					this.message.append(device.getZone().toString() + "multisensor battery " + 
+							device.getBatteryLevel() + "%");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * List all Multisensors currently offline.
+	 * 
+	 * @param apartmentReportingDevices devices to check
+	 */
+	private void testForOfflineSensors(List<ReportingDevice> apartmentReportingDevices) {
+		int count = 0;
 		for (ReportingDevice device : apartmentReportingDevices) {
 			if (device instanceof Multisensor) {
 				if (((Multisensor) device).isNotOperational()) {
-					if (this.message == null) {
-						this.message = new StringBuilder();
-					}
+					this.message = new StringBuilder();
 					
 					if (count > 0) {
 						this.message.append(", " + device.getZone().toString().replace("_", " "));
@@ -46,7 +75,12 @@ public class MSOMessageManager {
 				this.message.append(" multisensor appears to be offline");
 			}
 		}
-		
+	}
+	
+	/**
+	 * Creates MSO for unexpected occupancy.
+	 */
+	private void testForUnexpectedOccupancy() {
 		String unexpectedOccupancy = HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy");
 		
 		if ("true".equals(unexpectedOccupancy)) {
@@ -54,8 +88,6 @@ public class MSOMessageManager {
 			this.message = new StringBuilder();
 			this.message.append("Unexpected occupancy in apartment");
 		}
-		
-		//TODO: if windows are open and apartment marked as unoccupied, display as MSO (+ send text)
 	}
 	
 	public String getMessage() {

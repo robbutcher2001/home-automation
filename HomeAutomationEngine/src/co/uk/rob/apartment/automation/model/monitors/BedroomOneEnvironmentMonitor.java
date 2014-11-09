@@ -44,7 +44,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				Calendar midday = Calendar.getInstance();
 				Calendar eightAM = Calendar.getInstance();
 				Calendar twoPM = Calendar.getInstance();
-				Calendar fourPM = Calendar.getInstance();
+				Calendar halfThreePM = Calendar.getInstance();
 				Calendar tenPM = Calendar.getInstance();
 				Calendar now = Calendar.getInstance();
 				
@@ -57,8 +57,8 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				twoPM.set(Calendar.HOUR_OF_DAY, 14);
 				twoPM.set(Calendar.MINUTE, 00);
 				
-				fourPM.set(Calendar.HOUR_OF_DAY, 16);
-				fourPM.set(Calendar.MINUTE, 00);
+				halfThreePM.set(Calendar.HOUR_OF_DAY, 15);
+				halfThreePM.set(Calendar.MINUTE, 30);
 				
 				tenPM.set(Calendar.HOUR_OF_DAY, 22);
 				tenPM.set(Calendar.MINUTE, 00);
@@ -87,7 +87,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into 600-800 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessBetween400and600() && now.after(fourPM)) {
+					else if (CommonQueries.isBrightnessBetween400and600() && now.after(halfThreePM)) {
 						if (!"40".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("40");
 							log.info("Outside brightness has fallen into 400-600 bucket, Rob's room lamp auto up to 40%");
@@ -98,7 +98,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into 400-600 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessBetween200and400() && now.after(fourPM)) {
+					else if (CommonQueries.isBrightnessBetween200and400() && now.after(halfThreePM)) {
 						if (!"60".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("60");
 							log.info("Outside brightness has fallen into 200-400 bucket, Rob's room lamp auto up to 60%");
@@ -109,7 +109,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into 200-400 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessBetween1and200() && now.after(fourPM)) {
+					else if (CommonQueries.isBrightnessBetween1and200() && now.after(halfThreePM)) {
 						if (!"99".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("99");
 							log.info("Outside brightness has fallen into 1-200 bucket, Rob's room lamp auto up to max");
@@ -120,7 +120,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into 1-200 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessAt0() && now.after(fourPM)) {
+					else if (CommonQueries.isBrightnessAt0() && now.after(halfThreePM)) {
 						if (!"99".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("99");
 							log.info("Outside brightness is at 0, Rob's room lamp auto up to max");
