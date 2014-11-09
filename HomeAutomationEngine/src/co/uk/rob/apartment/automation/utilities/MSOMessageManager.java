@@ -37,7 +37,7 @@ public class MSOMessageManager {
 			if (device instanceof Multisensor) {
 				if (device.getBatteryLevel() <= 10) {
 					this.message = new StringBuilder();
-					this.message.append(device.getZone().toString() + "multisensor battery " + 
+					this.message.append(device.getZone().toString() + " multisensor battery " + 
 							device.getBatteryLevel() + "%");
 				}
 			}
@@ -67,7 +67,7 @@ public class MSOMessageManager {
 			}
 		}
 		
-		if (this.message != null) {
+		if (this.message != null && count > 0) {
 			if (count > 1) {
 				this.message.append(" multisensors appear to be offline");
 			}
