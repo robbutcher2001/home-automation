@@ -46,6 +46,16 @@ public class MSOMessageManager {
 				this.message.append(" multisensor appears to be offline");
 			}
 		}
+		
+		String unexpectedOccupancy = HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy");
+		
+		if ("true".equals(unexpectedOccupancy)) {
+			//overwrite Multisensors as this takes precedence
+			this.message = new StringBuilder();
+			this.message.append("Unexpected occupancy in apartment");
+		}
+		
+		//TODO: if windows are open and apartment marked as unoccupied, display as MSO (+ send text)
 	}
 	
 	public String getMessage() {

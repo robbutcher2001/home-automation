@@ -24,6 +24,8 @@ public class Multisensor extends AbstractReportingDevice implements Inoperable {
 	protected Float[] luminiscence = {0f, 0f, 0f};
 	protected Float[] humidity = {0f, 0f, 0f};
 	
+	private long lastProbed = System.currentTimeMillis();
+	
 	public Multisensor(String batteryUpdateEndpoint, String requestNewReportEndpoint, String dataEndpoint, ActivityHandler handler, Zone zone) {
 		super(batteryUpdateEndpoint, dataEndpoint, handler, zone);
 		super.requestNewReportEndpoint = requestNewReportEndpoint;
@@ -34,6 +36,7 @@ public class Multisensor extends AbstractReportingDevice implements Inoperable {
 	 */
 	@Override
 	public synchronized boolean applyNewReport(String resultSet) {
+		this.lastProbed = System.currentTimeMillis();
 		boolean applied = super.parseBatteryValue(resultSet);
 		applied = super.parseMotionValue(resultSet);
 		
@@ -148,10 +151,10 @@ public class Multisensor extends AbstractReportingDevice implements Inoperable {
 
 	@Override
 	public boolean isNotOperational() {
-		Calendar lastActivePlusHour = Calendar.getInstance();
-		lastActivePlusHour.setTime(new Date(this.getLastUpdated()));
-		lastActivePlusHour.add(Calendar.MINUTE, 60);
+		Calendar lastProbedPlusHour = Calendar.getInstance();
+		lastProbedPlusHour.setTime(new Date(this.lastProbed));
+		lastProbedPlusHour.add(Calendar.MINUTE, 60);
 		
-		return Calendar.getInstance().after(lastActivePlusHour);
+		return Calendar.getInstance().after(lastProbedPlusHour);
 	}
 }
