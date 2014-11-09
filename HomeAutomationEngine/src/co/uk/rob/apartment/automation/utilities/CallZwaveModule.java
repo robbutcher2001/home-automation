@@ -8,6 +8,7 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.ZwayResultSet;
+import co.uk.rob.apartment.automation.model.exceptions.ZwaveModuleResponseException;
 
 public class CallZwaveModule {
 	
@@ -19,13 +20,14 @@ public class CallZwaveModule {
 	 * @return
 	 */
 	public static ZwayResultSet speakToModule(String url) {
+		ZwayResultSet results = null;
 		try {
 			URL constructedUrl = new URL(url);
 			HttpURLConnection moduleConnection = (HttpURLConnection) constructedUrl.openConnection();
 			moduleConnection.setRequestMethod("POST");
 			moduleConnection.setConnectTimeout(20000);
 			
-			ZwayResultSet results = new ZwayResultSet();
+			results = new ZwayResultSet();
 			results.setResponseCode(moduleConnection.getResponseCode());
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(moduleConnection.getInputStream()));
@@ -41,15 +43,23 @@ public class CallZwaveModule {
 				in.close();
 			}
 			
+			results.setJsonResponse(responseString.toString());
+			
 			if (results.getResponseCode() != 200) {
-				log.error("Response code was not 200: " + responseString.toString());
+				log.error("Response code was not 200 [" + responseString.toString() + "]");
+				throw new ZwaveModuleResponseException("Response code was not 200 [" + responseString.toString() + "]");
 			}
 			
-			results.setJsonResponse(responseString.toString());
-			return results;
+			if (results.getJsonResponse().isEmpty()) {
+				log.error("No results received from module");
+				throw new ZwaveModuleResponseException("No results received from module");
+			}
+		} catch (ZwaveModuleResponseException zmue) {
+			zmue.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
+		
+		return results;
 	}
 }
