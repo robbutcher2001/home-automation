@@ -36,15 +36,30 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 	public void run() {
 		super.run();
 		
+		Calendar now = Calendar.getInstance();
+		
+		Calendar halfSixPM = Calendar.getInstance();
+		Calendar halfSevenPM = Calendar.getInstance();
+		
 		Calendar tenPM = Calendar.getInstance();
 		Calendar quarterToEightAM = Calendar.getInstance();
-		Calendar now = Calendar.getInstance();
+		
+		halfSixPM.set(Calendar.HOUR_OF_DAY, 18);
+		halfSixPM.set(Calendar.MINUTE, 30);
+		
+		halfSevenPM.set(Calendar.HOUR_OF_DAY, 19);
+		halfSevenPM.set(Calendar.MINUTE, 30);
 		
 		tenPM.set(Calendar.HOUR_OF_DAY, 22);
 		tenPM.set(Calendar.MINUTE, 00);
 		
 		quarterToEightAM.set(Calendar.HOUR_OF_DAY, 7);
 		quarterToEightAM.set(Calendar.MINUTE, 45);
+		
+		if (now.after(halfSixPM) && now.before(halfSevenPM) && !this.reportingDevice.isTriggered()) {
+			//TODO: Add closure of blinds now door is shut and it's after work
+			log.info("Door closed between 18:30 and 19:30 so assuming Rob wants to get changed, closing blinds");
+		}
 		
 		if (now.after(tenPM) || now.before(quarterToEightAM)) {
 			//bedroom door is closed at night

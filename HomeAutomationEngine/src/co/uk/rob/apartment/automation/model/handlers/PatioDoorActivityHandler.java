@@ -6,13 +6,13 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
-import co.uk.rob.apartment.automation.model.abstracts.AbstractActivityHandler;
+import co.uk.rob.apartment.automation.model.abstracts.AbstractExternalDoorActivityHandler;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 import co.uk.rob.apartment.automation.utilities.SMSHelper;
 
-public class PatioDoorActivityHandler extends AbstractActivityHandler {
+public class PatioDoorActivityHandler extends AbstractExternalDoorActivityHandler {
 	
 	private Logger log = Logger.getLogger(PatioDoorActivityHandler.class);
 
@@ -32,9 +32,7 @@ public class PatioDoorActivityHandler extends AbstractActivityHandler {
 			
 			Blind loungeWindowBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
 			if (!loungeWindowBlind.isTilted() && (now.after(midday) || CommonQueries.isItTheWeekendOrBankHoliday())) {
-				if (CommonQueries.isBrightnessGreaterThan800() && ("40".equals(loungeWindowBlind.getDeviceLevel()) ||
-						"55".equals(loungeWindowBlind.getDeviceLevel()) ||
-						"80".equals(loungeWindowBlind.getDeviceLevel()))) {
+				if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungeWindowBlind.getDeviceLevel())) {
 					log.info("Blinds aren't tilted and it's light enough outside, tilting now someone's home");
 					loungeWindowBlind.tiltBlindDown();
 				}
@@ -46,6 +44,9 @@ public class PatioDoorActivityHandler extends AbstractActivityHandler {
 			if (!CommonQueries.expectedOccupancyInApartment() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
 				SMSHelper.sendSMS("07965502960", "Apartment has been occupied during an unexpected time from patio door.");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "true");
+			}
+			else {
+				welcomeHome("Patio");
 			}
 		}
 		else {

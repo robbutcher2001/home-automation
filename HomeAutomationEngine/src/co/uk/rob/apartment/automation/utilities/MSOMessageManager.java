@@ -35,9 +35,9 @@ public class MSOMessageManager {
 	private void testForLowBatteries(List<ReportingDevice> apartmentReportingDevices) {
 		for (ReportingDevice device : apartmentReportingDevices) {
 			if (device instanceof Multisensor) {
-				if (device.getBatteryLevel() <= 10) {
+				if (device.getBatteryLevel() <= 5) {
 					this.message = new StringBuilder();
-					this.message.append(device.getZone().toString().replace("_", " ") + " multisensor battery " + 
+					this.message.append(device.getZone().toString().replace("_", " ") + " wall sensor battery at " + 
 							device.getBatteryLevel() + "%");
 				}
 			}
