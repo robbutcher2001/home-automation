@@ -36,7 +36,7 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			
 			log.info(door + " door opened, apartment unoccupied for more than 1 hour, welcoming home");
 			
-			if (CommonQueries.isBrightnessAt0()) {
+			if (CommonQueries.isBrightnessAt0() || CommonQueries.isBrightnessBetween1and200()) {
 				boolean lampsTurnedOn = false;
 				
 				loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
@@ -69,7 +69,7 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 				}
 				
 				if (lampsTurnedOn) {
-					new SpeechOrchestrationManager("I've turned some lounge lamps on for you.", false, false, false, null).start();
+					new SpeechOrchestrationManager("I've turned some lounge lights on for you.", false, false, false, null).start();
 				}
 			}
 		}
