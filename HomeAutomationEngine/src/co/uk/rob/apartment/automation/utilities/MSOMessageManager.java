@@ -69,10 +69,10 @@ public class MSOMessageManager {
 		
 		if (this.message != null && count > 0) {
 			if (count > 1) {
-				this.message.append(" multisensors appear to be offline");
+				this.message.append(" wall sensors appear to be offline");
 			}
 			else {
-				this.message.append(" multisensor appears to be offline");
+				this.message.append(" wall sensor appears to be offline");
 			}
 		}
 	}
