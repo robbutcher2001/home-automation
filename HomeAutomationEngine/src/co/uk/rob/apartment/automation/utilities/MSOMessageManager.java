@@ -50,25 +50,26 @@ public class MSOMessageManager {
 	 * @param apartmentReportingDevices devices to check
 	 */
 	private void testForOfflineSensors(List<ReportingDevice> apartmentReportingDevices) {
-		int count = 0;
+		int offlineDeviceCount = 0;
 		for (ReportingDevice device : apartmentReportingDevices) {
-			if (device instanceof Multisensor) {
-				if (((Multisensor) device).isNotOperational()) {
+			if (device.isNotOperational()) {
+				if (offlineDeviceCount == 0) {
 					this.message = new StringBuilder();
-					
-					if (count > 0) {
-						this.message.append(", " + device.getZone().toString().replace("_", " "));
-					}
-					else {
-						this.message.append(device.getZone().toString().replace("_", " "));
-					}
-					count++;
 				}
+				
+				if (offlineDeviceCount > 0) {
+					this.message.append(", " + device.getZone().toString().replace("_", " "));
+				}
+				else {
+					this.message.append(device.getZone().toString().replace("_", " "));
+				}
+				offlineDeviceCount++;
 			}
 		}
 		
-		if (this.message != null && count > 0) {
-			if (count > 1) {
+		//only wall sensors correctly implement the isNotOperational() method
+		if (this.message != null && offlineDeviceCount > 0) {
+			if (offlineDeviceCount > 1) {
 				this.message.append(" wall sensors appear to be offline");
 			}
 			else {

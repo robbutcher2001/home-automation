@@ -2,7 +2,7 @@ package co.uk.rob.apartment.automation.model.interfaces;
 
 import co.uk.rob.apartment.automation.model.Zone;
 
-public interface ReportingDevice {
+public interface ReportingDevice extends Inoperable {
 	
 	public void requestNewReport();
 	

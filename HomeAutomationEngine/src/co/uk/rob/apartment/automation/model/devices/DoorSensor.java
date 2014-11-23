@@ -32,4 +32,11 @@ public class DoorSensor extends AbstractReportingDevice {
 			this.lastUpdated = System.currentTimeMillis();
 		}
 	}
+
+	//As these devices are battery powered so can go offline but until now
+	//there is no way to detect this so adding stub below
+	@Override
+	public boolean isNotOperational() {
+		return false;
+	}
 }

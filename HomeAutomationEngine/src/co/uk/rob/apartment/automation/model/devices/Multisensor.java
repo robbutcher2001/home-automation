@@ -8,9 +8,8 @@ import org.apache.log4j.Logger;
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractReportingDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ActivityHandler;
-import co.uk.rob.apartment.automation.model.interfaces.Inoperable;
 
-public class Multisensor extends AbstractReportingDevice implements Inoperable {
+public class Multisensor extends AbstractReportingDevice {
 
 	private Logger log = Logger.getLogger(Multisensor.class);
 	
