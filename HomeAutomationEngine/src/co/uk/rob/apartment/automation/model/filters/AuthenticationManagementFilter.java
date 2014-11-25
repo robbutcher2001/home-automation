@@ -55,6 +55,7 @@ public class AuthenticationManagementFilter implements Filter {
 		String lat = request.getParameter("lat");
 		String lng = request.getParameter("lng");
 		boolean allowLogin = false;
+		boolean hasInvalidCookie = false;
 		
 		//static content
 		if (isStaticOrAllowedContent(servletRequest.getRequestURI())) {
@@ -76,20 +77,14 @@ public class AuthenticationManagementFilter implements Filter {
 					allowLogin = true;
 				}
 				else {
-					log.info("Client does not have the correct cookie");
-					servletResponse.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
-					
-					return;
+					hasInvalidCookie = true;
 				}
 			}
 			else {
-				log.info("Client does not have any cookies");
-				servletResponse.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
-				
-				return;
+				hasInvalidCookie = true;
 			}
 			
-			//if cookie login failed, check they aren't allow in implicitly
+			//if cookie login failed, check they aren't allowed in implicitly
 			if (!allowLogin) {
 				//within apartment + on Wifi
 				if (isNearToApartment(lat, lng) && isClientOnWifi(request)) {
@@ -101,8 +96,10 @@ public class AuthenticationManagementFilter implements Filter {
 		
 		if (allowLogin) {
 			chain.doFilter(request, response);
-			
-			return;
+		}
+		else if (hasInvalidCookie) {
+			log.info("Client does not have the correct cookie and not candidate for implicit login");
+			servletResponse.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
 		}
 		else {
 			servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access denied: cannot implicitly authorise client");
