@@ -54,7 +54,7 @@ public class AuthenticationManagementFilter implements Filter {
 		HttpServletRequest servletRequest = (HttpServletRequest) request;
 		String lat = request.getParameter("lat");
 		String lng = request.getParameter("lng");
-		boolean login = false;
+		boolean allowLogin = false;
 		
 		//static content
 		if (isStaticOrAllowedContent(servletRequest.getRequestURI())) {
@@ -64,39 +64,42 @@ public class AuthenticationManagementFilter implements Filter {
 		}
 		
 		if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
-			//within apartment + on Wifi
-			if (isNearToApartment(lat, lng) && isClientOnWifi(request)) {
-				servletRequest.getSession().setAttribute("activeUser", "implicitLogin");
-				login = true;
-			}
-			else {
-				Cookie[] cookies = servletRequest.getCookies();
+			//always check cookies first to prevent implicitLogin being set even if you have cookie
+			Cookie[] cookies = servletRequest.getCookies();
+			
+			if (cookies != null) {
+				Cookie automationCookie = CookieManager.getCookie(cookies);
+				User user = UserManager.getUser(automationCookie);
 				
-				if (cookies != null) {
-					Cookie automationCookie = CookieManager.getCookie(cookies);
-					User user = UserManager.getUser(automationCookie);
-					
-					if (user != null) {
-						servletRequest.getSession().setAttribute("activeUser", user.getUsername());
-						login = true;
-					}
-					else {
-						log.info("Client does not have the correct cookie");
-						servletResponse.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
-						
-						return;
-					}
+				if (user != null) {
+					servletRequest.getSession().setAttribute("activeUser", user.getUsername());
+					allowLogin = true;
 				}
 				else {
-					log.info("Client does not have any cookies");
+					log.info("Client does not have the correct cookie");
 					servletResponse.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
 					
 					return;
 				}
 			}
+			else {
+				log.info("Client does not have any cookies");
+				servletResponse.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
+				
+				return;
+			}
+			
+			//if cookie login failed, check they aren't allow in implicitly
+			if (!allowLogin) {
+				//within apartment + on Wifi
+				if (isNearToApartment(lat, lng) && isClientOnWifi(request)) {
+					servletRequest.getSession().setAttribute("activeUser", "implicitLogin");
+					allowLogin = true;
+				}
+			}
 		}
 		
-		if (login) {
+		if (allowLogin) {
 			chain.doFilter(request, response);
 			
 			return;
