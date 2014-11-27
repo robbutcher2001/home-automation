@@ -35,7 +35,6 @@ public class Multisensor extends AbstractReportingDevice {
 	 */
 	@Override
 	public synchronized boolean applyNewReport(String resultSet) {
-		this.lastProbed = System.currentTimeMillis();
 		boolean applied = super.parseBatteryValue(resultSet);
 		applied = super.parseMotionValue(resultSet);
 		
@@ -91,6 +90,7 @@ public class Multisensor extends AbstractReportingDevice {
 		}
 		
 		if (applied) {
+			this.lastProbed = System.currentTimeMillis();
 			this.handler.handleActivity(this);
 		}
 		
