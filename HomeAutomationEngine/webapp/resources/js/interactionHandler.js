@@ -164,7 +164,7 @@ var DeliveryHelper = {
 						$('.bedroomButtons').hide();
 					}
 					else {
-						$('.rob-room-title').html('Bedroom');
+						$('.rob-room-title').html('Bedroom (login to activate)');
 						$('.bedroomButtons').attr('disabled', 'disabled');
 					}
 
@@ -247,14 +247,17 @@ var DeliveryHelper = {
 						$('#rob-door-last-ocp').html('Room door closed at ' + response.rob_room.door_sensor.last_triggered);
 					}
 
-					if (response.rob_room.multisensor.occupied == 'true') {
-						$('.rob-room-title').html($('.rob-room-title').html() + ' | Occupied');
-					}
-					else {
-						$('.rob-room-title').html($('.rob-room-title').html() + ' | Unoccupied');
+					if (response.apartment.bedroom_to_render == 'bedroomOne') {
+						if (response.rob_room.multisensor.occupied == 'true') {
+							$('.rob-room-title').html($('.rob-room-title').html() + ' | Occupied');
+						}
+						else {
+							$('.rob-room-title').html($('.rob-room-title').html() + ' | Unoccupied');
+						}
+						
+						$('.rob-room-title').html($('.rob-room-title').html() + ' | ' + response.rob_room.multisensor.temperature + '&deg;C');
 					}
 
-					$('.rob-room-title').html($('.rob-room-title').html() + ' | ' + response.rob_room.multisensor.temperature + '&deg;C');
 					$('#rob-lux').html('Room brightness is ' + response.rob_room.multisensor.luminiscence);
 
 					if (response.rob_room.dehumidifier1.dehumidifying == 'true') {
