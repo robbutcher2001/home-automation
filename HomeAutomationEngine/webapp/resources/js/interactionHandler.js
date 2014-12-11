@@ -158,13 +158,16 @@ var DeliveryHelper = {
 
 					if (response.apartment.bedroom_to_render == 'bedroomOne') {
 						$('.rob-room-title').html('Rob\'s Room');
+						$('.rob-room-title').removeClass('grey-text');
 					}
 					else if (response.apartment.bedroom_to_render == 'bedroomTwo') {
 						$('.rob-room-title').html('Scat\'s Room');
+						$('.rob-room-title').removeClass('grey-text');
 						$('.bedroomButtons').hide();
 					}
 					else {
 						$('.rob-room-title').html('Bedroom (login to activate)');
+						$('.rob-room-title').addClass('grey-text');
 						$('.bedroomButtons').attr('disabled', 'disabled');
 					}
 
@@ -231,12 +234,12 @@ var DeliveryHelper = {
 						$('#patio-last-ocp').removeClass('error-text');
 					}
 					$('#patio-lux').html('Outside brightness is ' + response.patio.multisensor.luminiscence);
-					$('#patio-humidity').html('Outside humidity is ' + response.patio.multisensor.humidity);
+					$('#patio-humidity').html('Outside humidity is ' + response.patio.multisensor.humidity + '%');
 					$('#patio-temp').html('Outside temperature is ' + response.patio.multisensor.temperature + '&deg;C');
 
 					$('#lounge-last-ocp').html('Lounge last occupied ' + response.lounge.multisensor.last_occupied);
 					$('#lounge-lux').html('Lounge brightness is ' + response.lounge.multisensor.luminiscence);
-					$('#lounge-humidity').html('Lounge humidity is ' + response.lounge.multisensor.humidity);
+					$('#lounge-humidity').html('Lounge humidity is ' + response.lounge.multisensor.humidity + '%');
 
 					$('#rob-last-ocp').html('Room last occupied ' + response.rob_room.multisensor.last_occupied);
 
@@ -261,10 +264,10 @@ var DeliveryHelper = {
 					$('#rob-lux').html('Room brightness is ' + response.rob_room.multisensor.luminiscence);
 
 					if (response.rob_room.dehumidifier1.dehumidifying == 'true') {
-						$('#rob-humidity').html('Room humidity is ' + response.rob_room.multisensor.humidity + ', dehumidifying');
+						$('#rob-humidity').html('Room humidity is ' + response.rob_room.multisensor.humidity + '%, dehumidifying');
 					}
 					else {
-						$('#rob-humidity').html('Room humidity is ' + response.rob_room.multisensor.humidity);
+						$('#rob-humidity').html('Room humidity is ' + response.rob_room.multisensor.humidity + '%');
 					}
 
 					if (response.lounge.blind1.tilted == 'false') {

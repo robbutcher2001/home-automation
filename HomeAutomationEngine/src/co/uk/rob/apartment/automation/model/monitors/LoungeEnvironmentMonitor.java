@@ -209,6 +209,16 @@ public class LoungeEnvironmentMonitor extends Thread {
 					if (moved) {
 						log.info("Outside brightness has fallen into < 1 bucket, moving blinds to 0%");
 					}
+					
+					if (loungeWindowBlind.isTilted()) {
+						loungeWindowBlind.tiltBlindUp();
+						log.info("Lounge window blind is down and tilted but it's now dark so un-tilting");
+					}
+					
+					if (loungePatioBlind.isTilted()) {
+						loungePatioBlind.tiltBlindUp();
+						log.info("Lounge patio door blind is down and tilted but it's now dark so un-tilting");
+					}
 				}
 			}
 			

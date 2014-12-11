@@ -24,15 +24,15 @@ public class PatioDoorActivityHandler extends AbstractExternalDoorActivityHandle
 			log.info("Patio door opened");
 			
 			//tilt blinds
-			Calendar midday = Calendar.getInstance();
+			Calendar nineAM = Calendar.getInstance();
 			Calendar now = Calendar.getInstance();
 			
-			midday.set(Calendar.HOUR_OF_DAY, 12);
-			midday.set(Calendar.MINUTE, 00);
+			nineAM.set(Calendar.HOUR_OF_DAY, 9);
+			nineAM.set(Calendar.MINUTE, 00);
 			
 			Blind loungeWindowBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
 			Blind loungePatioBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(4);
-			if ((now.after(midday) || CommonQueries.isItTheWeekendOrBankHoliday()) && (CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800())) {
+			if ((now.after(nineAM) || CommonQueries.isItTheWeekendOrBankHoliday()) && (CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800())) {
 				boolean tilted = false;
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isTilted()) {
 					tilted = loungeWindowBlind.tiltBlindDown();

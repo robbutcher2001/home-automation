@@ -18,6 +18,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 	
 	private Logger log = Logger.getLogger(LoungeActivityHandler.class);
 
+	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
 	private ControllableDevice kitchenLedRod;
 	private Blind loungeWindowBlind;
@@ -25,6 +26,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 	
 	@Override
 	public void run() {
+		loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
 		stickLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(2);
 		kitchenLedRod = DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN).get(0);
 		loungeWindowBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
@@ -34,29 +36,6 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 			//will now continue turning lights on, opening blinds and speaking if not in bedroom mode
 			String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
 			if (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode))) {
-				
-				boolean openBlinds = false;
-				if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !"80".equals(loungeWindowBlind.getDeviceLevel()) &&
-						!"55".equals(loungePatioBlind.getDeviceLevel()) && !"80".equals(loungePatioBlind.getDeviceLevel())) {
-					openBlinds = true;
-				}
-				
-				//only turn on lights if blinds are closed
-				if (loungeWindowBlind.isDeviceOn() && loungePatioBlind.isDeviceOn()) {
-					if (!stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isAutoOverridden()) {
-						stickLoungeLamp.turnDeviceOn(false, "99");
-						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on tall lounge lamp");
-					}
-					else if ("40".equals(stickLoungeLamp.getDeviceLevel()) && stickLoungeLamp.isAutoOverridden()) {
-						stickLoungeLamp.turnDeviceOn(false, "99");
-						log.info("Lounge occupancy detected, auto overridden and blinds are closed: turning up tall lounge lamp");
-					}
-					
-					if (!kitchenLedRod.isDeviceOn() && !kitchenLedRod.isAutoOverridden()) {
-						kitchenLedRod.turnDeviceOn(false);
-						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on kitchen LED rod");
-					}
-				}
 				
 				Calendar fiveAM = Calendar.getInstance();
 				Calendar nineAM = Calendar.getInstance();
@@ -71,6 +50,35 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				
 				midday.set(Calendar.HOUR_OF_DAY, 12);
 				midday.set(Calendar.MINUTE, 00);
+				
+				boolean openBlinds = false;
+				if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !"80".equals(loungeWindowBlind.getDeviceLevel()) &&
+						!"55".equals(loungePatioBlind.getDeviceLevel()) && !"80".equals(loungePatioBlind.getDeviceLevel())) {
+					openBlinds = true;
+				}
+				
+				//only turn on lights if blinds are not open max
+				if (loungeWindowBlind.isDeviceOn() && loungePatioBlind.isDeviceOn()) {
+					if (!stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isAutoOverridden()) {
+						stickLoungeLamp.turnDeviceOn(false, "99");
+						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on stick lounge lamp");
+					}
+					else if ("40".equals(stickLoungeLamp.getDeviceLevel()) && stickLoungeLamp.isAutoOverridden()) {
+						stickLoungeLamp.turnDeviceOn(false, "99");
+						log.info("Lounge occupancy detected, auto overridden and blinds are closed: turning up stick lounge lamp");
+					}
+					
+					if (!kitchenLedRod.isDeviceOn() && !kitchenLedRod.isAutoOverridden()) {
+						kitchenLedRod.turnDeviceOn(false);
+						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on kitchen LED rod");
+					}
+					
+					if (!loungeLamp.isDeviceOn() && !loungeLamp.isAutoOverridden() && now.after(fiveAM) &&
+							(CommonQueries.isBrightnessAt0() || CommonQueries.isBrightnessBetween1and200() || CommonQueries.isBrightnessBetween200and400())) {
+						loungeLamp.turnDeviceOn(false);
+						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on tall lounge lamp");
+					}
+				}
 				
 				ReportingDevice robRoomDoorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
 				
@@ -120,7 +128,8 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						}
 					}
 				}
-				else if (now.after(midday)) {
+				
+				if (now.after(nineAM)) {
 					//tilt blinds if not tilted
 					boolean tilted = false;
 					if (!loungeWindowBlind.isTilted()) {
@@ -142,22 +151,27 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 			}
 			else {
 				stickLoungeLamp.turnDeviceOn(false, "30");
-				log.info("Lounge occupancy detected, nobody has overridden but bedroom mode is on: switching on tall lounge lamp at 30%");
+				log.info("Lounge occupancy detected, nobody has overridden but bedroom mode is on: switching on stick lounge lamp at 30%");
 			}
 		}
 		else {
 			if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isAutoOverridden() && !stickLoungeLamp.isManuallyOverridden()) {
 				stickLoungeLamp.turnDeviceOff(false);
-				log.info("Lounge not occupied and nobody has overridden and lamp not auto overridden: switching off tall lounge lamp");
+				log.info("Lounge not occupied and nobody has overridden and lamp not auto overridden: switching off stick lounge lamp");
 			}
 			else if ("99".equals(stickLoungeLamp.getDeviceLevel()) && stickLoungeLamp.isAutoOverridden()) {
 				stickLoungeLamp.turnDeviceOn(false, "40");
-				log.info("Lounge not occupied and nobody has overridden: switching down tall lounge lamp");
+				log.info("Lounge not occupied and nobody has overridden: switching down stick lounge lamp");
 			}
 			
 			if (kitchenLedRod.isDeviceOn() && !kitchenLedRod.isAutoOverridden() && !kitchenLedRod.isManuallyOverridden()) {
 				kitchenLedRod.turnDeviceOff(false);
 				log.info("Lounge not occupied and nobody has overridden: switching off kitchen LED rod");
+			}
+			
+			if (loungeLamp.isDeviceOn() && !loungeLamp.isAutoOverridden() && !loungeLamp.isManuallyOverridden()) {
+				loungeLamp.turnDeviceOff(false);
+				log.info("Lounge not occupied and nobody has overridden: switching off tall lounge lamp");
 			}
 		}
 	}

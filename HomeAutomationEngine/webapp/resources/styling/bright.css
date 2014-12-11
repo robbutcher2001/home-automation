@@ -143,3 +143,7 @@ button:hover {
 	color: white !important;
 	cursor: default;
 }
+
+.grey-text {
+	color: #D3D3D3;
+}
