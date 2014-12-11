@@ -49,6 +49,9 @@ patioSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[18].instances[0].commandC
 loungeWindowBlindEndpoint=/ZWaveAPI/Run/devices[19].instances[0].SwitchMultilevel
 loungeWindowBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[19].instances[0].SwitchBinary
 
+loungePatioBlindEndpoint=/ZWaveAPI/Run/devices[20].instances[0].SwitchMultilevel
+loungePatioBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[20].instances[0].SwitchBinary
+
 zWayUpdateRequest=/ZWaveAPI/Data/
 
 usersStore=/home/pi/HomeAutomationUsers/users

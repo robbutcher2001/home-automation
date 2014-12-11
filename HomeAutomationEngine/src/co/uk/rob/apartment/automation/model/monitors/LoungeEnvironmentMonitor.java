@@ -22,6 +22,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
 	private Blind loungeWindowBlind;
+	private Blind loungePatioBlind;
 	private ReportingDevice loungeReportingDevice;
 	
 	public LoungeEnvironmentMonitor() {
@@ -31,6 +32,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 		loungeLamp = devicesToControl.get(0);
 		stickLoungeLamp = devicesToControl.get(2);
 		loungeWindowBlind = (Blind) devicesToControl.get(3);
+		loungePatioBlind = (Blind) devicesToControl.get(4);
 		
 		loungeReportingDevice = DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0);
 		
@@ -54,8 +56,16 @@ public class LoungeEnvironmentMonitor extends Thread {
 			
 			//if after 11pm and blinds are still not 0%, presume patio sensor is offline - close blinds
 			if (now.after(elevenPM)) {
+				boolean moved = false;
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
-					loungeWindowBlind.turnDeviceOn(false);
+					moved = loungeWindowBlind.turnDeviceOn(false);
+				}
+				
+				if (!"0".equals(loungePatioBlind.getDeviceLevel())) {
+					moved = loungePatioBlind.turnDeviceOn(false);
+				}
+				
+				if (moved) {
 					log.info("Patio sensor appears to be offline, closing blinds as precaution");
 				}
 			}
@@ -63,68 +73,138 @@ public class LoungeEnvironmentMonitor extends Thread {
 			//blinds
 			String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
 			if (loungeBedroomMode == null || (loungeBedroomMode != null && "true".equals(loungeBedroomMode))) {
+				boolean moved = false;
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
-					loungeWindowBlind.turnDeviceOn(false);
+					moved = loungeWindowBlind.turnDeviceOn(false);
+				}
+				
+				if (!"0".equals(loungePatioBlind.getDeviceLevel())) {
+					moved = loungePatioBlind.turnDeviceOn(false);
+				}
+				
+				if (moved) {
 					log.info("Lounge bedroom mode is on, closing blinds");
 				}
 			}
 			
 			if (now.after(nineAM) && (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode)))) {
 				if (CommonQueries.isBrightnessGreaterThan800()) {
+					boolean moved = false;
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
-						loungeWindowBlind.turnDeviceOffAutoOverride();
+						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
+					}
+					
+					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+						moved = loungePatioBlind.turnDeviceOffAutoOverride();
+					}
+					
+					if (moved) {
 						log.info("Outside brightness has fallen into > 800 bucket, moving blinds to 80% (max)");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween600and800()) {
+					boolean moved = false;
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
-						loungeWindowBlind.turnDeviceOffAutoOverride();
+						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
+					}
+					
+					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+						moved = loungePatioBlind.turnDeviceOffAutoOverride();
+					}
+					
+					if (moved) {
 						log.info("Outside brightness has fallen into 600-800 bucket, moving blinds to 80% (max)");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween400and600()) {
+					boolean moved = false;
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
-						loungeWindowBlind.turnDeviceOffAutoOverride();
+						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
+					}
+					
+					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+						moved = loungePatioBlind.turnDeviceOffAutoOverride();
+					}
+					
+					if (moved) {
 						log.info("Outside brightness has fallen into 400-600 bucket, moving blinds to 80% (max)");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween200and400() && now.after(halfThreePM)) {
+					boolean moved = false;
+					int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "55");
+					int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungePatioBlind, "0");
+					
 					if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
-						int movementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "55");
-						loungeWindowBlind.turnDeviceOnAutoOverride("55");
+						moved = loungeWindowBlind.turnDeviceOnAutoOverride("55");
+					}
+					
+					if (!"55".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+						moved = loungePatioBlind.turnDeviceOnAutoOverride("55");
+					}
+					
+					if (moved) {
 						log.info("Outside brightness has fallen into 200-400 bucket, moving blinds to 55%");
-						
-						if (CommonQueries.isApartmentOccupied()) {
-							try {
-								Thread.sleep(movementTime);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							
-							loungeWindowBlind.tiltBlindDown();
+					}
+					
+					if (patioBlindMovementTime > windowBlindMovementTime) {
+						windowBlindMovementTime = patioBlindMovementTime;
+					}
+					
+					if (CommonQueries.isApartmentOccupied()) {
+						try {
+							Thread.sleep(windowBlindMovementTime);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
+						
+						loungeWindowBlind.tiltBlindDown();
+						loungePatioBlind.tiltBlindDown();
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween1and200() && now.after(halfThreePM)) {
+					boolean moved = false;
+					int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "40");
+					int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungePatioBlind, "0");
+					
 					if (!"40".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
-						int movementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "40");
-						loungeWindowBlind.turnDeviceOnAutoOverride("40");
+						moved = loungeWindowBlind.turnDeviceOnAutoOverride("40");
+					}
+					
+					if (!"40".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+						moved = loungePatioBlind.turnDeviceOnAutoOverride("40");
+					}
+					
+					if (moved) {
 						log.info("Outside brightness has fallen into 1-200 bucket, moving blinds to 40%");
-						
-						if (CommonQueries.isApartmentOccupied()) {
-							try {
-								Thread.sleep(movementTime);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							
-							loungeWindowBlind.tiltBlindDown();
+					}
+					
+					if (patioBlindMovementTime > windowBlindMovementTime) {
+						windowBlindMovementTime = patioBlindMovementTime;
+					}
+					
+					if (CommonQueries.isApartmentOccupied()) {
+						try {
+							Thread.sleep(windowBlindMovementTime);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
+						
+						loungeWindowBlind.tiltBlindDown();
+						loungePatioBlind.tiltBlindDown();
 					}
 				}
 				else if (CommonQueries.isBrightnessAt0() && now.after(halfThreePM)) {
+					boolean moved = false;
 					if (!"0".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
-						loungeWindowBlind.turnDeviceOnAutoOverride("0");
+						moved = loungeWindowBlind.turnDeviceOnAutoOverride("0");
+					}
+					
+					if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+						moved = loungePatioBlind.turnDeviceOnAutoOverride("0");
+					}
+					
+					if (moved) {
 						log.info("Outside brightness has fallen into < 1 bucket, moving blinds to 0%");
 					}
 				}

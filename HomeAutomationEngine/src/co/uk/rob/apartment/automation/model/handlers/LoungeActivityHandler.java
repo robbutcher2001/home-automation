@@ -21,12 +21,14 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 	private ControllableDevice stickLoungeLamp;
 	private ControllableDevice kitchenLedRod;
 	private Blind loungeWindowBlind;
+	private Blind loungePatioBlind;
 	
 	@Override
 	public void run() {
 		stickLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(2);
 		kitchenLedRod = DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN).get(0);
 		loungeWindowBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
+		loungePatioBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(4);
 		
 		if (reportingDevice.isTriggered()) {
 			//will now continue turning lights on, opening blinds and speaking if not in bedroom mode
@@ -34,12 +36,13 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 			if (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode))) {
 				
 				boolean openBlinds = false;
-				if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !"80".equals(loungeWindowBlind.getDeviceLevel())) {
+				if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !"80".equals(loungeWindowBlind.getDeviceLevel()) &&
+						!"55".equals(loungePatioBlind.getDeviceLevel()) && !"80".equals(loungePatioBlind.getDeviceLevel())) {
 					openBlinds = true;
 				}
 				
 				//only turn on lights if blinds are closed
-				if (loungeWindowBlind.isDeviceOn()) {
+				if (loungeWindowBlind.isDeviceOn() && loungePatioBlind.isDeviceOn()) {
 					if (!stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isAutoOverridden()) {
 						stickLoungeLamp.turnDeviceOn(false, "99");
 						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on tall lounge lamp");
@@ -119,11 +122,21 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				}
 				else if (now.after(midday)) {
 					//tilt blinds if not tilted
+					boolean tilted = false;
 					if (!loungeWindowBlind.isTilted()) {
 						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungeWindowBlind.getDeviceLevel())) {
-							log.info("Blinds aren't tilted and it's light enough outside, tilting now someone's home");
-							loungeWindowBlind.tiltBlindDown();
+							tilted = loungeWindowBlind.tiltBlindDown();
 						}
+					}
+					
+					if (!loungePatioBlind.isTilted()) {
+						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungePatioBlind.getDeviceLevel())) {
+							tilted = loungePatioBlind.tiltBlindDown();
+						}
+					}
+					
+					if (tilted) {
+						log.info("Blinds aren't tilted and it's light enough outside, tilting now someone's home");
 					}
 				}
 			}
@@ -157,5 +170,6 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 		}
 		
 		loungeWindowBlind.turnDeviceOn(false, "55");
+		loungePatioBlind.turnDeviceOn(false, "55");
 	}
 }

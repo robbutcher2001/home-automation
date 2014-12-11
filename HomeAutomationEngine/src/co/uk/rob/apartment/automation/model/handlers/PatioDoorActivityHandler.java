@@ -31,11 +31,25 @@ public class PatioDoorActivityHandler extends AbstractExternalDoorActivityHandle
 			midday.set(Calendar.MINUTE, 00);
 			
 			Blind loungeWindowBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
-			if (!loungeWindowBlind.isTilted() && (now.after(midday) || CommonQueries.isItTheWeekendOrBankHoliday())) {
-				if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungeWindowBlind.getDeviceLevel())) {
-					log.info("Blinds aren't tilted and it's light enough outside, tilting now someone's home");
-					loungeWindowBlind.tiltBlindDown();
+			Blind loungePatioBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(4);
+			if ((now.after(midday) || CommonQueries.isItTheWeekendOrBankHoliday()) && (CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800())) {
+				boolean tilted = false;
+				if (!"0".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isTilted()) {
+					tilted = loungeWindowBlind.tiltBlindDown();
 				}
+				
+				if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isTilted()) {
+					tilted = loungePatioBlind.tiltBlindDown();
+				}
+				
+				if (tilted) {
+					log.info("Blinds aren't tilted and it's light enough outside, tilting now someone's home");
+				}
+			}
+			
+			if (!"100".equals(loungePatioBlind.getDeviceLevel())) {
+				loungePatioBlind.turnDeviceOn(false, "100");
+				log.info("Patio door blinds are too low and door is open, moving blinds to up to max");
 			}
 			
 			//check false occupancy

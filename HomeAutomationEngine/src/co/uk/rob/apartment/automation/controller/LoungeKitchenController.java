@@ -54,6 +54,7 @@ public class LoungeKitchenController extends HttpServlet {
 		ControllableDevice ledRodLounge = devicesInLoungeAndKitchen.get(1);
 		ControllableDevice lampTwoLounge = devicesInLoungeAndKitchen.get(2);
 		ControllableDevice loungeWindowBlind = devicesInLoungeAndKitchen.get(3);
+		ControllableDevice loungePatioBlind = devicesInLoungeAndKitchen.get(4);
 		
 		ReportingDevice patioDoor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
 		
@@ -91,11 +92,20 @@ public class LoungeKitchenController extends HttpServlet {
 			else {
 				log.info("Request for film mode in Lounge and Kitchen, turning lamps off, LED on and blinds closed [" + activeUser + "]");
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
-					int movementTime = CommonQueries.calculateBlindMovementTime((Blind) loungeWindowBlind, "0");
+					int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime((Blind) loungeWindowBlind, "0");
 					successfulCall = loungeWindowBlind.turnDeviceOn(true);
 					
+					int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime((Blind) loungePatioBlind, "0");
+					if (successfulCall) {
+						successfulCall = loungePatioBlind.turnDeviceOn(true);
+					}
+					
+					if (patioBlindMovementTime > windowBlindMovementTime) {
+						windowBlindMovementTime = patioBlindMovementTime;
+					}
+					
 					try {
-						Thread.sleep(movementTime);
+						Thread.sleep(windowBlindMovementTime);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -136,6 +146,10 @@ public class LoungeKitchenController extends HttpServlet {
 				loungeWindowBlind.resetManuallyOverridden();
 			}
 			
+			if (loungePatioBlind.isDeviceOn()) {
+				loungePatioBlind.resetManuallyOverridden();
+			}
+			
 			boolean blindsToOpen = false;
 			if (!CommonQueries.isBrightnessAt0()) {
 				blindsToOpen = true;
@@ -154,10 +168,16 @@ public class LoungeKitchenController extends HttpServlet {
 			}
 		}
 		else if (action.equals("blindToggle")) {
-			if (loungeWindowBlind.isDeviceOn()) {
+			if (loungeWindowBlind.isDeviceOn() || loungePatioBlind.isDeviceOn()) {
 				log.info("Request for blinds fully open in lounge [" + activeUser + "]");
 				successfulCall = loungeWindowBlind.turnDeviceOff(true);
 				loungeWindowBlind.resetAutoOverridden();
+				
+				if (successfulCall) {
+					successfulCall = loungePatioBlind.turnDeviceOff(true);
+					loungePatioBlind.resetAutoOverridden();
+				}
+				
 				if (successfulCall) {
 					out.print("Blinds now opening in lounge");
 				}
@@ -166,6 +186,12 @@ public class LoungeKitchenController extends HttpServlet {
 				log.info("Request for blinds fully closed in lounge [" + activeUser + "]");
 				successfulCall = loungeWindowBlind.turnDeviceOn(true);
 				loungeWindowBlind.resetAutoOverridden();
+				
+				if (successfulCall) {
+					successfulCall = loungePatioBlind.turnDeviceOn(true);
+					loungePatioBlind.resetAutoOverridden();
+				}
+				
 				if (successfulCall) {
 					out.print("Blinds now closing in lounge");
 				}
@@ -174,9 +200,11 @@ public class LoungeKitchenController extends HttpServlet {
 		else if (action.equals("blindTiltToggle")) {
 			log.info("Request for blind tilt in lounge [" + activeUser + "]");
 			if (!CommonQueries.isBrightnessAt0()) {
-				Blind blindInstance = (Blind) loungeWindowBlind;
-				if (!blindInstance.isTilted()) {
-					successfulCall = blindInstance.tiltBlindDown();
+				Blind windowBlindInstance = (Blind) loungeWindowBlind;
+				Blind patioBlindInstance = (Blind) loungePatioBlind;
+				if (!windowBlindInstance.isTilted() || !patioBlindInstance.isTilted()) {
+					successfulCall = windowBlindInstance.tiltBlindDown();
+					successfulCall = patioBlindInstance.tiltBlindDown();
 					if (successfulCall) {
 						out.print("Blinds tilted down in lounge");
 						log.info("Blinds tilted down in lounge [" + activeUser + "]");
@@ -186,7 +214,8 @@ public class LoungeKitchenController extends HttpServlet {
 					}
 				}
 				else {
-					successfulCall = blindInstance.tiltBlindUp();
+					successfulCall = windowBlindInstance.tiltBlindUp();
+					successfulCall = patioBlindInstance.tiltBlindUp();
 					if (successfulCall) {
 						out.print("Blinds tilted back up in lounge");
 						log.info("Blinds tilted up in lounge [" + activeUser + "]");

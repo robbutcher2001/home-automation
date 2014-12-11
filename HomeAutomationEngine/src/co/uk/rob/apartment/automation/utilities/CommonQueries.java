@@ -263,6 +263,18 @@ public class CommonQueries {
 			}
 		}
 		
+		if ("100".equals(targetLevel)) {
+			if ("55".equals(currentBlindLevel)) {
+				movementTime = 15;
+			}
+			else if ("40".equals(currentBlindLevel)) {
+				movementTime = 19;
+			}
+			else if ("0".equals(currentBlindLevel)) {
+				movementTime = 29;
+			}
+		}
+		
 		return movementTime * 1000;
 	}
 }
