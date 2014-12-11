@@ -24,10 +24,12 @@ public class LoungeEnvironmentMonitor extends Thread {
 	private Blind loungeWindowBlind;
 	private Blind loungePatioBlind;
 	private ReportingDevice loungeReportingDevice;
+	private ReportingDevice patioDoor;
 	
 	public LoungeEnvironmentMonitor() {
 		devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE);
 		devicesToControl.addAll(DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN));
+		patioDoor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
 		
 		loungeLamp = devicesToControl.get(0);
 		stickLoungeLamp = devicesToControl.get(2);
@@ -61,7 +63,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 					moved = loungeWindowBlind.turnDeviceOn(false);
 				}
 				
-				if (!"0".equals(loungePatioBlind.getDeviceLevel())) {
+				if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !patioDoor.isTriggered()) {
 					moved = loungePatioBlind.turnDeviceOn(false);
 				}
 				
@@ -78,7 +80,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 					moved = loungeWindowBlind.turnDeviceOn(false);
 				}
 				
-				if (!"0".equals(loungePatioBlind.getDeviceLevel())) {
+				if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !patioDoor.isTriggered()) {
 					moved = loungePatioBlind.turnDeviceOn(false);
 				}
 				
@@ -94,7 +96,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
 					}
 					
-					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOffAutoOverride();
 					}
 					
@@ -108,7 +110,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
 					}
 					
-					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOffAutoOverride();
 					}
 					
@@ -122,7 +124,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
 					}
 					
-					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOffAutoOverride();
 					}
 					
@@ -139,7 +141,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("55");
 					}
 					
-					if (!"55".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+					if (!"55".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOnAutoOverride("55");
 					}
 					
@@ -171,7 +173,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("40");
 					}
 					
-					if (!"40".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+					if (!"40".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOnAutoOverride("40");
 					}
 					
@@ -200,7 +202,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("0");
 					}
 					
-					if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden()) {
+					if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOnAutoOverride("0");
 					}
 					
