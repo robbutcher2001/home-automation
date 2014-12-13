@@ -3,6 +3,7 @@ package co.uk.rob.apartment.automation.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.uk.rob.apartment.automation.model.devices.AdaptedBlind;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.ColouredLedRod;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
@@ -91,7 +92,7 @@ public class DeviceListManager {
 				Zone.LOUNGE, HomeAutomationProperties.getProperty("loungeWindowBlindSwitchBinaryEndpoint"));
 		controllableDevices.add(loungeWindowBlindEndpoint);
 		
-		ControllableDevice loungePatioBlindEndpoint = new Blind(HomeAutomationProperties.getProperty("loungePatioBlindEndpoint"),
+		ControllableDevice loungePatioBlindEndpoint = new AdaptedBlind(HomeAutomationProperties.getProperty("loungePatioBlindEndpoint"),
 				Zone.LOUNGE, HomeAutomationProperties.getProperty("loungePatioBlindSwitchBinaryEndpoint"));
 		controllableDevices.add(loungePatioBlindEndpoint);
 		

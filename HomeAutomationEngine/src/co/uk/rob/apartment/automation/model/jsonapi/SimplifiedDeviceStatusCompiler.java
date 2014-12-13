@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.AdaptedBlind;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.devices.DoorSensor;
@@ -101,7 +102,7 @@ public class SimplifiedDeviceStatusCompiler {
 			
 			int blindCount = 1, dehumidifierCount = 1;
 			for (ControllableDevice device : devices) {
-				if (device instanceof Blind) {
+				if (device instanceof Blind || device instanceof AdaptedBlind) {
 					JSONObject deviceStatuses = new JSONObject();
 					deviceStatuses.put("percent_open", device.getDeviceLevel());
 					deviceStatuses.put("tilted", Boolean.toString(((Blind) device).isTilted()));

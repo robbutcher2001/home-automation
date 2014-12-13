@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.AdaptedBlind;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -87,6 +88,12 @@ public class LoungeEnvironmentMonitor extends Thread {
 				if (moved) {
 					log.info("Lounge bedroom mode is on, closing blinds");
 				}
+			}
+			
+			//if patio blinds are 100% open, move to 80%
+			if ("100".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
+				loungePatioBlind.turnDeviceOffAutoOverride();
+				log.info("Moving patio blind back to 80% now door is shut");
 			}
 			
 			if (now.after(nineAM) && (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode)))) {
@@ -323,7 +330,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 		int index = 1;
 		if (now.after(lastDateOccupied)) {
 			for (ControllableDevice device : devicesToControl) {
-				if (device.isManuallyOverridden() && !device.isAutoOverridden() && !(device instanceof Blind)) {
+				if (device.isManuallyOverridden() && !device.isAutoOverridden() && !(device instanceof Blind) && !(device instanceof AdaptedBlind)) {
 					log.info("Lounge room unoccupied for more than 1 hour, switching off and resetting flags for lamp " + index);
 					device.resetManuallyOverridden();
 					device.turnDeviceOff(false);

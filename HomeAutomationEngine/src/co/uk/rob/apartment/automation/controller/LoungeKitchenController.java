@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.AdaptedBlind;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -133,7 +134,7 @@ public class LoungeKitchenController extends HttpServlet {
 		else if (action.equals("offLounge")) {
 			log.info("Request for all lights off and blinds up (resetting manual flag) in Lounge and Kitchen [" + activeUser + "]");
 			for (ControllableDevice device : devicesInLoungeAndKitchen) {
-				if (!(device instanceof Blind)) {
+				if (!(device instanceof Blind) && !(device instanceof AdaptedBlind)) {
 					successfulCall = device.turnDeviceOff(true);
 					device.resetAutoOverridden();
 					if (!successfulCall) {
