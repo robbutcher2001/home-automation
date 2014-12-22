@@ -147,3 +147,20 @@ button:hover {
 .grey-text {
 	color: #D3D3D3;
 }
+
+.alarm-top-padding {
+	padding-top: 30px;
+}
+
+.blue-background {
+	background-color: #0B6FA0;
+}
+
+.alarm-success-text {
+	color: #0AC400;
+}
+
+.large-bold {
+	font-size: 22px !important;
+	font-weight: bold;
+}

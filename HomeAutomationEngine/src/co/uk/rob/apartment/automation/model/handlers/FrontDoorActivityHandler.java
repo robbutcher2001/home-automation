@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractExternalDoorActivityHandler;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
+import co.uk.rob.apartment.automation.utilities.OneTimeUrlGenerator;
 import co.uk.rob.apartment.automation.utilities.SMSHelper;
 
 public class FrontDoorActivityHandler extends AbstractExternalDoorActivityHandler {
@@ -22,7 +23,10 @@ public class FrontDoorActivityHandler extends AbstractExternalDoorActivityHandle
 			String unexpectedOccupancy = HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy");
 			String atHomeModeLounge = HomeAutomationProperties.getProperty("AtHomeTodayMode");
 			if (!CommonQueries.expectedOccupancyInApartment() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
-				SMSHelper.sendSMS("07965502960", "Apartment has been occupied during an unexpected time from front door.");
+				final String alarmOneTimeUrl = OneTimeUrlGenerator.getOneTimeString();
+				HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
+				SMSHelper.sendSMS("07965502960", "Apartment occupied from front door. Alarm will trigger. Deactivate now: "
+						+ "http://robsflat.co.uk/disableApartmentAlarm/" + alarmOneTimeUrl);
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "true");
 			}
 			else {
