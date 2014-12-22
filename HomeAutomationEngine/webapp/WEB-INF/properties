@@ -46,8 +46,8 @@ robDoorSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[14].instances[0].comman
 patioSensorEndpoint=devices.18.instances.0.commandClasses.
 patioSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[18].instances[0].commandClasses[128].Get()
 
-loungeWindowBlindEndpoint=/ZWaveAPI/Run/devices[19].instances[0].SwitchMultilevel
-loungeWindowBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[19].instances[0].SwitchBinary
+loungeWindowBlindEndpoint=/ZWaveAPI/Run/devices[21].instances[0].SwitchMultilevel
+loungeWindowBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[21].instances[0].SwitchBinary
 
 loungePatioBlindEndpoint=/ZWaveAPI/Run/devices[20].instances[0].SwitchMultilevel
 loungePatioBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[20].instances[0].SwitchBinary

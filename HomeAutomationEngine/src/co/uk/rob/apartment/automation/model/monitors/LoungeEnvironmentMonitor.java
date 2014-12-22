@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
-import co.uk.rob.apartment.automation.model.devices.AdaptedBlind;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -90,10 +89,15 @@ public class LoungeEnvironmentMonitor extends Thread {
 				}
 			}
 			
-			//if patio blinds are 100% open, move to 80%
+			//if patio blinds are 100% open, move back to where others are
 			if ("100".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
-				loungePatioBlind.turnDeviceOffAutoOverride();
-				log.info("Moving patio blind back to 80% now door is shut");
+				if (!"80".equals(loungeWindowBlind.getDeviceLevel())) {
+					loungePatioBlind.turnDeviceOnAutoOverride(loungeWindowBlind.getDeviceLevel());
+				}
+				else {
+					loungePatioBlind.turnDeviceOffAutoOverride();
+				}
+				log.info("Moving patio blind back to where the other blinds are now door is shut");
 			}
 			
 			if (now.after(nineAM) && (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode)))) {
@@ -167,8 +171,12 @@ public class LoungeEnvironmentMonitor extends Thread {
 							e.printStackTrace();
 						}
 						
-						loungeWindowBlind.tiltBlindDown();
-						loungePatioBlind.tiltBlindDown();
+						if (!loungeWindowBlind.isTilted()) {
+							loungeWindowBlind.tiltBlindDown();
+						}
+						if (!loungePatioBlind.isTilted()) {
+							loungePatioBlind.tiltBlindDown();
+						}
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween1and200() && now.after(halfThreePM)) {
@@ -199,8 +207,12 @@ public class LoungeEnvironmentMonitor extends Thread {
 							e.printStackTrace();
 						}
 						
-						loungeWindowBlind.tiltBlindDown();
-						loungePatioBlind.tiltBlindDown();
+						if (!loungeWindowBlind.isTilted()) {
+							loungeWindowBlind.tiltBlindDown();
+						}
+						if (!loungePatioBlind.isTilted()) {
+							loungePatioBlind.tiltBlindDown();
+						}
 					}
 				}
 				else if (CommonQueries.isBrightnessAt0() && now.after(halfThreePM)) {
@@ -330,7 +342,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 		int index = 1;
 		if (now.after(lastDateOccupied)) {
 			for (ControllableDevice device : devicesToControl) {
-				if (device.isManuallyOverridden() && !device.isAutoOverridden() && !(device instanceof Blind) && !(device instanceof AdaptedBlind)) {
+				if (device.isManuallyOverridden() && !device.isAutoOverridden() && !(device instanceof Blind)) {
 					log.info("Lounge room unoccupied for more than 1 hour, switching off and resetting flags for lamp " + index);
 					device.resetManuallyOverridden();
 					device.turnDeviceOff(false);

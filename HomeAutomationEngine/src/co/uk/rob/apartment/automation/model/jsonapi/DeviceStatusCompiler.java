@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
-import co.uk.rob.apartment.automation.model.devices.AdaptedBlind;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.devices.DoorSensor;
@@ -108,7 +107,7 @@ public class DeviceStatusCompiler {
 		controllableDevices.addAll(DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM));
 		int blindNumber = 1;
 		for (ControllableDevice device : controllableDevices) {
-			if (device instanceof Blind || device instanceof AdaptedBlind) {
+			if (device instanceof Blind) {
 				this.genericStatusHolder.put("percent_open", device.getDeviceLevel());
 				this.genericStatusHolder.put("tilted", Boolean.toString(((Blind) device).isTilted()));
 				resultSet.setStatuses("blinds" + blindNumber, this.genericStatusHolder);

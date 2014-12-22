@@ -43,6 +43,12 @@ public class DailyFlagManager extends Thread {
 					log.info("Lounge window blind manual override has been reset");
 				}
 				
+				ControllableDevice loungePatioBlind = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(4);
+				if (loungePatioBlind.isManuallyOverridden()) {
+					loungePatioBlind.resetManuallyOverridden();
+					log.info("Lounge patio blind manual override has been reset");
+				}
+				
 				//above is improved code for the following
 //				String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
 //				if (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode))) {

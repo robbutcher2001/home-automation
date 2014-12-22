@@ -6,14 +6,14 @@ import co.uk.rob.apartment.automation.model.Zone;
  * @author Rob
  *
  */
-public class AdaptedBlind extends Blind {
+public class AdaptedBlindTemp extends Blind {
 
 	/**
 	 * @param endpoint
 	 * @param location
 	 * @param switchBinaryEndpoint
 	 */
-	public AdaptedBlind(String endpoint, Zone location,
+	public AdaptedBlindTemp(String endpoint, Zone location,
 			String switchBinaryEndpoint) {
 		super(endpoint, location, switchBinaryEndpoint);
 	}
@@ -58,5 +58,13 @@ public class AdaptedBlind extends Blind {
 		setDeviceLevel(level);
 		
 		return run;
+	}
+	
+	//rework the below?
+	@Override
+	public Boolean turnDeviceOnAutoOverride(String level) {
+		super.turnDeviceOnAutoOverride(level);
+		
+		return turnDeviceOn(false, level);
 	}
 }

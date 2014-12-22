@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
-import co.uk.rob.apartment.automation.model.devices.AdaptedBlind;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -54,8 +53,8 @@ public class LoungeKitchenController extends HttpServlet {
 		ControllableDevice lampOneLounge = devicesInLoungeAndKitchen.get(0);
 		ControllableDevice ledRodLounge = devicesInLoungeAndKitchen.get(1);
 		ControllableDevice lampTwoLounge = devicesInLoungeAndKitchen.get(2);
-		ControllableDevice loungeWindowBlind = devicesInLoungeAndKitchen.get(3);
-		ControllableDevice loungePatioBlind = devicesInLoungeAndKitchen.get(4);
+		Blind loungeWindowBlind = (Blind) devicesInLoungeAndKitchen.get(3);
+		Blind loungePatioBlind = (Blind) devicesInLoungeAndKitchen.get(4);
 		
 		ReportingDevice patioDoor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
 		
@@ -93,10 +92,10 @@ public class LoungeKitchenController extends HttpServlet {
 			else {
 				log.info("Request for film mode in Lounge and Kitchen, turning lamps off, LED on and blinds closed [" + activeUser + "]");
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
-					int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime((Blind) loungeWindowBlind, "0");
+					int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "0");
 					successfulCall = loungeWindowBlind.turnDeviceOn(true);
 					
-					int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime((Blind) loungePatioBlind, "0");
+					int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungePatioBlind, "0");
 					if (successfulCall) {
 						successfulCall = loungePatioBlind.turnDeviceOn(true);
 					}
@@ -134,7 +133,7 @@ public class LoungeKitchenController extends HttpServlet {
 		else if (action.equals("offLounge")) {
 			log.info("Request for all lights off and blinds up (resetting manual flag) in Lounge and Kitchen [" + activeUser + "]");
 			for (ControllableDevice device : devicesInLoungeAndKitchen) {
-				if (!(device instanceof Blind) && !(device instanceof AdaptedBlind)) {
+				if (!(device instanceof Blind)) {
 					successfulCall = device.turnDeviceOff(true);
 					device.resetAutoOverridden();
 					if (!successfulCall) {
@@ -201,11 +200,9 @@ public class LoungeKitchenController extends HttpServlet {
 		else if (action.equals("blindTiltToggle")) {
 			log.info("Request for blind tilt in lounge [" + activeUser + "]");
 			if (!CommonQueries.isBrightnessAt0()) {
-				Blind windowBlindInstance = (Blind) loungeWindowBlind;
-				Blind patioBlindInstance = (Blind) loungePatioBlind;
-				if (!windowBlindInstance.isTilted() || !patioBlindInstance.isTilted()) {
-					successfulCall = windowBlindInstance.tiltBlindDown();
-					successfulCall = patioBlindInstance.tiltBlindDown();
+				if (!loungeWindowBlind.isTilted() || !loungePatioBlind.isTilted()) {
+					successfulCall = loungeWindowBlind.tiltBlindDown();
+					successfulCall = loungePatioBlind.tiltBlindDown();
 					if (successfulCall) {
 						out.print("Blinds tilted down in lounge");
 						log.info("Blinds tilted down in lounge [" + activeUser + "]");
@@ -215,8 +212,8 @@ public class LoungeKitchenController extends HttpServlet {
 					}
 				}
 				else {
-					successfulCall = windowBlindInstance.tiltBlindUp();
-					successfulCall = patioBlindInstance.tiltBlindUp();
+					successfulCall = loungeWindowBlind.tiltBlindUp();
+					successfulCall = loungePatioBlind.tiltBlindUp();
 					if (successfulCall) {
 						out.print("Blinds tilted back up in lounge");
 						log.info("Blinds tilted up in lounge [" + activeUser + "]");
