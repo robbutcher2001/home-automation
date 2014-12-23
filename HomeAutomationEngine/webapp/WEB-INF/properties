@@ -52,6 +52,9 @@ loungeWindowBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[21].instances[0].Swi
 loungePatioBlindEndpoint=/ZWaveAPI/Run/devices[20].instances[0].SwitchMultilevel
 loungePatioBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[20].instances[0].SwitchBinary
 
+//alarm
+outdoorAlarmEndpoint=/ZWaveAPI/Run/devices[22].instances[0].SwitchBinary
+
 zWayUpdateRequest=/ZWaveAPI/Data/
 
 usersStore=/home/pi/HomeAutomationUsers/users

@@ -1,6 +1,8 @@
 package co.uk.rob.apartment.automation.model.abstracts;
 
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
@@ -9,6 +11,8 @@ import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
+import co.uk.rob.apartment.automation.utilities.OneTimeUrlGenerator;
+import co.uk.rob.apartment.automation.utilities.SMSHelper;
 import co.uk.rob.apartment.automation.utilities.SpeechOrchestrationManager;
 
 
@@ -73,5 +77,42 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 				}
 			}
 		}
+	}
+	
+	protected void runUnexpectedOccupancyControl() {
+		//handle unexpected occupancy
+		HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "true");
+		
+		final String alarmOneTimeUrl = OneTimeUrlGenerator.getOneTimeString();
+		HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
+		final String smsText = "Apartment occupied from patio door. Alarm will trigger. Deactivate now: "
+				+ "http://robsflat.noip.me/disableApartmentAlarm/" + alarmOneTimeUrl;
+		SMSHelper.sendSMS("07965502960", smsText);
+		SMSHelper.sendSMS("07875468023", smsText);
+		
+		//trigger outdoor AlarmUnit in 1 minute
+		//TODO: http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/
+		Timer timer = new Timer("Sound alarm in 1 minute");
+		
+		TimerTask task = new TimerTask() {
+			
+			@Override
+			public void run() {
+				
+				final String alarmOneTimeUrl = HomeAutomationProperties.getProperty("AlarmOneTimeUrl");
+    			if (!"".equals(alarmOneTimeUrl)) {
+    				ControllableDevice outdoorAlarmUnit = DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
+					outdoorAlarmUnit.turnDeviceOn(false);
+					SMSHelper.sendSMS("07965502960", "Alarm now sounding @ 106dB in apartment");
+					
+					log.info("ALARM TRIGGERED - now sounding @ 106dB");
+    			}
+    			else {
+    				log.info("Alarm successfully disarmed within one minute - siren cancelled");
+    			}
+			}
+		};
+		
+		timer.schedule(task, 60000);
 	}
 }

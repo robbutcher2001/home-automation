@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 
@@ -19,7 +20,12 @@ public class BaselineDevices {
 			int index = 1;
 			for (ControllableDevice device : DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE)) {
 				if (device instanceof Dehumidifier) {
-					log.info("Skipping baseline of dehumidifier in lounge to protect compressor");
+					log.info("Skipping baseline of dehumidifier in Lounge to protect compressor");
+					continue;
+				}
+				
+				if (device instanceof AlarmUnit) {
+					log.info("Skipping baseline of alarm unit in Lounge");
 					continue;
 				}
 				
@@ -39,7 +45,12 @@ public class BaselineDevices {
 			index = 1;
 			for (ControllableDevice device : DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN)) {
 				if (device instanceof Dehumidifier) {
-					log.info("Skipping baseline of dehumidifier in kitchen to protect compressor");
+					log.info("Skipping baseline of dehumidifier in Kitchen to protect compressor");
+					continue;
+				}
+				
+				if (device instanceof AlarmUnit) {
+					log.info("Skipping baseline of alarm unit in Kitchen");
 					continue;
 				}
 				
@@ -59,7 +70,12 @@ public class BaselineDevices {
 			index = 1;
 			for (ControllableDevice device : DeviceListManager.getControllableDeviceByLocation(Zone.BATHROOM)) {
 				if (device instanceof Dehumidifier) {
-					log.info("Skipping baseline of dehumidifier in bathroom to protect compressor");
+					log.info("Skipping baseline of dehumidifier in Bathroom to protect compressor");
+					continue;
+				}
+				
+				if (device instanceof AlarmUnit) {
+					log.info("Skipping baseline of alarm unit in Bathroom");
 					continue;
 				}
 				
@@ -79,7 +95,12 @@ public class BaselineDevices {
 			index = 1;
 			for (ControllableDevice device : DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY)) {
 				if (device instanceof Dehumidifier) {
-					log.info("Skipping baseline of dehumidifier in hallway to protect compressor");
+					log.info("Skipping baseline of dehumidifier in Hallway to protect compressor");
+					continue;
+				}
+				
+				if (device instanceof AlarmUnit) {
+					log.info("Skipping baseline of alarm unit in Hallway");
 					continue;
 				}
 				
@@ -103,6 +124,11 @@ public class BaselineDevices {
 					continue;
 				}
 				
+				if (device instanceof AlarmUnit) {
+					log.info("Skipping baseline of alarm unit in Rob's room");
+					continue;
+				}
+				
 				log.info("Switching device " + index + " on in Rob's room");
 				device.turnDeviceOn(false);
 				
@@ -123,12 +149,42 @@ public class BaselineDevices {
 					continue;
 				}
 				
+				if (device instanceof AlarmUnit) {
+					log.info("Skipping baseline of alarm unit in Scarlett's room");
+					continue;
+				}
+				
 				log.info("Switching device " + index + " on in Scarlett's room");
 				device.turnDeviceOn(false);
 				
 				Thread.sleep(2000);
 				
 				log.info("Switching device " + index + " off in Scarlett's room");
+				device.turnDeviceOff(false);
+				
+				index++;
+				
+				Thread.sleep(2000);
+			}
+			
+			index = 1;
+			for (ControllableDevice device : DeviceListManager.getControllableDeviceByLocation(Zone.PATIO)) {
+				if (device instanceof Dehumidifier) {
+					log.info("Skipping baseline of dehumidifier on Patio to protect compressor");
+					continue;
+				}
+				
+				if (device instanceof AlarmUnit) {
+					log.info("Skipping baseline of alarm unit on Patio");
+					continue;
+				}
+				
+				log.info("Switching device " + index + " on, on Patio");
+				device.turnDeviceOn(false);
+				
+				Thread.sleep(2000);
+				
+				log.info("Switching device " + index + " off, on Patio");
 				device.turnDeviceOff(false);
 				
 				index++;

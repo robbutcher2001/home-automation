@@ -3,6 +3,7 @@ package co.uk.rob.apartment.automation.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.ColouredLedRod;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
@@ -116,6 +117,11 @@ public class DeviceListManager {
 		ControllableDevice ledRodRobEndpoint = new ColouredLedRod(HomeAutomationProperties.getProperty("ledRodRobEndpoint"),
 				Zone.ROB_ROOM);
 		controllableDevices.add(ledRodRobEndpoint);
+		
+		// Patio
+		ControllableDevice outdoorAlarmEndpoint = new AlarmUnit(HomeAutomationProperties.getProperty("outdoorAlarmEndpoint"),
+				Zone.PATIO);
+		controllableDevices.add(outdoorAlarmEndpoint);
 	}
 	
 	private static void setupReportingApartmentDevices() {

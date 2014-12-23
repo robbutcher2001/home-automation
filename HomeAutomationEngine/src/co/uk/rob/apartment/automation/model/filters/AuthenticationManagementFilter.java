@@ -111,6 +111,7 @@ public class AuthenticationManagementFilter implements Filter {
 				(requestURI.contains("/resources/js") && requestURI.contains(".js")) ||
 				(requestURI.contains("/resources/js") && requestURI.contains(".map")) ||
 				(requestURI.contains("/resources/images")) ||
+				(requestURI.contains("/disableApartmentAlarm/")) ||
 				(requestURI.equals("/") || requestURI.equals("/HomeAutomationEngine/")) ||
 				(requestURI.contains(".html") && requestURI.contains(".htm")) ||
 				(requestURI.contains("/login"))) {

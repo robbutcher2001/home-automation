@@ -249,38 +249,50 @@ public class LoungeEnvironmentMonitor extends Thread {
 			//lights
 			if (now.after(twoPM)) {
 				if (CommonQueries.isBrightnessGreaterThan800()) {
-					if (!"0".equals(loungeLamp.getDeviceLevel()) && !"0".equals(stickLoungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
+					if (!"0".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
 						loungeLamp.turnDeviceOffAutoOverride();
+						log.info("Outside brightness has fallen into > 800 bucket, lounge lamp auto off");
+					}
+					
+					if (!"0".equals(stickLoungeLamp.getDeviceLevel()) && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOffAutoOverride();
-						log.info("Outside brightness has fallen into > 800 bucket, lounge lamp and stick lamp auto off");
+						log.info("Outside brightness has fallen into > 800 bucket, stick lamp auto off");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween600and800()) {
-					if (!"0".equals(loungeLamp.getDeviceLevel()) && !"0".equals(stickLoungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
+					if (!"0".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
 						loungeLamp.turnDeviceOffAutoOverride();
+						log.info("Outside brightness has fallen into 600-800 bucket, lounge lamp auto off");
+					}
+					
+					if (!"0".equals(stickLoungeLamp.getDeviceLevel()) && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOffAutoOverride();
-						log.info("Outside brightness has fallen into 600-800 bucket, lounge lamp and stick lamp auto off");
+						log.info("Outside brightness has fallen into 600-800 bucket, stick lamp auto off");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween400and600() && now.after(halfThreePM)) {
-					if (!"0".equals(loungeLamp.getDeviceLevel()) && !"0".equals(stickLoungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
+					if (!"0".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
 						loungeLamp.turnDeviceOffAutoOverride();
+						log.info("Outside brightness has fallen into 400-600 bucket, lounge lamp auto off");
+					}
+					
+					if (!"0".equals(stickLoungeLamp.getDeviceLevel()) && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOffAutoOverride();
-						log.info("Outside brightness has fallen into 400-600 bucket, lounge lamp and stick lamp auto off");
+						log.info("Outside brightness has fallen into 400-600 bucket, stick lamp auto off");
 					}
 					
 					//TODO: Turn on lounge table lamp slightly once bought
 				}
 				else if (CommonQueries.isBrightnessBetween200and400() && now.after(halfThreePM)) {
-					if (!"30".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
+					if (!"30".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						loungeLamp.turnDeviceOnAutoOverride("30");
-						log.info("Outside brightness has fallen into 200-400 bucket, lounge lamp auto on 30%");
+						log.info("Outside brightness has fallen into 200-400 bucket and patio door shut, lounge lamp auto on 30%");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween1and200() && now.after(halfThreePM)) {
-					if (!"40".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
+					if (!"40".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						loungeLamp.turnDeviceOnAutoOverride("40");
-						log.info("Outside brightness has fallen into 1-200 bucket, lounge lamp auto up to 40%");
+						log.info("Outside brightness has fallen into 1-200 bucket and patio door shut, lounge lamp auto up to 40%");
 					}
 				}
 				else if (CommonQueries.isBrightnessAt0() && now.after(halfThreePM)) {
@@ -317,7 +329,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 	private boolean lampsOnFull() {
 		boolean switched = false;
 		
-		if (!"55".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
+		if (!"55".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 			loungeLamp.turnDeviceOnAutoOverride("55");
 			
 			switched = true;

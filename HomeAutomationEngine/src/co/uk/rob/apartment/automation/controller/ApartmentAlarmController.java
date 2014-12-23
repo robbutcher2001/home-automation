@@ -2,13 +2,17 @@ package co.uk.rob.apartment.automation.controller;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
+import co.uk.rob.apartment.automation.model.DeviceListManager;
+import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 /**
@@ -17,6 +21,7 @@ import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 @WebServlet("/ApartmentAlarmController")
 public class ApartmentAlarmController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private Logger log = Logger.getLogger(ApartmentAlarmController.class);
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -29,7 +34,7 @@ public class ApartmentAlarmController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String forward = "alarmNotDisabled.html";
+		String redirect = "/alarmNotDisabled.html";
 		final String pathInfo = request.getPathInfo();
 
 		if (pathInfo != null && !"".equals(pathInfo)) {
@@ -38,18 +43,31 @@ public class ApartmentAlarmController extends HttpServlet {
 	    	if (pathInfoTidied != null && pathInfoTidied.length > 0) {
 	    		if (pathInfoTidied[1] != null && !"".equals(pathInfoTidied[1])) {
 	    			final String alarmOneTimeUrl = HomeAutomationProperties.getProperty("AlarmOneTimeUrl");
-	    			if (alarmOneTimeUrl != null && alarmOneTimeUrl.equals(pathInfoTidied[1])) {
-	    				forward = "alarmDisabled.html";
+	    			if (!"".equals(alarmOneTimeUrl) && alarmOneTimeUrl.equals(pathInfoTidied[1])) {
+	    				log.info("One time alarm URL recognised [" + pathInfoTidied[1] + "] - disabling alarm");
+	    				redirect = "/alarmDisabled.html";
+	    				HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", "");
 	    				
-	    				//TODO: Disable alarm
-	    				//http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/
+	    				ControllableDevice outdoorAlarmUnit = DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
+	    				
+	    				//leave actual switch off command after check in case device is on but we think it isn't
+	    				if (outdoorAlarmUnit.isDeviceOn()) {
+	    					log.info("Alarm is sounding - forcing stop now via one-time URL");
+	    				}
+						outdoorAlarmUnit.turnDeviceOff(false);
+	    			}
+	    			else {
+	    				log.info("One time alarm URL not recognised [" + pathInfoTidied[1] + "] - alarm still enabled");
 	    			}
 	    		}
 	    	}
 		}
 		
-		RequestDispatcher dispatch = request.getRequestDispatcher(forward);
-		dispatch.forward(request, response);
+		//TODO: make RequestDispatcher but prevent infinite loop
+		//RequestDispatcher dispatch = request.getRequestDispatcher(redirect);
+		//dispatch.forward(request, response);
+		
+		response.sendRedirect(redirect);
 	}
 
 	/**

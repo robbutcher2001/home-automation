@@ -46,7 +46,7 @@ public class SystemVerificationController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatch = request.getRequestDispatcher("landing.jsp");
+		RequestDispatcher dispatch = request.getRequestDispatcher("index.html");
 		dispatch.forward(request, response);
 	}
 

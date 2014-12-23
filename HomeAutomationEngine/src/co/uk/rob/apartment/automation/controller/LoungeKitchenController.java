@@ -265,7 +265,7 @@ public class LoungeKitchenController extends HttpServlet {
 			final String alarmOneTimeUrl = OneTimeUrlGenerator.getOneTimeString();
 			HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
 			SMSHelper.sendSMS("07965502960", "Test One Time URL. Deactivate now: "
-					+ "http://robsflat.co.uk/disableApartmentAlarm/" + alarmOneTimeUrl);
+					+ "http://robsflat.noip.me/disableApartmentAlarm/" + alarmOneTimeUrl);
 			out.print("One time generated: " + alarmOneTimeUrl);
 		}
 		
