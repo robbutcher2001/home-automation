@@ -14,6 +14,8 @@ public class FrontDoorActivityHandler extends AbstractExternalDoorActivityHandle
 	public void run() {
 		super.run();
 		
+		this.door = "Front";
+		
 		if (this.reportingDevice.isTriggered()) {
 			log.info("Front door opened");
 			
@@ -24,7 +26,7 @@ public class FrontDoorActivityHandler extends AbstractExternalDoorActivityHandle
 				runUnexpectedOccupancyControl();
 			}
 			else {
-				welcomeHome("Front");
+				welcomeHome();
 			}
 		}
 		else {

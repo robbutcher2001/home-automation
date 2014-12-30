@@ -64,6 +64,13 @@ var DeliveryHelper = {
 						$('.msoBar').html(response.data.mso_message);
 						$('.msoBar').slideDown(600);
 					}
+					
+					if (response.data.mso_message == 'Alarm system triggered. Click to disarm.') {
+						$('#mso').bind('click', function() {
+							DeliveryHelper.issueCommand('appDisableAlarm', '?', 'Disarmed');
+							$('.msoBar').slideUp(200);
+						});
+					}
 				}
 			});
 			return false;
@@ -174,6 +181,15 @@ var DeliveryHelper = {
 					if (response.apartment.unexpected_occupancy == 'true') {
 						$('#flat-unexp-ocp').html('Unexpected occupancy triggered');
 						$('#flat-unexp-ocp').show();
+					}
+					
+					if (response.apartment.alarm_system == 'true') {
+						$('#flat-alarm-system').html('Auto alarm system enabled');
+						$('#flat-alarm-system').show();
+					}
+					else {
+						$('#flat-alarm-system').html('');
+						$('#flat-alarm-system').hide();
 					}
 
 					if (response.apartment.occupied == 'false') {

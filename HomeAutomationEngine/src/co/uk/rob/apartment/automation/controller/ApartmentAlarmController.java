@@ -43,10 +43,11 @@ public class ApartmentAlarmController extends HttpServlet {
 	    	if (pathInfoTidied != null && pathInfoTidied.length > 0) {
 	    		if (pathInfoTidied[1] != null && !"".equals(pathInfoTidied[1])) {
 	    			final String alarmOneTimeUrl = HomeAutomationProperties.getProperty("AlarmOneTimeUrl");
-	    			if (!"".equals(alarmOneTimeUrl) && alarmOneTimeUrl.equals(pathInfoTidied[1])) {
+	    			if (alarmOneTimeUrl != null && !"".equals(alarmOneTimeUrl) && alarmOneTimeUrl.equals(pathInfoTidied[1])) {
 	    				log.info("One time alarm URL recognised [" + pathInfoTidied[1] + "] - disabling alarm");
 	    				redirect = "/alarmDisabled.html";
 	    				HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", "");
+	    				HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "false");
 	    				
 	    				ControllableDevice outdoorAlarmUnit = DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
 	    				

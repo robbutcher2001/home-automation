@@ -126,9 +126,21 @@ public class SimplifiedDeviceStatusCompiler {
 			}
 			
 			zoneStatuses.put("unexpected_occupancy", HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy"));
-			zoneStatuses.put("occupied", Boolean.toString(CommonQueries.isApartmentOccupied()));
+			
+			//check false occupancy
+			final String unexpectedOccupancy = HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy");
+			final String atHomeModeLounge = HomeAutomationProperties.getProperty("AtHomeTodayMode");
+			if (!CommonQueries.expectedOccupancyInApartment() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
+				zoneStatuses.put("alarm_system", "true");
+			}
+			else {
+				zoneStatuses.put("alarm_system", "false");
+			}
+			
+			boolean isApartmentOccupied = CommonQueries.isApartmentOccupied();
+			zoneStatuses.put("occupied", Boolean.toString(isApartmentOccupied));
 			Calendar lastOccupancy = CommonQueries.getLastApartmentOccupancyTime();
-			if (lastOccupancy != null && !CommonQueries.isApartmentOccupied()) {
+			if (lastOccupancy != null && !isApartmentOccupied) {
 				zoneStatuses.put("last_occupied", dateFormat.format(lastOccupancy.getTime()));
 			}
 			else {

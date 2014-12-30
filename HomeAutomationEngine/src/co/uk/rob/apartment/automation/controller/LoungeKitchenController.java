@@ -20,8 +20,6 @@ import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
-import co.uk.rob.apartment.automation.utilities.OneTimeUrlGenerator;
-import co.uk.rob.apartment.automation.utilities.SMSHelper;
 
 /**
  * Servlet implementation class LoungeKitchenController
@@ -260,13 +258,6 @@ public class LoungeKitchenController extends HttpServlet {
 				log.info("Request for 'Normal Occupancy' mode for full apartment [" + activeUser + "]");
 				out.print("'Normal Occupancy' mode now on");
 			}
-		}
-		else if (action.equals("generateOneTimeUrl")) {
-			final String alarmOneTimeUrl = OneTimeUrlGenerator.getOneTimeString();
-			HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
-			SMSHelper.sendSMS("07965502960", "Test One Time URL. Deactivate now: "
-					+ "http://robsflat.noip.me/disableApartmentAlarm/" + alarmOneTimeUrl);
-			out.print("One time generated: " + alarmOneTimeUrl);
 		}
 		
 		//response.setContentType("application/json");

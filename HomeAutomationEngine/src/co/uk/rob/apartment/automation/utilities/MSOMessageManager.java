@@ -23,6 +23,7 @@ public class MSOMessageManager {
 		testForLowBatteries(apartmentReportingDevices);
 		testForOfflineSensors(apartmentReportingDevices);
 		testForUnexpectedOccupancy();
+		testForAlarmTrigger();
 		
 		//TODO: if windows are open and apartment marked as unoccupied, display as MSO (+ send text)
 	}
@@ -88,6 +89,18 @@ public class MSOMessageManager {
 			//overwrite Multisensors as this takes precedence
 			this.message = new StringBuilder();
 			this.message.append("Unexpected occupancy in apartment");
+		}
+	}
+	
+	/**
+	 * Creates MSO if alarm is triggered.
+	 */
+	private void testForAlarmTrigger() {
+		final String alarmOneTimeUrl = HomeAutomationProperties.getProperty("AlarmOneTimeUrl");
+		if (alarmOneTimeUrl != null && !"".equals(alarmOneTimeUrl)) {
+			//overwrite unexpected occupancy as this takes precedence
+			this.message = new StringBuilder();
+			this.message.append("Alarm system triggered. Click to disarm.");
 		}
 	}
 	

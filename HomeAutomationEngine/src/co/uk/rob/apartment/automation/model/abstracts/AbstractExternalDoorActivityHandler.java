@@ -22,8 +22,9 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 	
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
+	protected String door;
 	
-	protected void welcomeHome(String door) {
+	protected void welcomeHome() {
 		Calendar now = Calendar.getInstance();
 		
 		Calendar lastApartmentOccupancyPlusHour = CommonQueries.getLastApartmentOccupancyTime();
@@ -38,7 +39,7 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 				new SpeechOrchestrationManager("Welcome home!", false, false, false, null).start();
 			}
 			
-			log.info(door + " door opened, apartment unoccupied for more than 1 hour, welcoming home");
+			log.info(this.door + " door opened, apartment unoccupied for more than 1 hour, welcoming home");
 			
 			if (CommonQueries.isBrightnessAt0() || CommonQueries.isBrightnessBetween1and200()) {
 				boolean lampsTurnedOn = false;
@@ -85,14 +86,15 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 		
 		final String alarmOneTimeUrl = OneTimeUrlGenerator.getOneTimeString();
 		HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
-		final String smsText = "Apartment occupied from patio door. Alarm will trigger. Deactivate now: "
+		final String smsText = "Apartment occupied from " + this.door.toLowerCase() + 
+				" door. Alarm will trigger. Deactivate now: "
 				+ "http://robsflat.noip.me/disableApartmentAlarm/" + alarmOneTimeUrl;
 		SMSHelper.sendSMS("07965502960", smsText);
 		SMSHelper.sendSMS("07875468023", smsText);
 		
-		//trigger outdoor AlarmUnit in 1 minute
+		//trigger outdoor AlarmUnit in 30 seconds
 		//TODO: http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/
-		Timer timer = new Timer("Sound alarm in 1 minute");
+		Timer timer = new Timer("Sound alarm in 30 seconds");
 		
 		TimerTask task = new TimerTask() {
 			
@@ -113,6 +115,6 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			}
 		};
 		
-		timer.schedule(task, 60000);
+		timer.schedule(task, 30000);
 	}
 }

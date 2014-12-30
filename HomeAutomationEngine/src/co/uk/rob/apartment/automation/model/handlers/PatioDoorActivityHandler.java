@@ -20,6 +20,8 @@ public class PatioDoorActivityHandler extends AbstractExternalDoorActivityHandle
 	public void run() {
 		super.run();
 		
+		this.door = "Patio";
+		
 		if (this.reportingDevice.isTriggered()) {
 			log.info("Patio door opened");
 			
@@ -60,7 +62,7 @@ public class PatioDoorActivityHandler extends AbstractExternalDoorActivityHandle
 				runUnexpectedOccupancyControl();
 			}
 			else {
-				welcomeHome("Patio");
+				welcomeHome();
 			}
 		}
 		else {

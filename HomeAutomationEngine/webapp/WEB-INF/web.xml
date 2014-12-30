@@ -62,6 +62,15 @@
   </servlet-mapping>
   
   <servlet>
+    <servlet-name>appDisableAlarm</servlet-name>
+    <servlet-class>co.uk.rob.apartment.automation.controller.AppApartmentAlarmController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>appDisableAlarm</servlet-name>
+    <url-pattern>/appDisableAlarm</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <servlet-name>deviceStatus</servlet-name>
     <servlet-class>co.uk.rob.apartment.automation.controller.DeviceStatusJsonController</servlet-class>
   </servlet>
