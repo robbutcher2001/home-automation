@@ -19,13 +19,13 @@ import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
-public class SimplifiedDeviceStatusCompiler {
+public class DeviceStatusCompiler {
 	
 	//utilities
 	private DateFormat dateFormat = null;
 	private String user;
 	
-	public SimplifiedDeviceStatusCompiler() {
+	public DeviceStatusCompiler() {
 		this.dateFormat = new SimpleDateFormat("dd/MM HH:mm");
 		this.user = "unknown";
 	}

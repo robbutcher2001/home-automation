@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.jsonapi.RestRequest;
-import co.uk.rob.apartment.automation.model.jsonapi.SimplifiedDeviceStatusCompiler;
+import co.uk.rob.apartment.automation.model.jsonapi.DeviceStatusCompiler;
 
 /**
  * Servlet implementation class DeviceStatusJsonController
@@ -23,14 +23,14 @@ import co.uk.rob.apartment.automation.model.jsonapi.SimplifiedDeviceStatusCompil
 public class DeviceStatusJsonController extends HttpServlet {
 	private Logger log = Logger.getLogger(DeviceStatusJsonController.class);
 	private static final long serialVersionUID = 1L;
-	private SimplifiedDeviceStatusCompiler statusCompiler = null;
+	private DeviceStatusCompiler statusCompiler = null;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public DeviceStatusJsonController() {
         super();
-        this.statusCompiler = new SimplifiedDeviceStatusCompiler();
+        this.statusCompiler = new DeviceStatusCompiler();
     }
 
     /**
