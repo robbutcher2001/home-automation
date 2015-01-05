@@ -58,7 +58,7 @@ public class PatioDoorActivityHandler extends AbstractExternalDoorActivityHandle
 			//check false occupancy
 			String unexpectedOccupancy = HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy");
 			String atHomeModeLounge = HomeAutomationProperties.getProperty("AtHomeTodayMode");
-			if (!CommonQueries.expectedOccupancyInApartment() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
+			if (!CommonQueries.expectedExternalDoorActivity() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
 				runUnexpectedOccupancyControl();
 			}
 			else {

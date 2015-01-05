@@ -58,24 +58,34 @@ public class CommonQueries {
 		return false;
 	}
 	
-	public static boolean expectedOccupancyInApartment() {
+	public static boolean expectedExternalDoorActivity() {
+		boolean expectedOccupancy = true;
 		Calendar now = Calendar.getInstance();
 		
-		Calendar nineAM = Calendar.getInstance();
+		Calendar nineAM = (Calendar) now.clone();
 		nineAM.set(Calendar.HOUR_OF_DAY, 9);
 		nineAM.set(Calendar.MINUTE, 00);
 		
-		Calendar halfFivePM = Calendar.getInstance();
+		Calendar halfFivePM = (Calendar) now.clone();
 		halfFivePM.set(Calendar.HOUR_OF_DAY, 17);
 		halfFivePM.set(Calendar.MINUTE, 30);
 		
+		Calendar halfFiveAM = (Calendar) now.clone();
+		halfFiveAM.set(Calendar.HOUR_OF_DAY, 5);
+		halfFiveAM.set(Calendar.MINUTE, 30);
+		
 		if (!isItTheWeekendOrBankHoliday()) {
 			if (now.after(nineAM) && now.before(halfFivePM)) {
-				return false;
+				expectedOccupancy = false;
 			}
 		}
 		
-		return true;
+		//now check that it's morning hours and after midnight
+		if (now.before(halfFiveAM)) {
+			expectedOccupancy = false;
+		}
+		
+		return expectedOccupancy;
 	}
 	
 	public static Calendar getLastApartmentOccupancyTime() {

@@ -31,7 +31,7 @@ public class SimplifiedDeviceStatusCompiler {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void testZoneStatus(Zone zone, JSONObject allZoneStatuses) {
+	public void getZoneStatus(Zone zone, JSONObject rootObject) {
 		JSONObject zoneStatuses = new JSONObject();
 		
 		//modes
@@ -130,7 +130,7 @@ public class SimplifiedDeviceStatusCompiler {
 			//check false occupancy
 			final String unexpectedOccupancy = HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy");
 			final String atHomeModeLounge = HomeAutomationProperties.getProperty("AtHomeTodayMode");
-			if (!CommonQueries.expectedOccupancyInApartment() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
+			if (!CommonQueries.expectedExternalDoorActivity() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
 				zoneStatuses.put("alarm_system", "true");
 			}
 			else {
@@ -148,10 +148,40 @@ public class SimplifiedDeviceStatusCompiler {
 			}
 		}
 		
-		allZoneStatuses.put(zone.toString(), zoneStatuses);
+		rootObject.put(zone.toString(), zoneStatuses);
 	}
 	
-	public void setUser(String user) {
+	/**
+     * @param failText text to display in browser, sends JSend 'fail' status
+     *        http://labs.omniti.com/labs/jsend
+     * @return failText as JSON object for browser
+     */
+    @SuppressWarnings("unchecked")
+	public String createFailAsJson(final String failText, JSONObject rootObject) {
+    	rootObject.clear();
+    	rootObject.put("status", "fail");
+        JSONObject fail = new JSONObject();
+        fail.put("errorText", !failText.equals("") ? failText : "");
+        rootObject.put("data", fail);
+
+        return rootObject.toJSONString();
+    }
+
+    /**
+     * @param errorText text to display in browser, sends JSend 'error' status
+     *        http://labs.omniti.com/labs/jsend
+     * @return errorText as JSON object for browser
+     */
+    @SuppressWarnings("unchecked")
+	public String createErrorAsJson(final String errorText, JSONObject rootObject) {
+    	rootObject.clear();
+    	rootObject.put("status", "error");
+    	rootObject.put("message", !errorText.equals("") ? errorText : "");
+
+        return rootObject.toJSONString();
+    }
+    
+    public void setUser(String user) {
 		this.user = user;
 	}
 }

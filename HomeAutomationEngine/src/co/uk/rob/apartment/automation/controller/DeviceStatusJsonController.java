@@ -2,8 +2,6 @@ package co.uk.rob.apartment.automation.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,11 +13,8 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import co.uk.rob.apartment.automation.model.Zone;
-import co.uk.rob.apartment.automation.model.jsonapi.DeviceStatusCompiler;
-import co.uk.rob.apartment.automation.model.jsonapi.JsonResponseCompiler;
 import co.uk.rob.apartment.automation.model.jsonapi.RestRequest;
 import co.uk.rob.apartment.automation.model.jsonapi.SimplifiedDeviceStatusCompiler;
-import co.uk.rob.apartment.automation.model.jsonapi.ZoneStatusResultSet;
 
 /**
  * Servlet implementation class DeviceStatusJsonController
@@ -28,7 +23,6 @@ import co.uk.rob.apartment.automation.model.jsonapi.ZoneStatusResultSet;
 public class DeviceStatusJsonController extends HttpServlet {
 	private Logger log = Logger.getLogger(DeviceStatusJsonController.class);
 	private static final long serialVersionUID = 1L;
-	private JsonResponseCompiler responseCompiler = null;
 	private SimplifiedDeviceStatusCompiler statusCompiler = null;
        
     /**
@@ -36,7 +30,6 @@ public class DeviceStatusJsonController extends HttpServlet {
      */
     public DeviceStatusJsonController() {
         super();
-        this.responseCompiler = new JsonResponseCompiler();
         this.statusCompiler = new SimplifiedDeviceStatusCompiler();
     }
 
@@ -55,10 +48,9 @@ public class DeviceStatusJsonController extends HttpServlet {
 			activeUser = "";
 		}
 		
-        String wrapper = request.getParameter("callback");
-        this.responseCompiler.setWrapper(wrapper);
         this.statusCompiler.setUser(activeUser);
 
+        JSONObject rootObject = new JSONObject();
         try {
             out = response.getWriter();
             String pathInfo = request.getPathInfo();
@@ -67,37 +59,34 @@ public class DeviceStatusJsonController extends HttpServlet {
                 RestRequest restUrl = new RestRequest(pathInfo);
                 final Zone zone = restUrl.getZone();
                 if (zone != null) {
-                	List<ZoneStatusResultSet> allZoneStatuses = new ArrayList<ZoneStatusResultSet>();
+            		rootObject.put("status", "success");
+            		rootObject.put("errorText", null);
+            		
                 	if (Zone.APARTMENT.equals(zone)) {
-                		JSONObject rootObject = new JSONObject();
-                		rootObject.put("status", "success");
-                		rootObject.put("errorText", null);
-                		this.statusCompiler.testZoneStatus(Zone.APARTMENT, rootObject);
-                		this.statusCompiler.testZoneStatus(Zone.LOUNGE, rootObject);
-                		this.statusCompiler.testZoneStatus(Zone.ROB_ROOM, rootObject);
-                		this.statusCompiler.testZoneStatus(Zone.HALLWAY, rootObject);
-                		this.statusCompiler.testZoneStatus(Zone.PATIO, rootObject);
-                		out.print(rootObject);
+                		this.statusCompiler.getZoneStatus(Zone.APARTMENT, rootObject);
+                		this.statusCompiler.getZoneStatus(Zone.LOUNGE, rootObject);
+                		this.statusCompiler.getZoneStatus(Zone.ROB_ROOM, rootObject);
+                		this.statusCompiler.getZoneStatus(Zone.HALLWAY, rootObject);
+                		this.statusCompiler.getZoneStatus(Zone.PATIO, rootObject);
                 	}
                 	else {
-                		//temp - delete this if above works
-                		DeviceStatusCompiler statusCompiler = new DeviceStatusCompiler();
-                		allZoneStatuses.add(statusCompiler.getZoneStatus(Zone.APARTMENT));
-                		out.print(this.responseCompiler.convertResultsToJson(allZoneStatuses));
+                		this.statusCompiler.getZoneStatus(zone, rootObject);
                 	}
+                	
+                	out.print(rootObject);
                 } else {
-                    out.print(this.responseCompiler.createFailAsJson("Incorrect params"));
+                    out.print(this.statusCompiler.createFailAsJson("Incorrect params", rootObject));
                 }
             } else {
-                out.print(this.responseCompiler.createFailAsJson("Incorrect params"));
+                out.print(this.statusCompiler.createFailAsJson("Incorrect params", rootObject));
             }
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
-            out.print(this.responseCompiler.createErrorAsJson("Server error"));
+            out.print(this.statusCompiler.createErrorAsJson("Server error", rootObject));
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             log.error(e.getMessage());
         } catch (Error e) {
-            out.print(this.responseCompiler.createErrorAsJson("Server error"));
+            out.print(this.statusCompiler.createErrorAsJson("Server error", rootObject));
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             log.error(e.getMessage());
         }

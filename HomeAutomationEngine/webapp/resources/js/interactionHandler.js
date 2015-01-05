@@ -182,9 +182,13 @@ var DeliveryHelper = {
 						$('#flat-unexp-ocp').html('Unexpected occupancy triggered');
 						$('#flat-unexp-ocp').show();
 					}
+					else {
+						$('#flat-unexp-ocp').html('');
+						$('#flat-unexp-ocp').hide();
+					}
 					
 					if (response.apartment.alarm_system == 'true') {
-						$('#flat-alarm-system').html('Auto alarm system enabled');
+						$('#flat-alarm-system').html('Alarm system automatically enabled');
 						$('#flat-alarm-system').show();
 					}
 					else {
@@ -394,6 +398,8 @@ var Utilities = {
 					$('.top-title').addClass('error-text');
 					$('.rob-room-title').addClass('error-text');
 					$('.statusTitle').addClass('error-text');
+					
+					DeliveryHelper.checkMSO();
 				}
 			}
 

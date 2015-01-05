@@ -40,8 +40,7 @@ public class BatteryStatusMonitor extends Thread {
 				batteriesLow = true;
 			}
 			
-			if (doorSensorRobRoom.getBatteryLevel() >= 0 && doorSensorRobRoom.getBatteryLevel() <= 10 ||
-					doorSensorRobRoom.getBatteryLevel() == 255) {
+			if (doorSensorRobRoom.getBatteryLevel() >= 0 && doorSensorRobRoom.getBatteryLevel() <= 10) {
 				textToSend = preLoadTextString(textToSend) + "Rob room door sensor";
 				batteriesLow = true;
 			}
@@ -51,8 +50,7 @@ public class BatteryStatusMonitor extends Thread {
 				batteriesLow = true;
 			}
 			
-			if (frontDoorSensor.getBatteryLevel() >= 0 && frontDoorSensor.getBatteryLevel() <= 10 ||
-					frontDoorSensor.getBatteryLevel() == 255) {
+			if (frontDoorSensor.getBatteryLevel() >= 0 && frontDoorSensor.getBatteryLevel() <= 10) {
 				textToSend = preLoadTextString(textToSend) + "front door sensor";
 				batteriesLow = true;
 			}

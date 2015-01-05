@@ -19,9 +19,11 @@ public class DailyFlagManager extends Thread {
 	@Override
 	public void run() {
 		while (!this.isInterrupted()) {
-			Calendar threeAM = Calendar.getInstance();
-			Calendar fourAM = Calendar.getInstance();
 			Calendar now = Calendar.getInstance();
+			Calendar threeAM = (Calendar) now.clone();
+			Calendar fourAM = (Calendar) now.clone();
+			Calendar halfFiveAM = (Calendar) now.clone();
+			Calendar halfSixAM = (Calendar) now.clone();
 			
 			threeAM.set(Calendar.HOUR_OF_DAY, 3);
 			threeAM.set(Calendar.MINUTE, 00);
@@ -29,12 +31,17 @@ public class DailyFlagManager extends Thread {
 			fourAM.set(Calendar.HOUR_OF_DAY, 4);
 			fourAM.set(Calendar.MINUTE, 00);
 			
+			halfFiveAM.set(Calendar.HOUR_OF_DAY, 5);
+			halfFiveAM.set(Calendar.MINUTE, 30);
+			
+			halfSixAM.set(Calendar.HOUR_OF_DAY, 6);
+			halfSixAM.set(Calendar.MINUTE, 30);
+			
 			if (now.after(threeAM) && now.before(fourAM)) {
 				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "false");
 				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedScarlett", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentWelcomeHome", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "false");
-				HomeAutomationProperties.setOrUpdateProperty("AtHomeTodayMode", "false");
 				log.info("Daily flags have been reset");
 				
 				ControllableDevice loungeWindowBlind = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
@@ -48,17 +55,11 @@ public class DailyFlagManager extends Thread {
 					loungePatioBlind.resetManuallyOverridden();
 					log.info("Lounge patio blind manual override has been reset");
 				}
-				
-				//above is improved code for the following
-//				String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
-//				if (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode))) {
-//					ControllableDevice loungeWindowBlind = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
-//					loungeWindowBlind.resetManuallyOverridden();
-//					log.info("Lounge window blind manual override has been reset");
-//				}
-//				else {
-//					log.info("Lounge window blind manual override has not been reset as lounge is in bedroom mode");
-//				}
+			}
+			
+			if (now.after(halfFiveAM) && now.before(halfSixAM)) {
+				HomeAutomationProperties.setOrUpdateProperty("AtHomeTodayMode", "false");
+				log.info("Alarm has now been automatically disabled, resetting AtHomeTodayMode flag");
 			}
 			
 			try {
