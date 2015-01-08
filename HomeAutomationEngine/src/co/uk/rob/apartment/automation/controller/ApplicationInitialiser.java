@@ -16,6 +16,8 @@ import javax.servlet.annotation.WebServlet;
 import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
+import co.uk.rob.apartment.automation.model.interfaces.BatteryOperable;
+import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.model.monitors.ApartmentActivityManager;
 import co.uk.rob.apartment.automation.model.monitors.BatteryStatusMonitor;
@@ -112,7 +114,6 @@ public class ApplicationInitialiser implements ServletContextListener {
 		new ReportingDeviceProber().start();
 	}
 	
-	//TODO: check to see if this actually runs daily - the scope may cause it to be GC'd
 	private void implementDailyTimer() {
 		Timer timer = new Timer("Daily battery monitor");
 		
@@ -125,7 +126,14 @@ public class ApplicationInitialiser implements ServletContextListener {
 					device.requestNewBatteryReport();
 				}
 				
-				log.info("All devices probed for latest battery status, sleeping for one day");
+				List<ControllableDevice> controllableDevices = DeviceListManager.getControllableDevices();
+				for (ControllableDevice device : controllableDevices) {
+					if (device instanceof BatteryOperable) {
+						((BatteryOperable) device).requestNewBatteryReport();
+					}
+				}
+				
+				log.info("All battery operated devices probed for latest battery status, sleeping for one day");
 			}
 		};
 		

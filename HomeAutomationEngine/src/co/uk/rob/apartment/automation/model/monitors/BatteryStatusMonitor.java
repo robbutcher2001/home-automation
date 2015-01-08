@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.utilities.SMSHelper;
 
@@ -31,6 +32,7 @@ public class BatteryStatusMonitor extends Thread {
 			ReportingDevice frontDoorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.HALLWAY).get(0);
 			ReportingDevice multisensorPatioSensor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(0);
 			ReportingDevice patioDoorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
+			AlarmUnit outdoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
 			
 			boolean batteriesLow = false;
 			String textToSend = "";
@@ -62,6 +64,11 @@ public class BatteryStatusMonitor extends Thread {
 			
 			if (patioDoorSensor.getBatteryLevel() >= 0 && patioDoorSensor.getBatteryLevel() <= 10) {
 				textToSend = preLoadTextString(textToSend) + "patio door sensor";
+				batteriesLow = true;
+			}
+			
+			if (outdoorAlarmUnit.getBatteryLevel() >= 0 && outdoorAlarmUnit.getBatteryLevel() <= 10) {
+				textToSend = preLoadTextString(textToSend) + "outdoor alarm unit";
 				batteriesLow = true;
 			}
 			

@@ -119,7 +119,9 @@ public class DeviceListManager {
 		controllableDevices.add(ledRodRobEndpoint);
 		
 		// Patio
-		ControllableDevice outdoorAlarmEndpoint = new AlarmUnit(HomeAutomationProperties.getProperty("outdoorAlarmEndpoint"),
+		ControllableDevice outdoorAlarmEndpoint = new AlarmUnit(HomeAutomationProperties.getProperty("outdoorAlarmBatteryUpdateEndpoint"),
+				HomeAutomationProperties.getProperty("outdoorAlarmReadEndpoint"),
+				HomeAutomationProperties.getProperty("outdoorAlarmEndpoint"),
 				Zone.PATIO);
 		controllableDevices.add(outdoorAlarmEndpoint);
 	}

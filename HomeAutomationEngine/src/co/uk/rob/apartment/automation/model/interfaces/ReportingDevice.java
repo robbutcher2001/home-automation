@@ -2,11 +2,9 @@ package co.uk.rob.apartment.automation.model.interfaces;
 
 import co.uk.rob.apartment.automation.model.Zone;
 
-public interface ReportingDevice extends Inoperable {
+public interface ReportingDevice extends BatteryOperable, Inoperable {
 	
 	public void requestNewReport();
-	
-	public void requestNewBatteryReport();
 	
 	public boolean applyNewReport(String resultSet);
 	
@@ -19,8 +17,6 @@ public interface ReportingDevice extends Inoperable {
 	public Float[] getLuminiscence();
 	
 	public Float[] getHumidity();
-	
-	public Integer getBatteryLevel();
 	
 	public long getLastUpdated();
 	

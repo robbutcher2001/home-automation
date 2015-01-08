@@ -3,7 +3,9 @@ package co.uk.rob.apartment.automation.utilities;
 import java.util.List;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
+import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
+import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 
 /**
@@ -18,10 +20,12 @@ public class MSOMessageManager {
 
 	public MSOMessageManager() {
 		List<ReportingDevice> apartmentReportingDevices = DeviceListManager.getReportingDevices();
+		List<ControllableDevice> apartmentControllableDevices = DeviceListManager.getControllableDevices();
 		
 		//call methods in order of precedence - lowest first
-		testForLowBatteries(apartmentReportingDevices);
+		testForMultisensorLowBatteries(apartmentReportingDevices);
 		testForOfflineSensors(apartmentReportingDevices);
+		testForAlarmUnitLowBatteries(apartmentControllableDevices);
 		testForUnexpectedOccupancy();
 		testForAlarmTrigger();
 		
@@ -33,7 +37,7 @@ public class MSOMessageManager {
 	 * 
 	 * @param apartmentReportingDevices devices to check
 	 */
-	private void testForLowBatteries(List<ReportingDevice> apartmentReportingDevices) {
+	private void testForMultisensorLowBatteries(List<ReportingDevice> apartmentReportingDevices) {
 		for (ReportingDevice device : apartmentReportingDevices) {
 			if (device instanceof Multisensor) {
 				if (device.getBatteryLevel() <= 5) {
@@ -75,6 +79,23 @@ public class MSOMessageManager {
 			}
 			else {
 				this.message.append(" wall sensor appears to be offline");
+			}
+		}
+	}
+	
+	/**
+	 * Will only show one AlarmUnit battery level if more than one have low batteries.
+	 * 
+	 * @param apartmentControllableDevices devices to check
+	 */
+	private void testForAlarmUnitLowBatteries(List<ControllableDevice> apartmentControllableDevices) {
+		for (ControllableDevice device : apartmentControllableDevices) {
+			if (device instanceof AlarmUnit) {
+				if (((AlarmUnit) device).getBatteryLevel() <= 10) {
+					this.message = new StringBuilder();
+					this.message.append(device.getZone().toString().replace("_", " ") + " alarm unit battery at " + 
+							((AlarmUnit) device).getBatteryLevel() + "%");
+				}
 			}
 		}
 	}

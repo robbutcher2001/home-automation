@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.ZwayResultSet;
+import co.uk.rob.apartment.automation.model.interfaces.BatteryOperable;
+import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.utilities.CallZwaveModule;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
@@ -15,12 +17,14 @@ public class ApartmentActivityManager extends Thread {
 	private Logger log = Logger.getLogger(ApartmentActivityManager.class);
 	
 	private List<ReportingDevice> reportingDevices;
+	private List<ControllableDevice> controllableDevices;
 	private String zWayUpdateRequest;
 	private int lastUpdate = 0;
 	
 	public ApartmentActivityManager() {
 		reportingDevices = DeviceListManager.getReportingDevices();
-				
+		controllableDevices = DeviceListManager.getControllableDevices();
+		
 		zWayUpdateRequest = HomeAutomationProperties.getProperty("host");
 		zWayUpdateRequest += HomeAutomationProperties.getProperty("zWayUpdateRequest");
 		
@@ -41,6 +45,12 @@ public class ApartmentActivityManager extends Thread {
 			
 			for (ReportingDevice device : reportingDevices) {
 				device.applyNewReport(resultSet.getJsonResponse());
+			}
+			
+			for (ControllableDevice device : controllableDevices) {
+				if (device instanceof BatteryOperable) {
+					((BatteryOperable) device).applyNewReport(resultSet.getJsonResponse());
+				}
 			}
 		
 			try {

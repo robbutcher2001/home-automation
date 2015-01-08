@@ -54,6 +54,8 @@ loungePatioBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[20].instances[0].Swit
 
 //alarm
 outdoorAlarmEndpoint=/ZWaveAPI/Run/devices[22].instances[0].SwitchBinary
+outdoorAlarmBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[22].instances[0].commandClasses[128].Get()
+outdoorAlarmReadEndpoint=devices.22.instances.0.commandClasses.
 
 zWayUpdateRequest=/ZWaveAPI/Data/
 

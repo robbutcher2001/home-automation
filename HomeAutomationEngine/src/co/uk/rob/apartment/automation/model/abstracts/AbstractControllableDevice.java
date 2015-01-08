@@ -8,7 +8,7 @@ import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.utilities.CallZwaveModule;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
-public abstract class AbstractControllableDevice implements ControllableDevice {
+public abstract class AbstractControllableDevice extends AbstractDevice implements ControllableDevice {
 	
 	protected boolean state = false;
 	protected String level = "0";
@@ -48,7 +48,6 @@ public abstract class AbstractControllableDevice implements ControllableDevice {
 	public Date getLastInteractedTime() {
 		return new Date(lastUpdated);
 	}
-
 	
 	@Override
 	public void setDeviceLevel(String level) {

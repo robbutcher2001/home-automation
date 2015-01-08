@@ -2,14 +2,20 @@ package co.uk.rob.apartment.automation.model.devices;
 
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractControllableDevice;
+import co.uk.rob.apartment.automation.model.interfaces.BatteryOperable;
 
 /**
  * @author Rob
  *
  */
-public class AlarmUnit extends AbstractControllableDevice {
+public class AlarmUnit extends AbstractControllableDevice implements BatteryOperable {
 
-	public AlarmUnit(String endpoint, Zone location) {
+	private String batteryUpdateEndpoint;
+	private int battery = 0;
+	
+	public AlarmUnit(String batteryUpdateEndpoint, String dataEndpoint, String endpoint, Zone location) {
+		this.batteryUpdateEndpoint = batteryUpdateEndpoint;
+		this.dataEndpoint = dataEndpoint;
 		this.endpoint = endpoint;
 		this.zone = location;
 	}
@@ -33,5 +39,22 @@ public class AlarmUnit extends AbstractControllableDevice {
 		setDeviceLevel("0");
 		
 		return callParseResult(host + endpoint + ".Set(0)");
+	}
+	
+	@Override
+	public boolean applyNewReport(String resultSet) {
+		return parseBatteryValue(resultSet);
+	}
+
+	@Override
+	public synchronized void requestNewBatteryReport() {
+		if (batteryUpdateEndpoint != null) {
+			callParseResult(host + batteryUpdateEndpoint);
+		}
+	}
+
+	@Override
+	public Integer getBatteryLevel() {
+		return this.battery;
 	}
 }
