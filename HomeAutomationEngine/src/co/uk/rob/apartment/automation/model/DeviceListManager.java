@@ -168,8 +168,8 @@ public class DeviceListManager {
 		patioSensorEndpoint.setTriggered(false);
 		reportingDevices.add(patioSensorEndpoint);
 		
-		ReportingDevice patioDoorEndpoint = new DoorSensor(HomeAutomationProperties.getProperty("patioSensorBatteryUpdateEndpoint"),
-				HomeAutomationProperties.getProperty("patioSensorEndpoint"),
+		ReportingDevice patioDoorEndpoint = new DoorSensor(HomeAutomationProperties.getProperty("patioDoorSensorBatteryUpdateEndpoint"),
+				HomeAutomationProperties.getProperty("patioDoorSensorEndpoint"),
 				new PatioDoorActivityHandler(),
 				Zone.PATIO);
 		reportingDevices.add(patioDoorEndpoint);
