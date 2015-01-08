@@ -11,7 +11,6 @@ import co.uk.rob.apartment.automation.model.interfaces.BatteryOperable;
 public class AlarmUnit extends AbstractControllableDevice implements BatteryOperable {
 
 	private String batteryUpdateEndpoint;
-	private int battery = 0;
 	
 	public AlarmUnit(String batteryUpdateEndpoint, String dataEndpoint, String endpoint, Zone location) {
 		this.batteryUpdateEndpoint = batteryUpdateEndpoint;

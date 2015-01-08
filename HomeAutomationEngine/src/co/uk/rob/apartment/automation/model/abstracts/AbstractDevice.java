@@ -24,6 +24,10 @@ public abstract class AbstractDevice {
 	//JSON parser
 	protected JSONParser zWayResultParser;
 	
+	public AbstractDevice() {
+		this.zWayResultParser = new JSONParser();
+	}
+	
 	protected boolean parseBatteryValue(String resultSet) {
 		// To handle battery report
 		boolean applied = false;

@@ -1,7 +1,6 @@
 package co.uk.rob.apartment.automation.model.abstracts;
 
 import org.apache.log4j.Logger;
-import org.json.simple.parser.JSONParser;
 
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.ZwayResultSet;
@@ -34,7 +33,6 @@ public abstract class AbstractReportingDevice extends AbstractDevice implements 
 		this.dataEndpoint = dataEndpoint;
 		this.handler = handler;
 		this.zone = zone;
-		this.zWayResultParser = new JSONParser();
 	}
 
 	@Override
