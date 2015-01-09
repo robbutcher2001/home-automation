@@ -126,6 +126,15 @@ public class DeviceListManager {
 				HomeAutomationProperties.getProperty("outdoorAlarmStrobeOnlyMode"),
 				HomeAutomationProperties.getProperty("outdoorAlarmStrobeSirenMode"));
 		controllableDevices.add(outdoorAlarmEndpoint);
+		
+		//Hallway
+		ControllableDevice indoorAlarmEndpoint = new AlarmUnit(HomeAutomationProperties.getProperty("indoorAlarmBatteryUpdateEndpoint"),
+				HomeAutomationProperties.getProperty("indoorAlarmReadEndpoint"),
+				HomeAutomationProperties.getProperty("indoorAlarmEndpoint"),
+				Zone.HALLWAY,
+				HomeAutomationProperties.getProperty("indoorAlarmStrobeOnlyMode"),
+				HomeAutomationProperties.getProperty("indoorAlarmStrobeSirenMode"));
+		controllableDevices.add(indoorAlarmEndpoint);
 	}
 	
 	private static void setupReportingApartmentDevices() {

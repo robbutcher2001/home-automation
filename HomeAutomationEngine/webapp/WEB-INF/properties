@@ -55,10 +55,15 @@ frontDoorSensorEndpoint=devices.11.instances.0.commandClasses.
 frontDoorSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[11].instances[0].commandClasses[128].Get()
 
 
-//Alarm
+//Alarms
 outdoorAlarmBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[22].instances[0].commandClasses[128].Get()
 outdoorAlarmReadEndpoint=devices.22.instances.0.commandClasses.
 outdoorAlarmEndpoint=/ZWaveAPI/Run/devices[22].instances[0].SwitchBinary
 outdoorAlarmStrobeOnlyMode=/ZWaveAPI/Run/devices[22].instances[0].commandClasses[112].Set(0,2,1)
 outdoorAlarmStrobeSirenMode=/ZWaveAPI/Run/devices[22].instances[0].commandClasses[112].Set(0,0,1)
 
+indoorAlarmBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[23].instances[0].commandClasses[128].Get()
+indoorAlarmReadEndpoint=devices.23.instances.0.commandClasses.
+indoorAlarmEndpoint=/ZWaveAPI/Run/devices[23].instances[0].SwitchBinary
+indoorAlarmStrobeOnlyMode=/ZWaveAPI/Run/devices[23].instances[0].commandClasses[112].Set(0,2,1)
+indoorAlarmStrobeSirenMode=/ZWaveAPI/Run/devices[23].instances[0].commandClasses[112].Set(0,0,1)

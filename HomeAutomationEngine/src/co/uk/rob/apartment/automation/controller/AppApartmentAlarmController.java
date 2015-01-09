@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
-import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
+import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 /**
@@ -39,13 +39,16 @@ public class AppApartmentAlarmController extends HttpServlet {
 		HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", "");
 		HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "false");
 		
-		ControllableDevice outdoorAlarmUnit = DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
+		AlarmUnit outdoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
+		AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
 		
 		//leave actual switch off command after check in case device is on but we think it isn't
-		if (outdoorAlarmUnit.isDeviceOn()) {
+		if (outdoorAlarmUnit.isDeviceOn() || indoorAlarmUnit.isDeviceOn()) {
 			log.info("Alarm is sounding - forcing stop now");
 		}
 		outdoorAlarmUnit.turnDeviceOff(false);
+		indoorAlarmUnit.turnDeviceOff(false);
+		indoorAlarmUnit.setToStrobeOnlyMode();
 		
 		PrintWriter out = response.getWriter();
 		response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");

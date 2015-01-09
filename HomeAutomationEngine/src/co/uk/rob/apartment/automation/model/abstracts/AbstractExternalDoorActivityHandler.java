@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
@@ -81,6 +82,10 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 	}
 	
 	protected void runUnexpectedOccupancyControl() {
+		//start indoor alarm as strobe
+		AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
+		indoorAlarmUnit.turnDeviceOn(false);
+		
 		//handle unexpected occupancy
 		HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "true");
 		
@@ -105,7 +110,20 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
     			if (!"".equals(alarmOneTimeUrl)) {
     				ControllableDevice outdoorAlarmUnit = DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
 					outdoorAlarmUnit.turnDeviceOn(false);
+					
+					AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
+					indoorAlarmUnit.turnDeviceOff(false);
+					indoorAlarmUnit.setToStrobeSirenMode();
+					
 					SMSHelper.sendSMS("07965502960", "Alarm now sounding @ 106dB in apartment");
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						//no op
+					}
+					
+					indoorAlarmUnit.turnDeviceOn(false);
 					
 					log.info("ALARM TRIGGERED - now sounding @ 106dB");
     			}
