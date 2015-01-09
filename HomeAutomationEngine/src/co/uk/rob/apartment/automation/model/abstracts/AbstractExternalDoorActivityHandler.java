@@ -92,9 +92,9 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 		SMSHelper.sendSMS("07965502960", smsText);
 		SMSHelper.sendSMS("07875468023", smsText);
 		
-		//trigger outdoor AlarmUnit in 30 seconds
+		//trigger outdoor AlarmUnit in 1 minute
 		//TODO: http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/
-		Timer timer = new Timer("Sound alarm in 30 seconds");
+		Timer timer = new Timer("Sound alarm in 1 minute");
 		
 		TimerTask task = new TimerTask() {
 			
@@ -115,6 +115,6 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			}
 		};
 		
-		timer.schedule(task, 30000);
+		timer.schedule(task, 60000);
 	}
 }
