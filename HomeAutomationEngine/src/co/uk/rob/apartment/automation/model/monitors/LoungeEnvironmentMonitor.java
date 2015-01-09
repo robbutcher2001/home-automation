@@ -292,13 +292,13 @@ public class LoungeEnvironmentMonitor extends Thread {
 				else if (CommonQueries.isBrightnessBetween20and200() && now.after(halfThreePM)) {
 					if (!"40".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						loungeLamp.turnDeviceOnAutoOverride("40");
-						log.info("Outside brightness has fallen into 1-200 bucket and patio door shut, lounge lamp auto up to 40%");
+						log.info("Outside brightness has fallen into 20-200 bucket and patio door shut, lounge lamp auto up to 40%");
 					}
 				}
 				else if (CommonQueries.isBrightnessBelow20() && now.after(halfThreePM)) {
 					if (lampsOnFull()) {
-						log.info("Outside brightness has fallen into < 1 bucket, lounge lamp auto up to 55% (max)");
-						log.info("Outside brightness has fallen into < 1 bucket, lounge stick lamp auto up to 40%");
+						log.info("Outside brightness has fallen into < 20 bucket, lounge lamp auto up to 55% (max)");
+						log.info("Outside brightness has fallen into < 20 bucket, lounge stick lamp auto up to 40%");
 					}
 				}
 			}
