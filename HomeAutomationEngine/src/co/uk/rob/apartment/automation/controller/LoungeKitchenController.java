@@ -151,7 +151,7 @@ public class LoungeKitchenController extends HttpServlet {
 			}
 			
 			boolean blindsToOpen = false;
-			if (!CommonQueries.isBrightnessAt0()) {
+			if (!CommonQueries.isBrightnessBelow20()) {
 				blindsToOpen = true;
 			}
 			
@@ -199,7 +199,7 @@ public class LoungeKitchenController extends HttpServlet {
 		}
 		else if (action.equals("blindTiltToggle")) {
 			log.info("Request for blind tilt in lounge [" + activeUser + "]");
-			if (!CommonQueries.isBrightnessAt0()) {
+			if (!CommonQueries.isBrightnessBelow20()) {
 				if (!loungeWindowBlind.isTilted() || !loungePatioBlind.isTilted()) {
 					successfulCall = loungeWindowBlind.tiltBlindDown();
 					successfulCall = loungePatioBlind.tiltBlindDown();

@@ -41,7 +41,7 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			
 			log.info(this.door + " door opened, apartment unoccupied for more than 1 hour, welcoming home");
 			
-			if (CommonQueries.isBrightnessAt0() || CommonQueries.isBrightnessBetween1and200()) {
+			if (CommonQueries.isBrightnessBelow20() || CommonQueries.isBrightnessBetween20and200()) {
 				boolean lampsTurnedOn = false;
 				
 				loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);

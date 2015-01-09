@@ -199,22 +199,22 @@ public class CommonQueries {
 		return false;
 	}
 	
-	public static boolean isBrightnessBetween1and200() {
+	public static boolean isBrightnessBetween20and200() {
 		Float[] outsideLux = getCurrentBrightness();
-		if ((outsideLux[0] < 200f && outsideLux[0] > 0f) &&
-				(outsideLux[1] < 200f && outsideLux[1] > 0f) &&
-					(outsideLux[2] < 200f && outsideLux[2] > 0f)) {
+		if ((outsideLux[0] < 200f && outsideLux[0] > 20f) &&
+				(outsideLux[1] < 200f && outsideLux[1] > 20f) &&
+					(outsideLux[2] < 200f && outsideLux[2] > 20f)) {
 			return true;
 		}
 		
 		return false;
 	}
 	
-	public static boolean isBrightnessAt0() {
+	public static boolean isBrightnessBelow20() {
 		Float[] outsideLux = getCurrentBrightness();
-		if (outsideLux[0] < 1 &&
-				outsideLux[1] < 1 &&
-					outsideLux[2] < 1) {
+		if (outsideLux[0] <= 20 &&
+				outsideLux[1] <= 20 &&
+					outsideLux[2] <= 20) {
 			return true;
 		}
 		

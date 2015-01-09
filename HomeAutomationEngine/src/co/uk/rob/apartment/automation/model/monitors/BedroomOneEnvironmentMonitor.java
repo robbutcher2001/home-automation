@@ -109,26 +109,26 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into 200-400 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessBetween1and200() && now.after(halfThreePM)) {
+					else if (CommonQueries.isBrightnessBetween20and200() && now.after(halfThreePM)) {
 						if (!"99".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("99");
-							log.info("Outside brightness has fallen into 1-200 bucket, Rob's room lamp auto up to max");
+							log.info("Outside brightness has fallen into 20-200 bucket, Rob's room lamp auto up to max");
 						}
 						
 						if (ledRod.isDeviceOn() && !ledRod.isManuallyOverridden()) {
 							ledRod.turnDeviceOffAutoOverride();
-							log.info("Outside brightness has fallen into 1-200 bucket, Rob's room LED rod auto off");
+							log.info("Outside brightness has fallen into 20-200 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessAt0() && now.after(halfThreePM)) {
+					else if (CommonQueries.isBrightnessBelow20() && now.after(halfThreePM)) {
 						if (!"99".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("99");
-							log.info("Outside brightness is at 0, Rob's room lamp auto up to max");
+							log.info("Outside brightness is below 20, Rob's room lamp auto up to max");
 						}
 						
 						if (!ledRod.isDeviceOn() && !ledRod.isManuallyOverridden()) {
 							ledRod.turnDeviceOnAutoOverride("99");
-							log.info("Outside brightness is at 0, Rob's room LED rod auto on");
+							log.info("Outside brightness is below 20, Rob's room LED rod auto on");
 						}
 					}
 				}

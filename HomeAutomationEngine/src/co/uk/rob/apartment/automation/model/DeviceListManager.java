@@ -122,7 +122,9 @@ public class DeviceListManager {
 		ControllableDevice outdoorAlarmEndpoint = new AlarmUnit(HomeAutomationProperties.getProperty("outdoorAlarmBatteryUpdateEndpoint"),
 				HomeAutomationProperties.getProperty("outdoorAlarmReadEndpoint"),
 				HomeAutomationProperties.getProperty("outdoorAlarmEndpoint"),
-				Zone.PATIO);
+				Zone.PATIO,
+				HomeAutomationProperties.getProperty("outdoorAlarmStrobeOnlyMode"),
+				HomeAutomationProperties.getProperty("outdoorAlarmStrobeSirenMode"));
 		controllableDevices.add(outdoorAlarmEndpoint);
 	}
 	

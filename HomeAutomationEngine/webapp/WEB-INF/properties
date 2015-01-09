@@ -19,9 +19,9 @@ ledRodKitchenEndpoint=/ZWaveAPI/Run/devices[9].instances[0].SwitchBinary
 patioDoorSensorEndpoint=devices.18.instances.0.commandClasses.
 patioDoorSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[18].instances[0].commandClasses[128].Get()
 
-multisensorLoungeUpdateEndpoint=/ZWaveAPI/Run/devices[6].instances[0].commandClasses[49].Get()
-multisensorLoungeBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[6].instances[0].commandClasses[128].Get()
-multisensorLoungeEndpoint=devices.6.instances.0.commandClasses.
+multisensorLoungeUpdateEndpoint=/ZWaveAPI/Run/devices[15].instances[0].commandClasses[49].Get()
+multisensorLoungeBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[15].instances[0].commandClasses[128].Get()
+multisensorLoungeEndpoint=devices.15.instances.0.commandClasses.
 
 loungeWindowBlindEndpoint=/ZWaveAPI/Run/devices[21].instances[0].SwitchMultilevel
 loungeWindowBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[21].instances[0].SwitchBinary
@@ -45,9 +45,9 @@ multisensorRobEndpoint=devices.10.instances.0.commandClasses.
 
 
 //Patio
-multisensorPatioUpdateEndpoint=/ZWaveAPI/Run/devices[15].instances[0].commandClasses[49].Get()
-multisensorPatioBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[15].instances[0].commandClasses[128].Get()
-multisensorPatioEndpoint=devices.15.instances.0.commandClasses.
+multisensorPatioUpdateEndpoint=/ZWaveAPI/Run/devices[6].instances[0].commandClasses[49].Get()
+multisensorPatioBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[6].instances[0].commandClasses[128].Get()
+multisensorPatioEndpoint=devices.6.instances.0.commandClasses.
 
 
 //Hallway
@@ -56,7 +56,9 @@ frontDoorSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[11].instances[0].comm
 
 
 //Alarm
-outdoorAlarmEndpoint=/ZWaveAPI/Run/devices[22].instances[0].SwitchBinary
 outdoorAlarmBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[22].instances[0].commandClasses[128].Get()
 outdoorAlarmReadEndpoint=devices.22.instances.0.commandClasses.
+outdoorAlarmEndpoint=/ZWaveAPI/Run/devices[22].instances[0].SwitchBinary
+outdoorAlarmStrobeOnlyMode=/ZWaveAPI/Run/devices[22].instances[0].commandClasses[112].Set(0,2,1)
+outdoorAlarmStrobeSirenMode=/ZWaveAPI/Run/devices[22].instances[0].commandClasses[112].Set(0,0,1)
 

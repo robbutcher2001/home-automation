@@ -11,12 +11,17 @@ import co.uk.rob.apartment.automation.model.interfaces.BatteryOperable;
 public class AlarmUnit extends AbstractControllableDevice implements BatteryOperable {
 
 	private String batteryUpdateEndpoint;
+	private String strobeOnlyEndpoint;
+	private String strobeSirenEndpoint;
 	
-	public AlarmUnit(String batteryUpdateEndpoint, String dataEndpoint, String endpoint, Zone location) {
+	public AlarmUnit(String batteryUpdateEndpoint, String dataEndpoint, String endpoint, Zone location,
+			String strobeOnlyEndpoint, String strobeSirenEndpoint) {
 		this.batteryUpdateEndpoint = batteryUpdateEndpoint;
 		this.dataEndpoint = dataEndpoint;
 		this.endpoint = endpoint;
 		this.zone = location;
+		this.strobeOnlyEndpoint = strobeOnlyEndpoint;
+		this.strobeSirenEndpoint = strobeSirenEndpoint;
 	}
 
 	@Override
@@ -55,5 +60,13 @@ public class AlarmUnit extends AbstractControllableDevice implements BatteryOper
 	@Override
 	public Integer getBatteryLevel() {
 		return this.battery;
+	}
+	
+	public boolean setToStrobeOnlyMode() {
+		return callParseResult(host + strobeOnlyEndpoint);
+	}
+	
+	public boolean setToStrobeSirenMode() {
+		return callParseResult(host + strobeSirenEndpoint);
 	}
 }
