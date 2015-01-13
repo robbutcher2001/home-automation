@@ -30,6 +30,7 @@ public class MSOMessageManager {
 		testForAlarmTrigger();
 		
 		//TODO: if windows are open and apartment marked as unoccupied, display as MSO (+ send text)
+		//TODO: check for open windows after 10pm whether occupied or not
 	}
 	
 	/**

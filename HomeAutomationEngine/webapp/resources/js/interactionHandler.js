@@ -188,7 +188,12 @@ var DeliveryHelper = {
 					}
 					
 					if (response.apartment.alarm_system == 'true') {
-						$('#flat-alarm-system').html('Alarm system automatically enabled');
+						if (response.apartment.continuous_alarm_mode == 'enabled') {
+							$('#flat-alarm-system').html('Alarm system continuously monitoring');
+						}
+						else {
+							$('#flat-alarm-system').html('Alarm system automatically enabled');
+						}
 						$('#flat-alarm-system').show();
 					}
 					else {
@@ -315,13 +320,13 @@ var DeliveryHelper = {
 						$('#bedroomModeRobRoom').removeClass('error');
 					}
 
-					if (response.apartment.at_home_today_mode == 'enabled') {
-						$('#atHomeModeLounge').html('Switch to \'Normal Occupancy\' mode');
-						$('#atHomeModeLounge').addClass('error');
+					if (response.apartment.continuous_alarm_mode == 'enabled') {
+						$('#continuousAlarmMode').html('Switch to \'Normal Alarm Mode\' mode');
+						$('#continuousAlarmMode').addClass('error');
 					}
 					else {
-						$('#atHomeModeLounge').html('Switch to \'At Home Today\' mode');
-						$('#atHomeModeLounge').removeClass('error');
+						$('#continuousAlarmMode').html('Switch to \'Continuous Alarm Mode\' mode');
+						$('#continuousAlarmMode').removeClass('error');
 					}
 				}
 			});

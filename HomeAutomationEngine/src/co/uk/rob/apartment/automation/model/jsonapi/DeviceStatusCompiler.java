@@ -55,12 +55,12 @@ public class DeviceStatusCompiler {
 			}
 		}
 		else if (Zone.APARTMENT.equals(zone)) {
-			String atHomeModeLounge = HomeAutomationProperties.getProperty("AtHomeTodayMode");
-			if (atHomeModeLounge != null && "true".equals(atHomeModeLounge)) {
-				zoneStatuses.put("at_home_today_mode", "enabled");
+			String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
+			if (continuousAlarmMode != null && "true".equals(continuousAlarmMode)) {
+				zoneStatuses.put("continuous_alarm_mode", "enabled");
 			}
 			else {
-				zoneStatuses.put("at_home_today_mode", "disabled");
+				zoneStatuses.put("continuous_alarm_mode", "disabled");
 			}
 		}
 		
@@ -134,9 +134,7 @@ public class DeviceStatusCompiler {
 			zoneStatuses.put("unexpected_occupancy", HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy"));
 			
 			//check false occupancy
-			final String unexpectedOccupancy = HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy");
-			final String atHomeModeLounge = HomeAutomationProperties.getProperty("AtHomeTodayMode");
-			if (!CommonQueries.expectedExternalDoorActivity() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
+			if (CommonQueries.isApartmentAlarmEnabled()) {
 				zoneStatuses.put("alarm_system", "true");
 			}
 			else {

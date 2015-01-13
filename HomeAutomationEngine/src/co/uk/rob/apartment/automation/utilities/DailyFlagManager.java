@@ -58,8 +58,8 @@ public class DailyFlagManager extends Thread {
 			}
 			
 			if (now.after(halfFiveAM) && now.before(halfSixAM)) {
-				HomeAutomationProperties.setOrUpdateProperty("AtHomeTodayMode", "false");
-				log.info("Alarm has now been automatically disabled, resetting AtHomeTodayMode flag");
+				HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
+				log.info("Alarm has now been automatically disabled, resetting ContinuousAlarmMode flag");
 			}
 			
 			try {

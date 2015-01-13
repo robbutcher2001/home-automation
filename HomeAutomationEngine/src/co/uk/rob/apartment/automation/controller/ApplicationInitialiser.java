@@ -57,7 +57,7 @@ public class ApplicationInitialiser implements ServletContextListener {
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "false");
 				HomeAutomationProperties.setOrUpdateProperty("LoungeBedroomMode", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RobRoomBedroomMode", "false");
-				HomeAutomationProperties.setOrUpdateProperty("AtHomeTodayMode", "false");
+				HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RouterIP", "0.0.0.0");
 				
 				is = servlet.getServletContext().getResourceAsStream("/WEB-INF/audiofiles");

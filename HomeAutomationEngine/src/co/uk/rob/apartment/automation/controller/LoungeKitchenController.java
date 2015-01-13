@@ -240,23 +240,23 @@ public class LoungeKitchenController extends HttpServlet {
 				out.print("Lounge back to lounge mode");
 			}
 		}
-		else if (action.equals("atHomeModeLounge")) {
-			String atHomeModeLounge = HomeAutomationProperties.getProperty("AtHomeTodayMode");
-			if (atHomeModeLounge != null && "false".equals(atHomeModeLounge)) {
-				if (CommonQueries.isApartmentOccupied()) {
-					HomeAutomationProperties.setOrUpdateProperty("AtHomeTodayMode", "true");
-					log.info("Request for 'At Home Today' mode for full apartment [" + activeUser + "]");
-					out.print("'At Home Today' mode now on");
-				}
-				else {
-					log.info("Request for 'At Home Today' mode for full apartment but apartment has to be occupied [" + activeUser + "]");
-					out.print("Apartment has to be occupied");
-				}
+		else if (action.equals("continuousAlarmMode")) {
+			String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
+			if (continuousAlarmMode != null && "false".equals(continuousAlarmMode)) {
+				HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "true");
+				log.info("Request for 'Continuous Alarm Mode' mode for full apartment [" + activeUser + "]");
+				out.print("Alarm now continuously on");
 			}
 			else {
-				HomeAutomationProperties.setOrUpdateProperty("AtHomeTodayMode", "false");
-				log.info("Request for 'Normal Occupancy' mode for full apartment [" + activeUser + "]");
-				out.print("'Normal Occupancy' mode now on");
+				if (CommonQueries.isApartmentOccupied()) {
+					HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
+					log.info("Request for 'Normal Alarm Mode' mode for full apartment [" + activeUser + "]");
+					out.print("Normal alarm mode now resumed");
+				}
+				else {
+					log.info("Request for 'Normal Alarm Mode' mode for full apartment but apartment has to be occupied [" + activeUser + "]");
+					out.print("Apartment has to be occupied");
+				}
 			}
 		}
 		

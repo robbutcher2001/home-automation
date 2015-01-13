@@ -58,54 +58,69 @@ public class CommonQueries {
 		return false;
 	}
 	
-	public static boolean expectedExternalDoorActivity() {
-		boolean expectedOccupancy = true;
-		Calendar now = Calendar.getInstance();
+	public static boolean isApartmentAlarmEnabled() {
+		boolean alarmEnabled = false;
 		
-		Calendar nineAM = (Calendar) now.clone();
-		nineAM.set(Calendar.HOUR_OF_DAY, 9);
-		nineAM.set(Calendar.MINUTE, 00);
-		
-		Calendar halfFivePM = (Calendar) now.clone();
-		halfFivePM.set(Calendar.HOUR_OF_DAY, 17);
-		halfFivePM.set(Calendar.MINUTE, 30);
-		
-		Calendar halfFiveAM = (Calendar) now.clone();
-		halfFiveAM.set(Calendar.HOUR_OF_DAY, 5);
-		halfFiveAM.set(Calendar.MINUTE, 30);
-		
-		if (!isItTheWeekendOrBankHoliday()) {
-			if (now.after(nineAM) && now.before(halfFivePM)) {
-				expectedOccupancy = false;
+		//manual alarm override takes precedence
+		String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
+		if ("true".equals(continuousAlarmMode)) {
+			alarmEnabled = true;
+		}
+		else {
+			Calendar now = Calendar.getInstance();
+			
+			Calendar nineAM = (Calendar) now.clone();
+			nineAM.set(Calendar.HOUR_OF_DAY, 9);
+			nineAM.set(Calendar.MINUTE, 00);
+			
+			Calendar halfFivePM = (Calendar) now.clone();
+			halfFivePM.set(Calendar.HOUR_OF_DAY, 17);
+			halfFivePM.set(Calendar.MINUTE, 30);
+			
+			Calendar halfFiveAM = (Calendar) now.clone();
+			halfFiveAM.set(Calendar.HOUR_OF_DAY, 5);
+			halfFiveAM.set(Calendar.MINUTE, 30);
+			
+			//check whether it's a weekday between 09:00 and 17:30
+			if (!isItTheWeekendOrBankHoliday()) {
+				if (now.after(nineAM) && now.before(halfFivePM)) {
+					alarmEnabled = true;
+				}
+			}
+			
+			Calendar loungeMultisensor = Calendar.getInstance();
+			loungeMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0).getLastUpdated()));
+			
+			//check whether it's between 00:00 and 05:30 or after 05:30 but lounge multisensor hasn't yet been triggered
+			if (now.before(halfFiveAM)) {
+				alarmEnabled = true;
+			}
+			else if (!loungeMultisensor.after(halfFiveAM)) {
+				alarmEnabled = true;
 			}
 		}
 		
-		//now check that it's morning hours and after midnight
-		if (now.before(halfFiveAM)) {
-			expectedOccupancy = false;
-		}
-		
-		return expectedOccupancy;
+		return alarmEnabled;
 	}
 	
 	public static Calendar getLastApartmentOccupancyTime() {
-		Calendar lounge = Calendar.getInstance();
-		lounge.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0).getLastUpdated()));
+		Calendar loungeMultisensor = Calendar.getInstance();
+		loungeMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0).getLastUpdated()));
 		
-		Calendar robRoom = Calendar.getInstance();
-		robRoom.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0).getLastUpdated()));
+		Calendar robRoomMultisensor = Calendar.getInstance();
+		robRoomMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0).getLastUpdated()));
 		
 //		Calendar frontDoor = Calendar.getInstance();
 //		frontDoor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.HALLWAY).get(0).getLastUpdated()));
 		
 		Calendar lastOccupancy = null;
 		
-		if (lounge.after(robRoom)) {
-			lastOccupancy = lounge;
+		if (loungeMultisensor.after(robRoomMultisensor)) {
+			lastOccupancy = loungeMultisensor;
 		}
 		
-		if (robRoom.after(lounge)) {
-			lastOccupancy = robRoom;
+		if (robRoomMultisensor.after(loungeMultisensor)) {
+			lastOccupancy = robRoomMultisensor;
 		}
 		
 		//removed because as the door is opened as you come in, the last occupancy time is updated to the

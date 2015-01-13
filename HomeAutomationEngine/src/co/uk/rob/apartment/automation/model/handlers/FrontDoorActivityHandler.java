@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.abstracts.AbstractExternalDoorActivityHandler;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
-import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 public class FrontDoorActivityHandler extends AbstractExternalDoorActivityHandler {
 	
@@ -20,9 +19,7 @@ public class FrontDoorActivityHandler extends AbstractExternalDoorActivityHandle
 			log.info("Front door opened");
 			
 			//check false occupancy
-			String unexpectedOccupancy = HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy");
-			String atHomeModeLounge = HomeAutomationProperties.getProperty("AtHomeTodayMode");
-			if (!CommonQueries.expectedExternalDoorActivity() && "false".equals(unexpectedOccupancy) && "false".equals(atHomeModeLounge)) {
+			if (CommonQueries.isApartmentAlarmEnabled()) {
 				runUnexpectedOccupancyControl();
 			}
 			else {
