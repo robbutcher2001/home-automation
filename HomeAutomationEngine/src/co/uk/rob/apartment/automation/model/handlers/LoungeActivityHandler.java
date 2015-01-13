@@ -40,6 +40,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				Calendar fiveAM = Calendar.getInstance();
 				Calendar nineAM = Calendar.getInstance();
 				Calendar midday = Calendar.getInstance();
+				Calendar threePM = Calendar.getInstance();
 				Calendar now = Calendar.getInstance();
 				
 				fiveAM.set(Calendar.HOUR_OF_DAY, 5);
@@ -50,6 +51,9 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				
 				midday.set(Calendar.HOUR_OF_DAY, 12);
 				midday.set(Calendar.MINUTE, 00);
+				
+				threePM.set(Calendar.HOUR_OF_DAY, 15);
+				threePM.set(Calendar.MINUTE, 00);
 				
 				boolean openBlinds = false;
 				if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !"80".equals(loungeWindowBlind.getDeviceLevel()) &&
@@ -129,8 +133,9 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					}
 				}
 				
-				if (now.after(nineAM)) {
-					//tilt blinds if not tilted
+				//tilt blinds if not tilted but on Friday, only tilt if it's between 09:00-12:00 or after 15:00
+				if ((now.after(nineAM) && now.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) ||
+						(now.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && (now.after(nineAM) && now.before(midday) || now.after(threePM)))) {
 					boolean tilted = false;
 					if (!loungeWindowBlind.isTilted()) {
 						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungeWindowBlind.getDeviceLevel())) {

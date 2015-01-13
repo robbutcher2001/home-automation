@@ -145,9 +145,6 @@ public class LoungeEnvironmentMonitor extends Thread {
 				}
 				else if (CommonQueries.isBrightnessBetween200and400() && now.after(halfThreePM)) {
 					boolean moved = false;
-					int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "55");
-					int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungePatioBlind, "0");
-					
 					if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("55");
 					}
@@ -159,31 +156,9 @@ public class LoungeEnvironmentMonitor extends Thread {
 					if (moved) {
 						log.info("Outside brightness has fallen into 200-400 bucket, moving blinds to 55%");
 					}
-					
-					if (patioBlindMovementTime > windowBlindMovementTime) {
-						windowBlindMovementTime = patioBlindMovementTime;
-					}
-					
-					if (CommonQueries.isApartmentOccupied()) {
-						try {
-							Thread.sleep(windowBlindMovementTime);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						
-						if (!loungeWindowBlind.isTilted()) {
-							loungeWindowBlind.tiltBlindDown();
-						}
-						if (!loungePatioBlind.isTilted()) {
-							loungePatioBlind.tiltBlindDown();
-						}
-					}
 				}
 				else if (CommonQueries.isBrightnessBetween20and200() && now.after(halfThreePM)) {
 					boolean moved = false;
-					int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "40");
-					int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungePatioBlind, "0");
-					
 					if (!"40".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("40");
 					}
@@ -194,25 +169,6 @@ public class LoungeEnvironmentMonitor extends Thread {
 					
 					if (moved) {
 						log.info("Outside brightness has fallen into 20-200 bucket, moving blinds to 40%");
-					}
-					
-					if (patioBlindMovementTime > windowBlindMovementTime) {
-						windowBlindMovementTime = patioBlindMovementTime;
-					}
-					
-					if (CommonQueries.isApartmentOccupied()) {
-						try {
-							Thread.sleep(windowBlindMovementTime);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						
-						if (!loungeWindowBlind.isTilted()) {
-							loungeWindowBlind.tiltBlindDown();
-						}
-						if (!loungePatioBlind.isTilted()) {
-							loungePatioBlind.tiltBlindDown();
-						}
 					}
 				}
 				else if (CommonQueries.isBrightnessBelow20() && now.after(halfThreePM)) {

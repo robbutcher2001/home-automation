@@ -1,7 +1,5 @@
 package co.uk.rob.apartment.automation.model.handlers;
 
-import java.util.Calendar;
-
 import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
@@ -24,26 +22,8 @@ public class PatioDoorActivityHandler extends AbstractExternalDoorActivityHandle
 		if (this.reportingDevice.isTriggered()) {
 			log.info("Patio door opened");
 			
-			//tilt blinds
-			Calendar nineAM = Calendar.getInstance();
-			Calendar now = Calendar.getInstance();
-			
-			nineAM.set(Calendar.HOUR_OF_DAY, 9);
-			nineAM.set(Calendar.MINUTE, 00);
-			
 			ControllableDevice loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
-			Blind loungeWindowBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
 			Blind loungePatioBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(4);
-			if ((now.after(nineAM) || CommonQueries.isItTheWeekendOrBankHoliday()) && (CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800())) {
-				boolean tilted = false;
-				if (!"0".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isTilted()) {
-					tilted = loungeWindowBlind.tiltBlindDown();
-				}
-				
-				if (tilted) {
-					log.info("Blinds aren't tilted and it's light enough outside, tilting now someone's home");
-				}
-			}
 			
 			if (loungeLamp.isDeviceOn()) {
 				loungeLamp.turnDeviceOff(false);
