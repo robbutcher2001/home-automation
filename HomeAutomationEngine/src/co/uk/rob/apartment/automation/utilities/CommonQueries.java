@@ -69,9 +69,8 @@ public class CommonQueries {
 		else {
 			Calendar now = Calendar.getInstance();
 			
-			Calendar nineAM = (Calendar) now.clone();
-			nineAM.set(Calendar.HOUR_OF_DAY, 9);
-			nineAM.set(Calendar.MINUTE, 00);
+			Calendar hourAgo = (Calendar) now.clone();
+			hourAgo.add(Calendar.HOUR_OF_DAY, -1);
 			
 			Calendar halfFivePM = (Calendar) now.clone();
 			halfFivePM.set(Calendar.HOUR_OF_DAY, 17);
@@ -81,21 +80,23 @@ public class CommonQueries {
 			halfFiveAM.set(Calendar.HOUR_OF_DAY, 5);
 			halfFiveAM.set(Calendar.MINUTE, 30);
 			
-			//check whether it's a weekday between 09:00 and 17:30
-			if (!isItTheWeekendOrBankHoliday()) {
-				if (now.after(nineAM) && now.before(halfFivePM)) {
-					alarmEnabled = true;
-				}
-			}
-			
-			Calendar loungeMultisensor = Calendar.getInstance();
+			Calendar loungeMultisensor = (Calendar) now.clone();
 			loungeMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0).getLastUpdated()));
+
+			Calendar robRoomMultisensor = (Calendar) now.clone();
+			robRoomMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0).getLastUpdated()));
 			
-			//check whether it's between 00:00 and 05:30 or after 05:30 but lounge multisensor hasn't yet been triggered
+			//check whether it's between 00:00 and 05:30
 			if (now.before(halfFiveAM)) {
 				alarmEnabled = true;
 			}
+			//or check whether lounge sensor has not been triggered yet today (away from home)
+			//this means if sensor is triggered in the morning the alarm will be disabled after 17:30 (fall into below)
 			else if (!loungeMultisensor.after(halfFiveAM)) {
+				alarmEnabled = true;
+			}
+			//or if above isn't true, check whether it's before 5:30pm and lounge multisensor OR robs multisensor has not been triggered within the last hour
+			else if (now.before(halfFivePM) && !loungeMultisensor.after(hourAgo) && !robRoomMultisensor.after(hourAgo)) {
 				alarmEnabled = true;
 			}
 		}
