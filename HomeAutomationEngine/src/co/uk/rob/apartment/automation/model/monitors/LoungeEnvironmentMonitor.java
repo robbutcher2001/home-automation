@@ -3,6 +3,7 @@ package co.uk.rob.apartment.automation.model.monitors;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -25,6 +26,8 @@ public class LoungeEnvironmentMonitor extends Thread {
 	private Blind loungePatioBlind;
 	private ReportingDevice loungeReportingDevice;
 	private ReportingDevice patioDoor;
+	private Random randomLightsOff;
+	private int randomMinuteLightsOff;
 	
 	public LoungeEnvironmentMonitor() {
 		devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE);
@@ -38,23 +41,32 @@ public class LoungeEnvironmentMonitor extends Thread {
 		
 		loungeReportingDevice = DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0);
 		
+		randomLightsOff = new Random();
+		randomMinuteLightsOff = randomLightsOff.nextInt(60);
+		
 		log.info("Lounge room environment monitor started");
 	}
 	
 	@Override
 	public void run() {
 		while (!this.isInterrupted()) {
-			Calendar nineAM = Calendar.getInstance();
-			Calendar halfThreePM = Calendar.getInstance();
-			Calendar elevenPM = Calendar.getInstance();
 			Calendar now = Calendar.getInstance();
+			Calendar nineAM = (Calendar) now.clone();
+			Calendar halfThreePM = (Calendar) now.clone();
+			Calendar elevenPM = (Calendar) now.clone();
+			Calendar elevenPmRandomMinute = (Calendar) now.clone();
 			
 			nineAM.set(Calendar.HOUR_OF_DAY, 9);
 			nineAM.set(Calendar.MINUTE, 00);
+			
 			halfThreePM.set(Calendar.HOUR_OF_DAY, 15);
 			halfThreePM.set(Calendar.MINUTE, 30);
+			
 			elevenPM.set(Calendar.HOUR_OF_DAY, 23);
 			elevenPM.set(Calendar.MINUTE, 00);
+			
+			elevenPmRandomMinute.set(Calendar.HOUR_OF_DAY, 23);
+			elevenPmRandomMinute.set(Calendar.MINUTE, randomMinuteLightsOff);
 			
 			//if after 11pm and blinds are still not 0%, presume patio sensor is offline - close blinds
 			if (now.after(elevenPM)) {
@@ -203,7 +215,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 			twoPM.set(Calendar.MINUTE, 00);
 			
 			//lights
-			if (now.after(twoPM)) {
+			if (now.after(twoPM) && now.before(elevenPM)) {
 				if (CommonQueries.isBrightnessGreaterThan800()) {
 					if (!"0".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
 						loungeLamp.turnDeviceOffAutoOverride();
@@ -259,6 +271,23 @@ public class LoungeEnvironmentMonitor extends Thread {
 				}
 			}
 			
+			String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
+			if (continuousAlarmMode != null && "true".equals(continuousAlarmMode) && now.after(elevenPmRandomMinute)) {
+				if (loungeLamp.isDeviceOn() && !loungeLamp.isManuallyOverridden() && loungeLamp.isAutoOverridden()) {
+					loungeLamp.turnDeviceOffAutoOverride();
+					log.info("Lounge lamp auto off at 23:" + randomMinuteLightsOff + " due to activated continuous alarm mode");
+				}
+				
+				if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isManuallyOverridden() && stickLoungeLamp.isAutoOverridden()) {
+					stickLoungeLamp.turnDeviceOffAutoOverride();
+					log.info("Lounge stick lamp auto off at23:" + randomMinuteLightsOff + " due to activated continuous alarm mode");
+					
+					//generate random minute for next day
+					randomMinuteLightsOff = randomLightsOff.nextInt(60);
+				}
+			}
+			
+			//switch lights off at midnight if they're still on regardless - i.e. above randomised time didn't apply
 			if (now.before(twoPM)) {
 				if (loungeLamp.isDeviceOn() && !loungeLamp.isManuallyOverridden() && loungeLamp.isAutoOverridden()) {
 					loungeLamp.turnDeviceOffAutoOverride();
