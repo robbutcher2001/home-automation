@@ -72,11 +72,11 @@ public class LoungeEnvironmentMonitor extends Thread {
 			if (now.after(elevenPM)) {
 				boolean moved = false;
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
-					moved = loungeWindowBlind.turnDeviceOn(false);
+					moved = loungeWindowBlind.turnDeviceOn(true);
 				}
 				
 				if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !patioDoor.isTriggered()) {
-					moved = loungePatioBlind.turnDeviceOn(false);
+					moved = loungePatioBlind.turnDeviceOn(true);
 				}
 				
 				if (moved) {

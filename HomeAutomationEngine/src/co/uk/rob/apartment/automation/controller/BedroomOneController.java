@@ -154,7 +154,7 @@ public class BedroomOneController extends HttpServlet {
 			}
 		}
 		else {
-			out.print("Tut tut, you have to be logged in as Rob");
+			out.print("Tut tut, you have to be logged in as a user");
 		}
 		
 		//response.setContentType("application/json");
