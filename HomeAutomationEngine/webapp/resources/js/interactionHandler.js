@@ -116,7 +116,7 @@ var DeliveryHelper = {
 			Utilities.manageRefreshNotification();
 
 			$.ajax({
-				url: 'deviceStatus/all?' + Location.addToRequest(),
+				url: 'deviceStatus/apartment?' + Location.addToRequest(),
 				type: 'GET',
 				dataType: "json",
 				statusCode: {

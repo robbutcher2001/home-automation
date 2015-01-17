@@ -1,28 +1,21 @@
 package co.uk.rob.apartment.automation.model.jsonapi;
 
-import org.apache.log4j.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import co.uk.rob.apartment.automation.model.Zone;
 
 
 public class RestRequest {
 	
-	private Logger log = Logger.getLogger(RestRequest.class);
-	
-	/*
-     * Account number attributes
-     */
-//    private final Pattern accountTypeRegex;
-//    private final Matcher accountTypeMatcher;
-    private final Zone zone;
-
-    /*
-     * Phone number attributes
-     */
-//    private final Pattern phoneNumberRegex;
-//    private final Matcher phoneNumberMatcher;
-//    private final String level;
-
+    private final static Pattern zoneRegex;
+    private final Matcher zoneMatcher;
+    private Zone zone = null;
+    
+    static {
+    	zoneRegex = Pattern.compile("^([a-z_]{5,13})");
+    }
+    
     /**
      * @param pathInfo the pathInfo string from HttpServletRequest
      */
@@ -31,65 +24,31 @@ public class RestRequest {
     	
     	if (pathInfoTidied != null && pathInfoTidied.length > 0) {
     		if (pathInfoTidied[1] != null && !"".equals(pathInfoTidied[1])) {
-    			if ("all".equals(pathInfoTidied[1])) {
-    				zone = Zone.APARTMENT;
-    			}
-    			else if ("lounge".equals(pathInfoTidied[1])) {
-    				zone = Zone.LOUNGE;
-    			}
-    			else if ("patio".equals(pathInfoTidied[1])) {
-    				zone = Zone.PATIO;
-    			}
-    			else if ("robsroom".equals(pathInfoTidied[1])) {
-    				zone = Zone.ROB_ROOM;
-    			}
-    			else {
-    				zone = null;
-    			}
+    			this.zoneMatcher = RestRequest.zoneRegex.matcher(pathInfoTidied[1]);
+    	        if (this.zoneMatcher.find()) {
+    	            String matchedZone = this.zoneMatcher.group();
+    	            for (Zone listedZone : Zone.values()) {
+        				if (listedZone.toString().equals(matchedZone)) {
+        					zone = listedZone;
+        				}
+        			}
+    	        }
     		}
     		else {
-				zone = null;
-			}
+    			this.zoneMatcher = null;
+    		}
     	}
     	else {
-			zone = null;
+			this.zoneMatcher = null;
 		}
-    	
-    	//TODO: convert to parsing URL with regex
-//        final String pathInfoTidied = pathInfo.replace("/", "").toLowerCase();
-//
-//        this.accountTypeRegex = Pattern.compile("^([a-z]*)");
-//        this.accountTypeMatcher = this.accountTypeRegex.matcher(pathInfoTidied);
-//
-//        if (this.accountTypeMatcher.find()) {
-//            this.accountType = this.accountTypeMatcher.group();
-//        } else {
-//            this.accountType = null;
-//        }
-//
-//        final String remainingUnmatchedPathInfo = this.accountTypeMatcher.replaceFirst("");
-//        this.phoneNumberRegex = Pattern.compile("^([0-9]{1,11})");
-//        this.phoneNumberMatcher = this.phoneNumberRegex.matcher(remainingUnmatchedPathInfo);
-//
-//        if (this.phoneNumberMatcher.find()) {
-//            this.phoneNumber = this.phoneNumberMatcher.group();
-//        } else {
-//            this.phoneNumber = null;
-//        }
-    }
-
-    public Zone getZone() {
-        return zone;
     }
 
     /**
-     * @return the first number sequence found in passed string matching 1 to 11 digits or null
+     * Get parsed zone
+     * 
+     * @return parsed zone
      */
-//    public String getLevel() {
-//    	if (this.level != null) {
-//            return this.level.toLowerCase();
-//        } else {
-//            return this.level;
-//        }
-//    }
+    public Zone getZone() {
+        return zone;
+    }
 }
