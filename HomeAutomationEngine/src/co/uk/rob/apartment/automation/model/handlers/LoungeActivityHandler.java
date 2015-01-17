@@ -63,11 +63,11 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				
 				//only turn on lights if blinds are not open max
 				if (loungeWindowBlind.isDeviceOn() && loungePatioBlind.isDeviceOn()) {
-					if (!stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isAutoOverridden()) {
+					if (!stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isAutoOverridden() && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOn(false, "99");
 						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on stick lounge lamp");
 					}
-					else if ("40".equals(stickLoungeLamp.getDeviceLevel()) && stickLoungeLamp.isAutoOverridden()) {
+					else if ("40".equals(stickLoungeLamp.getDeviceLevel()) && stickLoungeLamp.isAutoOverridden() && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOn(false, "99");
 						log.info("Lounge occupancy detected, auto overridden and blinds are closed: turning up stick lounge lamp");
 					}
