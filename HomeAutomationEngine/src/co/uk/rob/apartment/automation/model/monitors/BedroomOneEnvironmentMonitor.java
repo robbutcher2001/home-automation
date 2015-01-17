@@ -3,6 +3,7 @@ package co.uk.rob.apartment.automation.model.monitors;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -23,6 +24,8 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 	private ControllableDevice ledRod;
 	private ReportingDevice motionSensor;
 	private ReportingDevice doorSensor;
+	private Random randomLightsOff;
+	private int randomMinuteLightsOff;
 	
 	public BedroomOneEnvironmentMonitor() {
 		devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM);
@@ -31,6 +34,8 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 		ledRod = devicesToControl.get(3);
 		motionSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0);
 		doorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
+		randomLightsOff = new Random();
+		randomMinuteLightsOff = randomLightsOff.nextInt(60);
 		
 		log.info("Rob room environment monitor started");
 	}
@@ -41,12 +46,14 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 			//bedroom mode not enabled
 			String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
 			if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode))) {
-				Calendar midday = Calendar.getInstance();
-				Calendar eightAM = Calendar.getInstance();
-				Calendar twoPM = Calendar.getInstance();
-				Calendar halfThreePM = Calendar.getInstance();
-				Calendar tenPM = Calendar.getInstance();
 				Calendar now = Calendar.getInstance();
+				Calendar midday = (Calendar) now.clone();
+				Calendar eightAM = (Calendar) now.clone();
+				Calendar twoPM = (Calendar) now.clone();
+				Calendar halfThreePM = (Calendar) now.clone();
+				Calendar tenPM = (Calendar) now.clone();
+				Calendar elevenPM = (Calendar) now.clone();
+				Calendar elevenPmRandomMinute = (Calendar) now.clone();
 				
 				midday.set(Calendar.HOUR_OF_DAY, 12);
 				midday.set(Calendar.MINUTE, 00);
@@ -63,8 +70,14 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				tenPM.set(Calendar.HOUR_OF_DAY, 22);
 				tenPM.set(Calendar.MINUTE, 00);
 				
+				elevenPM.set(Calendar.HOUR_OF_DAY, 23);
+				elevenPM.set(Calendar.MINUTE, 00);
+				
+				elevenPmRandomMinute.set(Calendar.HOUR_OF_DAY, 23);
+				elevenPmRandomMinute.set(Calendar.MINUTE, randomMinuteLightsOff);
+				
 				//lighting
-				if (now.after(twoPM) && doorSensor.isTriggered()) {
+				if (now.after(twoPM) && now.before(elevenPM) && doorSensor.isTriggered()) {
 					if (CommonQueries.isBrightnessGreaterThan800()) {
 						if (!"0".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOffAutoOverride();
@@ -133,6 +146,23 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 					}
 				}
 				
+				String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
+				if (continuousAlarmMode != null && "true".equals(continuousAlarmMode) && now.after(elevenPmRandomMinute)) {
+					if (lamp.isDeviceOn() && !lamp.isManuallyOverridden() && lamp.isAutoOverridden()) {
+						lamp.turnDeviceOffAutoOverride();
+						log.info("Rob's room lamp auto off at 23:" + randomMinuteLightsOff + " due to activated continuous alarm mode");
+					}
+					
+					if (ledRod.isDeviceOn() && !ledRod.isManuallyOverridden() && ledRod.isAutoOverridden()) {
+						ledRod.turnDeviceOffAutoOverride();
+						log.info("Rob's room LED rod auto off at 23:" + randomMinuteLightsOff + " due to activated continuous alarm mode");
+						
+						//generate random minute for next day
+						randomMinuteLightsOff = randomLightsOff.nextInt(60);
+					}
+				}
+				
+				//switch lights off at midnight if they're still on regardless - i.e. above randomised time didn't apply
 				if (now.before(twoPM)) {
 					if (lamp.isDeviceOn() && !lamp.isManuallyOverridden() && lamp.isAutoOverridden()) {
 						lamp.turnDeviceOffAutoOverride();
