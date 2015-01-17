@@ -271,16 +271,15 @@ public class LoungeEnvironmentMonitor extends Thread {
 				}
 			}
 			
-			String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
-			if (continuousAlarmMode != null && "true".equals(continuousAlarmMode) && now.after(elevenPmRandomMinute)) {
+			if (!CommonQueries.isApartmentOccupied() && now.after(elevenPmRandomMinute)) {
 				if (loungeLamp.isDeviceOn() && !loungeLamp.isManuallyOverridden() && loungeLamp.isAutoOverridden()) {
 					loungeLamp.turnDeviceOffAutoOverride();
-					log.info("Lounge lamp auto off at 23:" + randomMinuteLightsOff + " due to activated continuous alarm mode");
+					log.info("Lounge lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied due");
 				}
 				
 				if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isManuallyOverridden() && stickLoungeLamp.isAutoOverridden()) {
 					stickLoungeLamp.turnDeviceOffAutoOverride();
-					log.info("Lounge stick lamp auto off at23:" + randomMinuteLightsOff + " due to activated continuous alarm mode");
+					log.info("Lounge stick lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied due");
 					
 					//generate random minute for next day
 					randomMinuteLightsOff = randomLightsOff.nextInt(60);

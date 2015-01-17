@@ -146,16 +146,15 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 					}
 				}
 				
-				String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
-				if (continuousAlarmMode != null && "true".equals(continuousAlarmMode) && now.after(elevenPmRandomMinute)) {
+				if (!CommonQueries.isApartmentOccupied() && now.after(elevenPmRandomMinute)) {
 					if (lamp.isDeviceOn() && !lamp.isManuallyOverridden() && lamp.isAutoOverridden()) {
 						lamp.turnDeviceOffAutoOverride();
-						log.info("Rob's room lamp auto off at 23:" + randomMinuteLightsOff + " due to activated continuous alarm mode");
+						log.info("Rob's room lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied due");
 					}
 					
 					if (ledRod.isDeviceOn() && !ledRod.isManuallyOverridden() && ledRod.isAutoOverridden()) {
 						ledRod.turnDeviceOffAutoOverride();
-						log.info("Rob's room LED rod auto off at 23:" + randomMinuteLightsOff + " due to activated continuous alarm mode");
+						log.info("Rob's room LED rod auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied due");
 						
 						//generate random minute for next day
 						randomMinuteLightsOff = randomLightsOff.nextInt(60);
