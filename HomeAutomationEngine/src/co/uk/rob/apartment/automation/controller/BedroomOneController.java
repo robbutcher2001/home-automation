@@ -169,7 +169,7 @@ public class BedroomOneController extends HttpServlet {
 				}
 			}
 			else {
-				out.print("<button not implemented>");
+				out.print("[button not implemented]");
 			}
 		}
 		else {

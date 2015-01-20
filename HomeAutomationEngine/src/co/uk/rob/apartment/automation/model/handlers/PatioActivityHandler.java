@@ -30,6 +30,7 @@ public class PatioActivityHandler extends AbstractActivityHandler {
 					//no op
 				}
 				
+				outdoorAlarmUnit.turnDeviceOff(false);
 				outdoorAlarmUnit.setToStrobeSirenMode();
 				
 				log.info("Patio occupied during Continuous Alarm Mode - flashing strobe on siren as warning");
