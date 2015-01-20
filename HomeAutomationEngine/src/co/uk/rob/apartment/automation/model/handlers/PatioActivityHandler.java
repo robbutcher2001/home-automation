@@ -5,9 +5,9 @@ import org.apache.log4j.Logger;
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractActivityHandler;
-import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
-import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
-import co.uk.rob.apartment.automation.utilities.SMSHelper;
+import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
+import co.uk.rob.apartment.automation.utilities.CommonQueries;
+import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 public class PatioActivityHandler extends AbstractActivityHandler {
 	
@@ -18,16 +18,24 @@ public class PatioActivityHandler extends AbstractActivityHandler {
 		super.run();
 		
 		if (reportingDevice.isTriggered()) {
+			String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
+			if (continuousAlarmMode != null && "true".equals(continuousAlarmMode) && CommonQueries.isBrightnessBelow20()) {
+				AlarmUnit outdoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
+				outdoorAlarmUnit.setToStrobeOnlyMode();
+				outdoorAlarmUnit.turnDeviceOn(false);
+				
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					//no op
+				}
+				
+				outdoorAlarmUnit.setToStrobeSirenMode();
+				
+				log.info("Patio occupied during Continuous Alarm Mode - flashing strobe on siren as warning");
+			}
+			
 			log.info("PATIO OCCUPIED - bat: " + reportingDevice.getBatteryLevel() + "%, lux: " + reportingDevice.getLuminiscence()[0]);
 		}
-		
-//		ReportingDevice patioDoor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
-//		
-//		if (reportingDevice.isTriggered() && !patioDoor.isTriggered()) {
-//			log.info("Patio occupied but patio door closed - closing blinds for security measure and sending SMS");
-//			ControllableDevice loungeWindowBlind = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
-//			loungeWindowBlind.turnDeviceOn(true);
-//			SMSHelper.sendSMS("07965502960", "Patio has been occupied but patio door is shut, blinds have been closed.");
-//		}
 	}
 }
