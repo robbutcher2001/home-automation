@@ -300,6 +300,16 @@ var DeliveryHelper = {
 					else {
 						$('#rob-humidity').html('Room humidity is ' + response.rob_room.multisensor.humidity + '%');
 					}
+					
+					if (response.rob_room.next_lighting_state == 'soft') {
+						$('#lightToggleRobRoom').html('Lights on Soft');
+					}
+					else if (response.rob_room.next_lighting_state == 'off') {
+						$('#lightToggleRobRoom').html('Lights off');
+					}
+					else if (response.rob_room.next_lighting_state == 'full') {
+						$('#lightToggleRobRoom').html('Lights on Full');
+					}
 
 					if (response.lounge.blind1.tilted == 'false') {
 						$('#blindTiltToggle').html('Tilt blinds');

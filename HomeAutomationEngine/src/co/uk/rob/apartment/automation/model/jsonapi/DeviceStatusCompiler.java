@@ -26,9 +26,13 @@ public class DeviceStatusCompiler {
 	private DateFormat dateFormat = null;
 	private String user;
 	
+	//specific devices
+	private ControllableDevice ceilingLight;
+	
 	public DeviceStatusCompiler() {
 		this.dateFormat = new SimpleDateFormat("dd/MM HH:mm");
 		this.user = "unknown";
+		this.ceilingLight = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(1);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -53,6 +57,11 @@ public class DeviceStatusCompiler {
 			else {
 				zoneStatuses.put("full_bedroom_mode", "disabled");
 			}
+			
+			if (this.ceilingLight.isDeviceOn()) {
+				HomeAutomationProperties.setOrUpdateProperty("RobRoomNextLightingState", "off");
+			}
+			zoneStatuses.put("next_lighting_state", HomeAutomationProperties.getProperty("RobRoomNextLightingState"));
 		}
 		else if (Zone.APARTMENT.equals(zone)) {
 			String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");

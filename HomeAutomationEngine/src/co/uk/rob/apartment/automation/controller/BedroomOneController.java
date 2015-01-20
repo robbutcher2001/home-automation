@@ -61,65 +61,81 @@ public class BedroomOneController extends HttpServlet {
 			if (action == null || action.equals("")) {
 				RequestDispatcher dispatch = request.getRequestDispatcher("index.html");
 				dispatch.forward(request, response);
-			}
-			else if (action.equals("fullOnRobRoom")) {
-				log.info("Request for full lights on in Rob's room [" + activeUser + "]");
-				successfulCall = lampRobEndpoint.turnDeviceOff(true);
-				lampRobEndpoint.resetAutoOverridden();
-				if (successfulCall == true) {
-					successfulCall = ledRodRobEndpoint.turnDeviceOff(true);
-					ledRodRobEndpoint.resetAutoOverridden();
-					if (successfulCall == true) {
-						successfulCall = ceilingLightRobEndpoint.turnDeviceOn(true, "99");
+			} else if (action.equals("lightToggleRobRoom")) {
+				String robRoomNextLightingState = HomeAutomationProperties.getProperty("RobRoomNextLightingState");
+				if (robRoomNextLightingState != null) {
+					if ("soft".equals(robRoomNextLightingState)) {
+						log.info("Request for soft mood in Rob's room [" + activeUser + "]");
+						successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
 						ceilingLightRobEndpoint.resetAutoOverridden();
+						if (successfulCall == true) {
+							successfulCall = lampRobEndpoint.turnDeviceOn(true, "35");
+							lampRobEndpoint.resetAutoOverridden();
+							if (successfulCall == true) {
+								successfulCall = ledRodRobEndpoint.turnDeviceOn(true);
+								ledRodRobEndpoint.resetAutoOverridden();
+							}
+						}
+						
+						if (successfulCall) {
+							out.print("Light now on soft");
+						}
+						else {
+							out.print("Issue turning all lights on soft");
+						}
+						
+						//set next toggle as lights off
+						HomeAutomationProperties.setOrUpdateProperty("RobRoomNextLightingState", "off");
+					}
+					else if ("off".equals(robRoomNextLightingState)) {
+						log.info("Request for all lights off in Rob's room [" + activeUser + "]");
+						successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
+						ceilingLightRobEndpoint.resetAutoOverridden();
+						if (successfulCall == true) {
+							successfulCall = lampRobEndpoint.turnDeviceOff(true);
+							lampRobEndpoint.resetAutoOverridden();
+							if (successfulCall == true) {
+								successfulCall = ledRodRobEndpoint.turnDeviceOff(true);
+								ledRodRobEndpoint.resetAutoOverridden();
+							}
+						}
+						
+						if (successfulCall) {
+							out.print("Lights now off");
+						}
+						else {
+							out.print("Issue turning all lights off");
+						}
+						
+						//set next toggle as lights on full
+						HomeAutomationProperties.setOrUpdateProperty("RobRoomNextLightingState", "full");
+					}
+					else if ("full".equals(robRoomNextLightingState)) {
+						log.info("Request for full lights on in Rob's room [" + activeUser + "]");
+						successfulCall = lampRobEndpoint.turnDeviceOff(true);
+						lampRobEndpoint.resetAutoOverridden();
+						if (successfulCall == true) {
+							successfulCall = ledRodRobEndpoint.turnDeviceOff(true);
+							ledRodRobEndpoint.resetAutoOverridden();
+							if (successfulCall == true) {
+								successfulCall = ceilingLightRobEndpoint.turnDeviceOn(true, "99");
+								ceilingLightRobEndpoint.resetAutoOverridden();
+							}
+						}
+						
+						if (successfulCall) {
+							out.print("Lights now on full");
+						}
+						else {
+							out.print("Issue turning all lights on full");
+						}
+						
+						//set next toggle as lights on soft
+						HomeAutomationProperties.setOrUpdateProperty("RobRoomNextLightingState", "soft");
 					}
 				}
-				
-				if (successfulCall) {
-					out.print("Lights now on full");
-				}
 				else {
-					out.print("Issue turning all lights on full");
-				}
-			}
-			else if (action.equals("softMoodRobRoom")) {
-				log.info("Request for soft mood in Rob's room [" + activeUser + "]");
-				successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
-				ceilingLightRobEndpoint.resetAutoOverridden();
-				if (successfulCall == true) {
-					successfulCall = lampRobEndpoint.turnDeviceOn(true, "35");
-					lampRobEndpoint.resetAutoOverridden();
-					if (successfulCall == true) {
-						successfulCall = ledRodRobEndpoint.turnDeviceOn(true);
-						ledRodRobEndpoint.resetAutoOverridden();
-					}
-				}
-				
-				if (successfulCall) {
-					out.print("Light now on soft");
-				}
-				else {
-					out.print("Issue turning all lights on soft");
-				}
-			}
-			else if (action.equals("offRobRoom")) {
-				log.info("Request for all lights off in Rob's room [" + activeUser + "]");
-				successfulCall = ceilingLightRobEndpoint.turnDeviceOff(true);
-				ceilingLightRobEndpoint.resetAutoOverridden();
-				if (successfulCall == true) {
-					successfulCall = lampRobEndpoint.turnDeviceOff(true);
-					lampRobEndpoint.resetAutoOverridden();
-					if (successfulCall == true) {
-						successfulCall = ledRodRobEndpoint.turnDeviceOff(true);
-						ledRodRobEndpoint.resetAutoOverridden();
-					}
-				}
-				
-				if (successfulCall) {
-					out.print("Lights now off");
-				}
-				else {
-					out.print("Issue turning all lights off");
+					out.print("Bugger, something went wrong :(");
 				}
 			}
 			else if (action.equals("dehumRobRoom")) {
@@ -151,6 +167,9 @@ public class BedroomOneController extends HttpServlet {
 					log.info("Request for normal bedroom mode in Rob's room [" + activeUser + "]");
 					out.print("Normal bedroom mode now back on");
 				}
+			}
+			else {
+				out.print("<button not implemented>");
 			}
 		}
 		else {
