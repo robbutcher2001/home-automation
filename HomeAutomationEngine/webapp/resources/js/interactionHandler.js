@@ -239,12 +239,18 @@ var DeliveryHelper = {
 						$('.top-title').html('Lounge | Unoccupied');
 					}
 
-					if (response.lounge.blind1.percent_open == '0') {
-						$('.top-title').html($('.top-title').html() + ' | Blinds closed');
+					if (response.lounge.blind2.percent_open == '100') {
+						$('.top-title').html($('.top-title').html() + ' | Patio blind open');
 					}
 					else {
-						$('.top-title').html($('.top-title').html() + ' | Blinds open ' + response.lounge.blind1.percent_open + '%');
+						if (response.lounge.blind1.percent_open == '0') {
+							$('.top-title').html($('.top-title').html() + ' | Blinds closed');
+						}
+						else {
+							$('.top-title').html($('.top-title').html() + ' | Blinds open ' + response.lounge.blind1.percent_open + '%');
+						}
 					}
+					
 					$('.top-title').html($('.top-title').html() + ' | ' + response.lounge.multisensor.temperature + '&deg;C');
 
 					$('#flat-door-last-ocp').html('Front door last opened ' + response.hallway.door_sensor.last_triggered);
