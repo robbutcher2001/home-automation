@@ -8,6 +8,7 @@ import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.ColouredLedRod;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.devices.DoorSensor;
+import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.devices.Lamp;
 import co.uk.rob.apartment.automation.model.devices.MainCeilingLight;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
@@ -117,6 +118,10 @@ public class DeviceListManager {
 		ControllableDevice ledRodRobEndpoint = new ColouredLedRod(HomeAutomationProperties.getProperty("ledRodRobEndpoint"),
 				Zone.ROB_ROOM);
 		controllableDevices.add(ledRodRobEndpoint);
+		
+		ControllableDevice electricBlanket = new ElectricBlanket(HomeAutomationProperties.getProperty("electricBlanketRobEndpoint"),
+				Zone.ROB_ROOM);
+		controllableDevices.add(electricBlanket);
 		
 		// Patio
 		ControllableDevice outdoorAlarmEndpoint = new AlarmUnit(HomeAutomationProperties.getProperty("outdoorAlarmBatteryUpdateEndpoint"),

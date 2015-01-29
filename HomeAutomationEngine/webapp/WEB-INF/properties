@@ -35,6 +35,7 @@ lampRobEndpoint=/ZWaveAPI/Run/devices[5].instances[0].SwitchMultilevel
 ceilingLightRobEndpoint=/ZWaveAPI/Run/devices[7].instances[0].SwitchMultilevel
 dehumidifierRobEndpoint=/ZWaveAPI/Run/devices[12].instances[0].SwitchBinary
 ledRodRobEndpoint=/ZWaveAPI/Run/devices[13].instances[0].SwitchBinary
+electricBlanketRobEndpoint=/ZWaveAPI/Run/devices[25].instances[0].SwitchBinary
 
 robDoorSensorEndpoint=devices.14.instances.0.commandClasses.
 robDoorSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[14].instances[0].commandClasses[128].Get()

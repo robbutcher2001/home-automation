@@ -14,6 +14,7 @@ import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.devices.DoorSensor;
+import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -102,7 +103,7 @@ public class DeviceStatusCompiler {
 				}
 			}
 			
-			int blindCount = 1, dehumidifierCount = 1, alarmUnitCount = 1;
+			int blindCount = 1, dehumidifierCount = 1, alarmUnitCount = 1, electricBlanket = 1;
 			for (ControllableDevice device : devices) {
 				if (device instanceof Blind) {
 					JSONObject deviceStatuses = new JSONObject();
@@ -119,6 +120,11 @@ public class DeviceStatusCompiler {
 					JSONObject deviceStatuses = new JSONObject();
 					deviceStatuses.put("battery_level", Integer.toString(((AlarmUnit) device).getBatteryLevel()));
 					zoneStatuses.put("alarm_unit" + alarmUnitCount++, deviceStatuses);
+				}
+				else if (device instanceof ElectricBlanket) {
+					JSONObject deviceStatuses = new JSONObject();
+					deviceStatuses.put("next_state", ((ElectricBlanket) device).getNextStateText());
+					zoneStatuses.put("electric_blanket" + electricBlanket++, deviceStatuses);
 				}
 			}
 		}

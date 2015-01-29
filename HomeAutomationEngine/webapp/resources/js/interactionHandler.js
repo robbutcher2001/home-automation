@@ -310,6 +310,8 @@ var DeliveryHelper = {
 					else if (response.rob_room.next_lighting_state == 'full') {
 						$('#lightToggleRobRoom').html('Lights on Full');
 					}
+					
+					$('#toggleBlanket').html(response.rob_room.electric_blanket1.next_state);
 
 					if (response.lounge.blind1.tilted == 'false') {
 						$('#blindTiltToggle').html('Tilt blinds');

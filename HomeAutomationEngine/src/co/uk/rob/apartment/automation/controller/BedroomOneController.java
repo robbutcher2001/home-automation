@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
@@ -57,6 +58,7 @@ public class BedroomOneController extends HttpServlet {
 			ControllableDevice ceilingLightRobEndpoint = devicesToControl.get(1);
 			ControllableDevice dehumidifier = devicesToControl.get(2);
 			ControllableDevice ledRodRobEndpoint = devicesToControl.get(3);
+			ControllableDevice electricBlanket = devicesToControl.get(4);
 			
 			if (action == null || action.equals("")) {
 				RequestDispatcher dispatch = request.getRequestDispatcher("index.html");
@@ -136,6 +138,11 @@ public class BedroomOneController extends HttpServlet {
 				}
 				else {
 					out.print("Bugger, something went wrong :(");
+				}
+			}
+			else if (action.equals("toggleBlanket")) {
+				if (electricBlanket instanceof ElectricBlanket) {
+					out.print(((ElectricBlanket) electricBlanket).toggleNextState());
 				}
 			}
 			else if (action.equals("dehumRobRoom")) {
