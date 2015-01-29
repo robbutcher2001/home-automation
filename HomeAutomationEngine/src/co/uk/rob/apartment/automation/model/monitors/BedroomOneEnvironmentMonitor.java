@@ -214,13 +214,21 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 		int index = 1;
 		if (now.after(lastDateOccupied)) {
 			for (ControllableDevice device : devicesToControl) {
-				if (device.isManuallyOverridden() || (device instanceof ElectricBlanket && ((ElectricBlanket) device).isTimeToSwitchOff())) {
+				if (device.isManuallyOverridden()) {
 					log.info("Rob room unoccupied for more than 1 hour, resetting overridden flags for device " + index);
 					device.resetManuallyOverridden();
 					device.turnDeviceOff(false);
 				}
 				
 				index++;
+			}
+		}
+		
+		for (ControllableDevice device : devicesToControl) {
+			if (device instanceof ElectricBlanket && device.isDeviceOn() && ((ElectricBlanket) device).isTimeToSwitchOff()) {
+				log.info("Switching electric blanket off now it's timed out");
+				device.resetManuallyOverridden();
+				device.turnDeviceOff(false);
 			}
 		}
 	}
