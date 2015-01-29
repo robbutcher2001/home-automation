@@ -144,6 +144,7 @@ public class BedroomOneController extends HttpServlet {
 				if (electricBlanket instanceof ElectricBlanket) {
 					out.print(((ElectricBlanket) electricBlanket).toggleNextState());
 				}
+				log.info("Electric blanket toggle request for Rob's room [" + activeUser + "]");
 			}
 			else if (action.equals("dehumRobRoom")) {
 				if (dehumidifier.isDeviceOn() && hasDehumidifierBeenInStateForOverHour(dehumidifier.getLastInteractedTime())) {
