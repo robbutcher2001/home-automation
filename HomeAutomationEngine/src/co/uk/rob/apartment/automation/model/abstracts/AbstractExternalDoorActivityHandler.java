@@ -82,57 +82,60 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 	}
 	
 	protected void runUnexpectedOccupancyControl() {
-		//start indoor alarm as strobe
-		AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
-		indoorAlarmUnit.turnDeviceOn(false);
-		
-		//handle unexpected occupancy
-		HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "true");
-		
-		final String alarmOneTimeUrl = OneTimeUrlGenerator.getOneTimeString();
-		HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
-		final String smsText = "Apartment occupied from " + this.door.toLowerCase() + 
-				" door. Alarm will trigger. Deactivate now: "
-				+ "http://robsflat.noip.me/disableApartmentAlarm/" + alarmOneTimeUrl;
-		SMSHelper.sendSMS("07965502960", smsText);
-		SMSHelper.sendSMS("07875468023", smsText);
-		
-		//trigger outdoor AlarmUnit in 1 minute
-		//TODO: http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/
-		Timer timer = new Timer("Sound alarm in 1 minute");
-		
-		TimerTask task = new TimerTask() {
+		String alarmOneTimeUrl = HomeAutomationProperties.getProperty("AlarmOneTimeUrl");
+		if (alarmOneTimeUrl == null || "".equals(alarmOneTimeUrl)) {
+			//start indoor alarm as strobe
+			AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
+			indoorAlarmUnit.turnDeviceOn(false);
 			
-			@Override
-			public void run() {
+			//handle unexpected occupancy
+			HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "true");
+			
+			alarmOneTimeUrl = OneTimeUrlGenerator.getOneTimeString();
+			HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
+			final String smsText = "Apartment occupied from " + this.door.toLowerCase() + 
+					" door. Alarm will trigger. Deactivate now: "
+					+ "http://robsflat.noip.me/disableApartmentAlarm/" + alarmOneTimeUrl;
+			SMSHelper.sendSMS("07965502960", smsText);
+			SMSHelper.sendSMS("07875468023", smsText);
+			
+			//trigger outdoor AlarmUnit in 1 minute
+			//TODO: http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/
+			Timer timer = new Timer("Sound alarm in 1 minute");
+			
+			TimerTask task = new TimerTask() {
 				
-				final String alarmOneTimeUrl = HomeAutomationProperties.getProperty("AlarmOneTimeUrl");
-    			if (!"".equals(alarmOneTimeUrl)) {
-    				ControllableDevice outdoorAlarmUnit = DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
-					outdoorAlarmUnit.turnDeviceOn(false);
+				@Override
+				public void run() {
 					
-					AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
-					indoorAlarmUnit.turnDeviceOff(false);
-					indoorAlarmUnit.setToStrobeSirenMode();
-					
-					SMSHelper.sendSMS("07965502960", "Alarm now sounding @ 106dB in apartment");
-					
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						//no op
-					}
-					
-					indoorAlarmUnit.turnDeviceOn(false);
-					
-					log.info("ALARM TRIGGERED - now sounding @ 106dB");
-    			}
-    			else {
-    				log.info("Alarm successfully disarmed within one minute - siren cancelled");
-    			}
-			}
-		};
-		
-		timer.schedule(task, 60000);
+					final String alarmOneTimeUrl = HomeAutomationProperties.getProperty("AlarmOneTimeUrl");
+	    			if (!"".equals(alarmOneTimeUrl)) {
+	    				ControllableDevice outdoorAlarmUnit = DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
+						outdoorAlarmUnit.turnDeviceOn(false);
+						
+						AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
+						indoorAlarmUnit.turnDeviceOff(false);
+						indoorAlarmUnit.setToStrobeSirenMode();
+						
+						SMSHelper.sendSMS("07965502960", "Alarm now sounding @ 106dB in apartment");
+						
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							//no op
+						}
+						
+						indoorAlarmUnit.turnDeviceOn(false);
+						
+						log.info("ALARM TRIGGERED - now sounding @ 106dB");
+	    			}
+	    			else {
+	    				log.info("Alarm successfully disarmed within one minute - siren cancelled");
+	    			}
+				}
+			};
+			
+			timer.schedule(task, 60000);
+		}
 	}
 }

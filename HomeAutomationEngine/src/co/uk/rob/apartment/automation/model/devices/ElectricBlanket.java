@@ -14,13 +14,11 @@ public class ElectricBlanket extends AbstractControllableDevice {
 	}
 	
 	private Calendar switchOffAt;
-	private String nextStateText;
 	private State blanketState;
 	
 	public ElectricBlanket(String endpoint, Zone location) {
 		this.endpoint = endpoint;
 		this.zone = location;
-		this.nextStateText = "Warm the bed for 20 minutes";
 		this.blanketState = State.OFF;
 	}
 
@@ -67,25 +65,20 @@ public class ElectricBlanket extends AbstractControllableDevice {
 		
 		DateFormat format = new SimpleDateFormat("HH:mm");
 		
-		if (blanketState.equals(State.OFF)) {
+		if (this.blanketState.equals(State.OFF)) {
 			result = turnDeviceOnFor20Minutes();
-			nextStateText = "Warm the bed for one hour";
 		}
-		else if (blanketState.equals(State.TWENTY_MINS)) {
+		else if (this.blanketState.equals(State.TWENTY_MINS)) {
 			result = turnDeviceOnForOneHour();
-			nextStateText = "Warm the bed for three hours";
 		}
-		else if (blanketState.equals(State.ONE_HOUR)) {
+		else if (this.blanketState.equals(State.ONE_HOUR)) {
 			result = turnDeviceOnForThreeHours();
-			nextStateText = "Warm the bed until morning";
 		}
-		else if (blanketState.equals(State.THREE_HOURS)) {
+		else if (this.blanketState.equals(State.THREE_HOURS)) {
 			result = turnDeviceOnUntilMorning();
-			nextStateText = "Switch off bed warming";
 		}
-		else if (blanketState.equals(State.UNTIL_MORNING)) {
-			result = turnDeviceOff(false);
-			nextStateText = "Warm the bed for 20 minutes";
+		else if (this.blanketState.equals(State.UNTIL_MORNING)) {
+			result = turnDeviceOff(true);
 		}
 		
 		if (result) {
@@ -102,6 +95,24 @@ public class ElectricBlanket extends AbstractControllableDevice {
 	}
 	
 	public String getNextStateText() {
+		String nextStateText = "";
+		
+		if (this.blanketState.equals(State.OFF)) {
+			nextStateText = "Warm the bed for 20 minutes";
+		}
+		else if (this.blanketState.equals(State.TWENTY_MINS)) {
+			nextStateText = "Warm the bed for one hour";
+		}
+		else if (this.blanketState.equals(State.ONE_HOUR)) {
+			nextStateText = "Warm the bed for three hours";
+		}
+		else if (this.blanketState.equals(State.THREE_HOURS)) {
+			nextStateText = "Warm the bed until morning";
+		}
+		else if (this.blanketState.equals(State.UNTIL_MORNING)) {
+			nextStateText = "Switch off bed warming";
+		}
+		
 		return nextStateText;
 	}
 	
@@ -118,33 +129,40 @@ public class ElectricBlanket extends AbstractControllableDevice {
 	
 	private boolean turnDeviceOnFor20Minutes() {
 		this.blanketState = State.TWENTY_MINS;
-		switchOffAt = Calendar.getInstance();
-		switchOffAt.add(Calendar.MINUTE, 20);
+		this.switchOffAt = Calendar.getInstance();
+		this.switchOffAt.add(Calendar.MINUTE, 20);
 		
 		return turnDeviceOn(true);
 	}
 	
 	private boolean turnDeviceOnForOneHour() {
 		this.blanketState = State.ONE_HOUR;
-		switchOffAt = Calendar.getInstance();
-		switchOffAt.add(Calendar.HOUR_OF_DAY, 1);
+		this.switchOffAt = Calendar.getInstance();
+		this.switchOffAt.add(Calendar.HOUR_OF_DAY, 1);
 		
 		return turnDeviceOn(true);
 	}
 	
 	private boolean turnDeviceOnForThreeHours() {
 		this.blanketState = State.THREE_HOURS;
-		switchOffAt = Calendar.getInstance();
-		switchOffAt.add(Calendar.HOUR_OF_DAY, 3);
+		this.switchOffAt = Calendar.getInstance();
+		this.switchOffAt.add(Calendar.HOUR_OF_DAY, 3);
 		
 		return turnDeviceOn(true);
 	}
 	
 	private boolean turnDeviceOnUntilMorning() {
 		this.blanketState = State.UNTIL_MORNING;
-		switchOffAt = Calendar.getInstance();
-		switchOffAt.set(Calendar.HOUR_OF_DAY, 07);
-		switchOffAt.set(Calendar.MINUTE, 30);
+		this.switchOffAt = Calendar.getInstance();
+		this.switchOffAt.set(Calendar.HOUR_OF_DAY, 07);
+		this.switchOffAt.set(Calendar.MINUTE, 30);
+		
+		Calendar now = Calendar.getInstance();
+		
+		//if after 7:30am today, change switch off date to tomorrow
+		if (now.after(this.switchOffAt)) {
+			this.switchOffAt.add(Calendar.DAY_OF_MONTH, 1);
+		}
 		
 		return turnDeviceOn(true);
 	}

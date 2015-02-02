@@ -274,12 +274,12 @@ public class LoungeEnvironmentMonitor extends Thread {
 			if (!CommonQueries.isApartmentOccupied() && now.after(elevenPmRandomMinute)) {
 				if (loungeLamp.isDeviceOn() && !loungeLamp.isManuallyOverridden() && loungeLamp.isAutoOverridden()) {
 					loungeLamp.turnDeviceOffAutoOverride();
-					log.info("Lounge lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied due");
+					log.info("Lounge lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
 				}
 				
 				if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isManuallyOverridden() && stickLoungeLamp.isAutoOverridden()) {
 					stickLoungeLamp.turnDeviceOffAutoOverride();
-					log.info("Lounge stick lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied due");
+					log.info("Lounge stick lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
 					
 					//generate random minute for next day
 					randomMinuteLightsOff = randomLightsOff.nextInt(60);

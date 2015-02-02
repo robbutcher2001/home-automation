@@ -18,6 +18,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 	private ControllableDevice lamp;
 	private ControllableDevice ceilingLight;
 	private ControllableDevice ledRodRobRoom;
+	private ControllableDevice electricBlanket;
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
 
@@ -27,6 +28,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 		lamp = devicesToControl.get(0);
 		ceilingLight = devicesToControl.get(1);
 		ledRodRobRoom = devicesToControl.get(3);
+		electricBlanket = devicesToControl.get(4);
 		
 		loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
 		stickLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(2);
@@ -79,6 +81,11 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 				if (ledRodRobRoom.isDeviceOn()) {
 					log.info("Rob room bed mode triggered, switching off LED rod");
 					ledRodRobRoom.turnDeviceOff(false);
+				}
+				
+				if (electricBlanket.isDeviceOn() && !electricBlanket.isManuallyOverridden()) {
+					log.info("Rob room bed mode triggered, switching off electric blanket");
+					electricBlanket.turnDeviceOffAutoOverride();
 				}
 				
 				if (ceilingLight.isDeviceOn()) {

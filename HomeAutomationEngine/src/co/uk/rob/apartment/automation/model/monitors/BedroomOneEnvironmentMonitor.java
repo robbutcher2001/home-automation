@@ -23,8 +23,10 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 	private ControllableDevice lamp;
 	private ControllableDevice dehumidifier;
 	private ControllableDevice ledRod;
+	private ControllableDevice electricBlanket;
 	private ReportingDevice motionSensor;
 	private ReportingDevice doorSensor;
+	private ReportingDevice outsideMotionSensor;
 	private Random randomLightsOff;
 	private int randomMinuteLightsOff;
 	
@@ -33,8 +35,12 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 		lamp = devicesToControl.get(0);
 		dehumidifier = devicesToControl.get(2);
 		ledRod = devicesToControl.get(3);
+		electricBlanket = devicesToControl.get(4);
+		
 		motionSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0);
 		doorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
+		outsideMotionSensor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(0);
+		
 		randomLightsOff = new Random();
 		randomMinuteLightsOff = randomLightsOff.nextInt(60);
 		
@@ -44,39 +50,39 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 	@Override
 	public void run() {
 		while (!this.isInterrupted()) {
+			Calendar now = Calendar.getInstance();
+			Calendar midday = (Calendar) now.clone();
+			Calendar eightAM = (Calendar) now.clone();
+			Calendar twoPM = (Calendar) now.clone();
+			Calendar halfThreePM = (Calendar) now.clone();
+			Calendar tenPM = (Calendar) now.clone();
+			Calendar elevenPM = (Calendar) now.clone();
+			Calendar elevenPmRandomMinute = (Calendar) now.clone();
+			
+			midday.set(Calendar.HOUR_OF_DAY, 12);
+			midday.set(Calendar.MINUTE, 00);
+			
+			eightAM.set(Calendar.HOUR_OF_DAY, 8);
+			eightAM.set(Calendar.MINUTE, 00);
+			
+			twoPM.set(Calendar.HOUR_OF_DAY, 14);
+			twoPM.set(Calendar.MINUTE, 00);
+			
+			halfThreePM.set(Calendar.HOUR_OF_DAY, 15);
+			halfThreePM.set(Calendar.MINUTE, 30);
+			
+			tenPM.set(Calendar.HOUR_OF_DAY, 22);
+			tenPM.set(Calendar.MINUTE, 00);
+			
+			elevenPM.set(Calendar.HOUR_OF_DAY, 23);
+			elevenPM.set(Calendar.MINUTE, 00);
+			
+			elevenPmRandomMinute.set(Calendar.HOUR_OF_DAY, 23);
+			elevenPmRandomMinute.set(Calendar.MINUTE, randomMinuteLightsOff);
+			
 			//bedroom mode not enabled
 			String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
 			if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode))) {
-				Calendar now = Calendar.getInstance();
-				Calendar midday = (Calendar) now.clone();
-				Calendar eightAM = (Calendar) now.clone();
-				Calendar twoPM = (Calendar) now.clone();
-				Calendar halfThreePM = (Calendar) now.clone();
-				Calendar tenPM = (Calendar) now.clone();
-				Calendar elevenPM = (Calendar) now.clone();
-				Calendar elevenPmRandomMinute = (Calendar) now.clone();
-				
-				midday.set(Calendar.HOUR_OF_DAY, 12);
-				midday.set(Calendar.MINUTE, 00);
-				
-				eightAM.set(Calendar.HOUR_OF_DAY, 8);
-				eightAM.set(Calendar.MINUTE, 00);
-				
-				twoPM.set(Calendar.HOUR_OF_DAY, 14);
-				twoPM.set(Calendar.MINUTE, 00);
-				
-				halfThreePM.set(Calendar.HOUR_OF_DAY, 15);
-				halfThreePM.set(Calendar.MINUTE, 30);
-				
-				tenPM.set(Calendar.HOUR_OF_DAY, 22);
-				tenPM.set(Calendar.MINUTE, 00);
-				
-				elevenPM.set(Calendar.HOUR_OF_DAY, 23);
-				elevenPM.set(Calendar.MINUTE, 00);
-				
-				elevenPmRandomMinute.set(Calendar.HOUR_OF_DAY, 23);
-				elevenPmRandomMinute.set(Calendar.MINUTE, randomMinuteLightsOff);
-				
 				//lighting
 				if (now.after(twoPM) && now.before(elevenPM) && doorSensor.isTriggered()) {
 					if (CommonQueries.isBrightnessGreaterThan800()) {
@@ -150,12 +156,12 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				if (!CommonQueries.isApartmentOccupied() && now.after(elevenPmRandomMinute)) {
 					if (lamp.isDeviceOn() && !lamp.isManuallyOverridden() && lamp.isAutoOverridden()) {
 						lamp.turnDeviceOffAutoOverride();
-						log.info("Rob's room lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied due");
+						log.info("Rob's room lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
 					}
 					
 					if (ledRod.isDeviceOn() && !ledRod.isManuallyOverridden() && ledRod.isAutoOverridden()) {
 						ledRod.turnDeviceOffAutoOverride();
-						log.info("Rob's room LED rod auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied due");
+						log.info("Rob's room LED rod auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
 						
 						//generate random minute for next day
 						randomMinuteLightsOff = randomLightsOff.nextInt(60);
@@ -193,6 +199,20 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				}
 			}
 			
+			//turn on electric blanket if it's cold outside, after 10pm and apartment is occupied
+			Float[] outsideTemperatures = outsideMotionSensor.getTemperature();
+			if (now.after(tenPM) && outsideTemperatures[0] < 5f &&
+					CommonQueries.isApartmentOccupied() && !electricBlanket.isDeviceOn() && !electricBlanket.isManuallyOverridden()) {
+				log.info("Turning on electric blanket as it's cold outside, after 10pm and apartment is occupied");
+				electricBlanket.turnDeviceOnAutoOverride("100");
+			}
+			
+			//turn off blanket if it's after midnight and it's on
+			if (now.before(twoPM) && electricBlanket.isDeviceOn() && !electricBlanket.isManuallyOverridden()) {
+				log.info("Auto turning off electric blanket now it's been on for a couple of hours");
+				electricBlanket.turnDeviceOffAutoOverride();
+			}
+			
 			try {
 				int oneMinute = 60000;
 				Thread.sleep(oneMinute);
@@ -214,7 +234,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 		int index = 1;
 		if (now.after(lastDateOccupied)) {
 			for (ControllableDevice device : devicesToControl) {
-				if (device.isManuallyOverridden()) {
+				if (device.isManuallyOverridden() && !device.isAutoOverridden() && !(device instanceof ElectricBlanket)) {
 					log.info("Rob room unoccupied for more than 1 hour, resetting overridden flags for device " + index);
 					device.resetManuallyOverridden();
 					device.turnDeviceOff(false);
@@ -225,9 +245,10 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 		}
 		
 		for (ControllableDevice device : devicesToControl) {
-			if (device instanceof ElectricBlanket && device.isDeviceOn() && ((ElectricBlanket) device).isTimeToSwitchOff()) {
+			if (device instanceof ElectricBlanket && device.isDeviceOn() && ((ElectricBlanket) device).isTimeToSwitchOff() && device.isManuallyOverridden()) {
 				log.info("Switching electric blanket off now it's timed out");
 				device.resetManuallyOverridden();
+				device.resetAutoOverridden();
 				device.turnDeviceOff(false);
 			}
 		}
