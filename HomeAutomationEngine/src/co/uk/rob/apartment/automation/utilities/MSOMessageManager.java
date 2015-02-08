@@ -92,7 +92,7 @@ public class MSOMessageManager {
 		final String cameraOffAlertSent = HomeAutomationProperties.getProperty("CameraOffAlertSent");
 		if (cameraOffAlertSent != null && "true".equals(cameraOffAlertSent)) {
 			this.message = new StringBuilder();
-			this.message.append("Camera is off at wall");
+			this.message.append("Camera switched off in lounge");
 		}
 	}
 	

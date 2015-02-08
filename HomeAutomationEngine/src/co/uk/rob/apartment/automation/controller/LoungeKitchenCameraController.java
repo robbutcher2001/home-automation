@@ -23,6 +23,7 @@ import co.uk.rob.apartment.automation.utilities.SMSHelper;
 @WebServlet("/LoungeKitchenCameraController")
 public class LoungeKitchenCameraController extends HttpServlet {
 	private Logger log = Logger.getLogger(LoungeKitchenCameraController.class);
+	private final String cameraOffAlertSent;
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -30,6 +31,7 @@ public class LoungeKitchenCameraController extends HttpServlet {
      */
     public LoungeKitchenCameraController() {
         super();
+        this.cameraOffAlertSent = HomeAutomationProperties.getProperty("CameraOffAlertSent");
     }
 
 	/**
@@ -49,10 +51,13 @@ public class LoungeKitchenCameraController extends HttpServlet {
 			while ((n = is.read(bytes)) > 0) {
 				outputStream.write(bytes, 0, n);
 			}
+			
+			if (this.cameraOffAlertSent != null && "true".equals(this.cameraOffAlertSent)) {
+				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "false");
+			}
 		}
 		catch (IOException ioe) {
-			final String cameraOffAlertSent = HomeAutomationProperties.getProperty("CameraOffAlertSent");
-			if (cameraOffAlertSent != null && "false".equals(cameraOffAlertSent)) {
+			if (this.cameraOffAlertSent != null && "false".equals(this.cameraOffAlertSent)) {
 				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "true");
 				SMSHelper.sendSMS("07965502960", "Camera appears to have been switched off in lounge.");
 				log.error("Cannot read camera input stream, it may be switched off at wall. Sending warning SMS.");
