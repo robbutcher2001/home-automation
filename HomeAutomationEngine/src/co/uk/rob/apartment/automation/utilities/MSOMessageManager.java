@@ -25,6 +25,7 @@ public class MSOMessageManager {
 		//call methods in order of precedence - lowest first
 		testForMultisensorLowBatteries(apartmentReportingDevices);
 		testForOfflineSensors(apartmentReportingDevices);
+		testCameraOff();
 		testForAlarmUnitLowBatteries(apartmentControllableDevices);
 		testForUnexpectedOccupancy();
 		testForAlarmTrigger();
@@ -81,6 +82,17 @@ public class MSOMessageManager {
 			else {
 				this.message.append(" wall sensor appears to be offline");
 			}
+		}
+	}
+	
+	/**
+	 * Test to see if the camera is off.
+	 */
+	private void testCameraOff() {
+		final String cameraOffAlertSent = HomeAutomationProperties.getProperty("CameraOffAlertSent");
+		if (cameraOffAlertSent != null && !"true".equals(cameraOffAlertSent)) {
+			this.message = new StringBuilder();
+			this.message.append("Camera is off at wall");
 		}
 	}
 	

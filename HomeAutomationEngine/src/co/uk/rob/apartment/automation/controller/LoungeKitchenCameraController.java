@@ -12,11 +12,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
+import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
+import co.uk.rob.apartment.automation.utilities.SMSHelper;
+
 /**
  * Servlet implementation class LoungeKitchenCameraController
  */
 @WebServlet("/LoungeKitchenCameraController")
 public class LoungeKitchenCameraController extends HttpServlet {
+	private Logger log = Logger.getLogger(LoungeKitchenCameraController.class);
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -42,6 +48,15 @@ public class LoungeKitchenCameraController extends HttpServlet {
 			
 			while ((n = is.read(bytes)) > 0) {
 				outputStream.write(bytes, 0, n);
+			}
+		}
+		catch (IOException ioe) {
+			log.error("Cannot read camera input stream, it may be switched off at wall. Sending warning SMS.");
+			
+			final String cameraOffAlertSent = HomeAutomationProperties.getProperty("CameraOffAlertSent");
+			if (cameraOffAlertSent != null && !"false".equals(cameraOffAlertSent)) {
+				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "true");
+				SMSHelper.sendSMS("07965502960", "Camera appears to have been switched off in lounge.");
 			}
 		}
 		finally {

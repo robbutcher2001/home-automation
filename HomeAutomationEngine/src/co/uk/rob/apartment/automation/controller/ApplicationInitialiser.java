@@ -60,6 +60,7 @@ public class ApplicationInitialiser implements ServletContextListener {
 				HomeAutomationProperties.setOrUpdateProperty("RobRoomNextLightingState", "soft");
 				HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RouterIP", "0.0.0.0");
+				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "false");
 				
 				is = servlet.getServletContext().getResourceAsStream("/WEB-INF/audiofiles");
 				properties = new Properties();
