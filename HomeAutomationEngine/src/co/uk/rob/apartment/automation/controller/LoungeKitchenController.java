@@ -201,8 +201,8 @@ public class LoungeKitchenController extends HttpServlet {
 			log.info("Request for blind tilt in lounge [" + activeUser + "]");
 			if (!CommonQueries.isBrightnessBelow20()) {
 				if (!loungeWindowBlind.isTilted() || !loungePatioBlind.isTilted()) {
-					successfulCall = loungeWindowBlind.tiltBlindDown();
-					successfulCall = loungePatioBlind.tiltBlindDown();
+					successfulCall = loungeWindowBlind.tiltBlindOpen();
+					successfulCall = loungePatioBlind.tiltBlindOpen();
 					if (successfulCall) {
 						out.print("Blinds tilted down in lounge");
 						log.info("Blinds tilted down in lounge [" + activeUser + "]");
@@ -212,8 +212,8 @@ public class LoungeKitchenController extends HttpServlet {
 					}
 				}
 				else {
-					successfulCall = loungeWindowBlind.tiltBlindUp();
-					successfulCall = loungePatioBlind.tiltBlindUp();
+					successfulCall = loungeWindowBlind.tiltBlindClosed();
+					successfulCall = loungePatioBlind.tiltBlindClosed();
 					if (successfulCall) {
 						out.print("Blinds tilted back up in lounge");
 						log.info("Blinds tilted up in lounge [" + activeUser + "]");

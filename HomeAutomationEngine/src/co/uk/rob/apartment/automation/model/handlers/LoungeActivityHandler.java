@@ -139,13 +139,13 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					boolean tilted = false;
 					if (!loungeWindowBlind.isTilted()) {
 						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungeWindowBlind.getDeviceLevel())) {
-							tilted = loungeWindowBlind.tiltBlindDown();
+							tilted = loungeWindowBlind.tiltBlindOpen();
 						}
 					}
 					
 					if (!loungePatioBlind.isTilted()) {
 						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungePatioBlind.getDeviceLevel())) {
-							tilted = loungePatioBlind.tiltBlindDown();
+							tilted = loungePatioBlind.tiltBlindOpen();
 						}
 					}
 					

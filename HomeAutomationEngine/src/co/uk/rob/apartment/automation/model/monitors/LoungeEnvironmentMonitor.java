@@ -198,12 +198,12 @@ public class LoungeEnvironmentMonitor extends Thread {
 					}
 					
 					if (loungeWindowBlind.isTilted()) {
-						loungeWindowBlind.tiltBlindUp();
+						loungeWindowBlind.tiltBlindClosed();
 						log.info("Lounge window blind is down and tilted but it's now dark so un-tilting");
 					}
 					
 					if (loungePatioBlind.isTilted()) {
-						loungePatioBlind.tiltBlindUp();
+						loungePatioBlind.tiltBlindClosed();
 						log.info("Lounge patio door blind is down and tilted but it's now dark so un-tilting");
 					}
 				}
