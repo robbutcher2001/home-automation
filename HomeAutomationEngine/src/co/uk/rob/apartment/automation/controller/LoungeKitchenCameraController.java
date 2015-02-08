@@ -51,12 +51,11 @@ public class LoungeKitchenCameraController extends HttpServlet {
 			}
 		}
 		catch (IOException ioe) {
-			log.error("Cannot read camera input stream, it may be switched off at wall. Sending warning SMS.");
-			
 			final String cameraOffAlertSent = HomeAutomationProperties.getProperty("CameraOffAlertSent");
-			if (cameraOffAlertSent != null && !"false".equals(cameraOffAlertSent)) {
+			if (cameraOffAlertSent != null && "false".equals(cameraOffAlertSent)) {
 				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "true");
 				SMSHelper.sendSMS("07965502960", "Camera appears to have been switched off in lounge.");
+				log.error("Cannot read camera input stream, it may be switched off at wall. Sending warning SMS.");
 			}
 		}
 		finally {
