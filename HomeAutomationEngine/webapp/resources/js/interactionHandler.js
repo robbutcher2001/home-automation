@@ -1,6 +1,8 @@
 $(document).ready(function(){
 	var firstOpen = new Date().getTime();
+	var firstOpenParsed = new Date().toTimeString();
 	window.localStorage.setItem('lastOpened', firstOpen);
+	window.localStorage.setItem('lastOpenedParsed', firstOpenParsed);
 
 	Utilities.createPermGreenStatusBar('Contacting apartment..');
 
@@ -409,10 +411,10 @@ var Utilities = {
 
 		manageRefreshNotification: function() {
 			var now = new Date().getTime();
-			var nowAsDateString = new Date().toTimeString();
 
 			if (window.localStorage.getItem('lastOpened')) {
 				var lastOpened = window.localStorage.getItem('lastOpened');
+				var lastOpenedParsed = window.localStorage.getItem('lastOpenedParsed');
 
 				//tab hasn't been active for 5 seconds, telling user it's refreshing until first response
 				var difference = now - lastOpened;
@@ -421,8 +423,8 @@ var Utilities = {
 						Utilities.createPermGreenStatusBar('Updated just now, refreshing..');
 					}
 					else {
-						var hh = nowAsDateString.split(':')[0];
-						var mm = nowAsDateString.split(':')[1];
+						var hh = lastOpenedParsed.split(':')[0];
+						var mm = lastOpenedParsed.split(':')[1];
 						Utilities.createPermGreenStatusBar('Last updated ' + hh + ':' + mm + ', refreshing..');
 					}
 
@@ -436,5 +438,6 @@ var Utilities = {
 			}
 
 			window.localStorage.setItem('lastOpened', now);
+			window.localStorage.setItem('lastOpenedParsed', new Date().toTimeString());
 		}
 };
