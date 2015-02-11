@@ -153,7 +153,7 @@ var DeliveryHelper = {
 						$('.button').removeAttr('disabled');
 					}
 
-					if ($('.statusBar').html() == 'Refreshing..') {
+					if ($('.statusBar').html().indexOf('refreshing') > -1) {
 						//Reset title bars
 						$('.top-title').removeClass('error-text');
 						$('.rob-room-title').removeClass('error-text');
@@ -409,13 +409,22 @@ var Utilities = {
 
 		manageRefreshNotification: function() {
 			var now = new Date().getTime();
+			var nowAsDateString = new Date().toTimeString();
 
 			if (window.localStorage.getItem('lastOpened')) {
 				var lastOpened = window.localStorage.getItem('lastOpened');
 
 				//tab hasn't been active for 5 seconds, telling user it's refreshing until first response
-				if((now - lastOpened) > 5000) {
-					Utilities.createPermGreenStatusBar('Refreshing..');
+				var difference = now - lastOpened;
+				if(difference > 5000) {
+					if (difference < 60000) {
+						Utilities.createPermGreenStatusBar('Updated just now, refreshing..');
+					}
+					else {
+						var hh = nowAsDateString.split(':')[0];
+						var mm = nowAsDateString.split(':')[1];
+						Utilities.createPermGreenStatusBar('Last updated ' + hh + ':' + mm + ', refreshing..');
+					}
 
 					//Change title bars
 					$('.top-title').addClass('error-text');
