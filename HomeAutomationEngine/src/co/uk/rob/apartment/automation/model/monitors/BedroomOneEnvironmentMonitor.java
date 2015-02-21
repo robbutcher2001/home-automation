@@ -55,6 +55,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 			Calendar eightAM = (Calendar) now.clone();
 			Calendar twoPM = (Calendar) now.clone();
 			Calendar halfThreePM = (Calendar) now.clone();
+			Calendar ninePM = (Calendar) now.clone();
 			Calendar tenPM = (Calendar) now.clone();
 			Calendar elevenPM = (Calendar) now.clone();
 			Calendar elevenPmRandomMinute = (Calendar) now.clone();
@@ -70,6 +71,9 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 			
 			halfThreePM.set(Calendar.HOUR_OF_DAY, 15);
 			halfThreePM.set(Calendar.MINUTE, 30);
+			
+			ninePM.set(Calendar.HOUR_OF_DAY, 21);
+			ninePM.set(Calendar.MINUTE, 00);
 			
 			tenPM.set(Calendar.HOUR_OF_DAY, 22);
 			tenPM.set(Calendar.MINUTE, 00);
@@ -201,9 +205,10 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 			
 			//turn on electric blanket if it's cold outside, after 10pm and apartment is occupied
 			Float[] outsideTemperatures = outsideMotionSensor.getTemperature();
-			if (now.after(tenPM) && outsideTemperatures[0] < 5f &&
-					CommonQueries.isApartmentOccupied() && !electricBlanket.isDeviceOn() && !electricBlanket.isManuallyOverridden()) {
-				log.info("Turning on electric blanket as it's cold outside, after 10pm and apartment is occupied");
+			if (now.after(ninePM) && outsideTemperatures[0] < 5f &&
+					CommonQueries.isApartmentOccupied() && !electricBlanket.isDeviceOn() &&
+					!electricBlanket.isManuallyOverridden() && !electricBlanket.isAutoOverridden()) {
+				log.info("Turning on electric blanket as it's cold outside, after 9pm and apartment is occupied");
 				electricBlanket.turnDeviceOnAutoOverride("100");
 			}
 			
@@ -248,7 +253,6 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 			if (device instanceof ElectricBlanket && device.isDeviceOn() && ((ElectricBlanket) device).isTimeToSwitchOff() && device.isManuallyOverridden()) {
 				log.info("Switching electric blanket off now it's timed out");
 				device.resetManuallyOverridden();
-				device.resetAutoOverridden();
 				device.turnDeviceOff(false);
 			}
 		}

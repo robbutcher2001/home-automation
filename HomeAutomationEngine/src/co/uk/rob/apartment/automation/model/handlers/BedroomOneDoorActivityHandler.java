@@ -2,6 +2,8 @@ package co.uk.rob.apartment.automation.model.handlers;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
@@ -97,16 +99,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 					lamp.resetAutoOverridden();
 					lamp.turnDeviceOn(false, "99");
 					
-					try {
-						Thread.sleep(60000);
-						lamp.turnDeviceOn(false, "60");
-						Thread.sleep(30000);
-						lamp.turnDeviceOn(false, "40");
-						Thread.sleep(30000);
-						lamp.turnDeviceOn(false, "20");
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					dimLamps();
 				}
 			}
 			else {
@@ -121,5 +114,37 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 				}
 			}
 		}
+	}
+	
+	private void dimLamps() {
+		Timer timer = new Timer("Lamp dimming timer");
+		
+		TimerTask dimTo60 = new TimerTask() {
+			@Override
+			public void run() {
+				ControllableDevice lamp = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(0);
+				lamp.turnDeviceOn(false, "60");
+			}
+		};
+		
+		TimerTask dimTo40 = new TimerTask() {
+			@Override
+			public void run() {
+				ControllableDevice lamp = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(0);
+				lamp.turnDeviceOn(false, "40");
+			}
+		};
+		
+		TimerTask dimTo20 = new TimerTask() {
+			@Override
+			public void run() {
+				ControllableDevice lamp = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(0);
+				lamp.turnDeviceOn(false, "30");
+			}
+		};
+		
+		timer.schedule(dimTo60, 60000);
+		timer.schedule(dimTo40, 90000);
+		timer.schedule(dimTo20, 120000);
 	}
 }
