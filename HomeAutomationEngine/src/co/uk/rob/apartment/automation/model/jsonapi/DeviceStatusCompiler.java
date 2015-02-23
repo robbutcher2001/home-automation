@@ -113,7 +113,7 @@ public class DeviceStatusCompiler {
 				}
 				else if (device instanceof Dehumidifier) {
 					JSONObject deviceStatuses = new JSONObject();
-					deviceStatuses.put("dehumidifying", Boolean.toString(device.isDeviceOn()));
+					deviceStatuses.put("dehumidifying", device.isDeviceOn());
 					zoneStatuses.put("dehumidifier" + dehumidifierCount++, deviceStatuses);
 				}
 				else if (device instanceof AlarmUnit) {
@@ -124,6 +124,7 @@ public class DeviceStatusCompiler {
 				else if (device instanceof ElectricBlanket) {
 					JSONObject deviceStatuses = new JSONObject();
 					deviceStatuses.put("next_state", ((ElectricBlanket) device).getNextStateText());
+					deviceStatuses.put("is_warming", device.isDeviceOn());
 					zoneStatuses.put("electric_blanket" + electricBlanket++, deviceStatuses);
 				}
 			}

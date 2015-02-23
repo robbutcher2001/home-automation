@@ -274,6 +274,15 @@ var DeliveryHelper = {
 					$('#lounge-lux').html('Lounge brightness is ' + response.lounge.multisensor.luminiscence);
 					$('#lounge-humidity').html('Lounge humidity is ' + response.lounge.multisensor.humidity + '%');
 
+					if (response.rob_room.electric_blanket1.is_warming == true) {
+						$('#rob-bed-warming').html('Warm is warming up');
+						$('#rob-bed-warming').show();
+					}
+					else {
+						$('#rob-bed-warming').html('');
+						$('#rob-bed-warming').hide();
+					}
+					
 					$('#rob-last-ocp').html('Room last occupied ' + response.rob_room.multisensor.last_occupied);
 
 					if (response.rob_room.door_sensor.open == 'true') {
@@ -296,7 +305,7 @@ var DeliveryHelper = {
 
 					$('#rob-lux').html('Room brightness is ' + response.rob_room.multisensor.luminiscence);
 
-					if (response.rob_room.dehumidifier1.dehumidifying == 'true') {
+					if (response.rob_room.dehumidifier1.dehumidifying == true) {
 						$('#rob-humidity').html('Room humidity is ' + response.rob_room.multisensor.humidity + '%, dehumidifying');
 					}
 					else {
