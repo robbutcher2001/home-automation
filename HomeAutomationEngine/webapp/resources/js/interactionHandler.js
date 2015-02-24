@@ -275,7 +275,7 @@ var DeliveryHelper = {
 					$('#lounge-humidity').html('Lounge humidity is ' + response.lounge.multisensor.humidity + '%');
 
 					if (response.rob_room.electric_blanket1.is_warming == true) {
-						$('#rob-bed-warming').html('Warm is warming up');
+						$('#rob-bed-warming').html('Bed is warming up');
 						$('#rob-bed-warming').show();
 					}
 					else {
