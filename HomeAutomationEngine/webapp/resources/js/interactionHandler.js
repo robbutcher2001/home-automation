@@ -189,7 +189,7 @@ var DeliveryHelper = {
 						$('#flat-unexp-ocp').hide();
 					}
 					
-					if (response.apartment.alarm_system == 'true') {
+					if (response.apartment.alarm_system == true) {
 						if (response.apartment.continuous_alarm_mode == 'enabled') {
 							$('#flat-alarm-system').html('Alarm system continuously monitoring');
 						}
@@ -203,7 +203,7 @@ var DeliveryHelper = {
 						$('#flat-alarm-system').hide();
 					}
 
-					if (response.apartment.occupied == 'false') {
+					if (response.apartment.occupied == false) {
 						$('#flat-last-ocp').html('Last occupancy ' + response.apartment.last_occupied);
 						$('#flat-last-ocp').show();
 						$('.statusTitle').html('Apartment | Unoccupied');
@@ -213,8 +213,8 @@ var DeliveryHelper = {
 						$('.statusTitle').html('Apartment | Occupied');
 					}
 
-					if (response.hallway.door_sensor.open == 'true') {
-						if (response.patio.door_sensor.open == 'true') {
+					if (response.hallway.door_sensor.open == true) {
+						if (response.patio.door_sensor.open == true) {
 							$('.statusTitle').html($('.statusTitle').html() + ' | Both outside doors open');
 							$('.statusTitle').addClass('error-text');
 						}
@@ -224,7 +224,7 @@ var DeliveryHelper = {
 						}
 					}
 					else {
-						if (response.patio.door_sensor.open == 'true') {
+						if (response.patio.door_sensor.open == true) {
 							$('.statusTitle').html($('.statusTitle').html() + ' | Patio door open');
 							$('.statusTitle').addClass('error-text');
 						}
@@ -234,7 +234,7 @@ var DeliveryHelper = {
 						}
 					}
 
-					if (response.lounge.multisensor.occupied == 'true') {
+					if (response.lounge.multisensor.occupied == true) {
 						$('.top-title').html('Lounge | Occupied');
 					}
 					else {
@@ -258,7 +258,7 @@ var DeliveryHelper = {
 					$('#flat-door-last-ocp').html('Front door last opened ' + response.hallway.door_sensor.last_triggered);
 					$('#patio-door-last-ocp').html('Patio door last opened ' + response.patio.door_sensor.last_triggered);
 
-					if (response.patio.multisensor.occupied == 'true') {
+					if (response.patio.multisensor.occupied == true) {
 						$('#patio-last-ocp').html('Patio occupied');
 						$('#patio-last-ocp').addClass('error-text');
 					}
@@ -285,7 +285,7 @@ var DeliveryHelper = {
 					
 					$('#rob-last-ocp').html('Room last occupied ' + response.rob_room.multisensor.last_occupied);
 
-					if (response.rob_room.door_sensor.open == 'true') {
+					if (response.rob_room.door_sensor.open == true) {
 						$('#rob-door-last-ocp').html('Room door opened at ' + response.rob_room.door_sensor.last_triggered);
 					}
 					else {
@@ -293,7 +293,7 @@ var DeliveryHelper = {
 					}
 
 					if (response.apartment.bedroom_to_render == 'bedroomOne') {
-						if (response.rob_room.multisensor.occupied == 'true') {
+						if (response.rob_room.multisensor.occupied == true) {
 							$('.rob-room-title').html($('.rob-room-title').html() + ' | Occupied');
 						}
 						else {
@@ -324,7 +324,7 @@ var DeliveryHelper = {
 					
 					$('#toggleBlanket').html(response.rob_room.electric_blanket1.next_state);
 
-					if (response.lounge.blind1.tilted == 'false') {
+					if (response.lounge.blind1.tilted == false) {
 						$('#blindTiltToggle').html('Tilt blinds');
 					}
 					else {

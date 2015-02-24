@@ -81,11 +81,11 @@ public class DeviceStatusCompiler {
 						sensorStatuses.put("temperature", Float.toString(sensor.getTemperature()[2]));
 						sensorStatuses.put("humidity", Float.toString(sensor.getHumidity()[2]));
 						sensorStatuses.put("luminiscence", Float.toString(sensor.getLuminiscence()[2]));
-						sensorStatuses.put("occupied", Boolean.toString(sensor.isTriggered()));
+						sensorStatuses.put("occupied", sensor.isTriggered());
 						sensorStatuses.put("last_occupied", dateFormat.format(lastOccupied.getTime()));
 					}
 					else {
-						sensorStatuses.put("open", Boolean.toString(sensor.isTriggered()));
+						sensorStatuses.put("open", sensor.isTriggered());
 						sensorStatuses.put("last_triggered", dateFormat.format(lastOccupied.getTime()));
 					}
 					
@@ -108,7 +108,7 @@ public class DeviceStatusCompiler {
 				if (device instanceof Blind) {
 					JSONObject deviceStatuses = new JSONObject();
 					deviceStatuses.put("percent_open", device.getDeviceLevel());
-					deviceStatuses.put("tilted", Boolean.toString(((Blind) device).isTilted()));
+					deviceStatuses.put("tilted", ((Blind) device).isTilted());
 					zoneStatuses.put("blind" + blindCount++, deviceStatuses);
 				}
 				else if (device instanceof Dehumidifier) {
@@ -144,14 +144,14 @@ public class DeviceStatusCompiler {
 			
 			//check false occupancy
 			if (CommonQueries.isApartmentAlarmEnabled()) {
-				zoneStatuses.put("alarm_system", "true");
+				zoneStatuses.put("alarm_system", true);
 			}
 			else {
-				zoneStatuses.put("alarm_system", "false");
+				zoneStatuses.put("alarm_system", false);
 			}
 			
 			boolean isApartmentOccupied = CommonQueries.isApartmentOccupied();
-			zoneStatuses.put("occupied", Boolean.toString(isApartmentOccupied));
+			zoneStatuses.put("occupied", isApartmentOccupied);
 			Calendar lastOccupancy = CommonQueries.getLastApartmentOccupancyTime();
 			if (lastOccupancy != null && !isApartmentOccupied) {
 				zoneStatuses.put("last_occupied", dateFormat.format(lastOccupancy.getTime()));
