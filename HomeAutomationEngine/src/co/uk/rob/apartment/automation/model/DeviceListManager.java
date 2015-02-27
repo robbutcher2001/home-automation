@@ -97,6 +97,10 @@ public class DeviceListManager {
 				Zone.LOUNGE, HomeAutomationProperties.getProperty("loungePatioBlindSwitchBinaryEndpoint"));
 		controllableDevices.add(loungePatioBlindEndpoint);
 		
+		ControllableDevice bobbyLampLoungeEndpoint = new Lamp(HomeAutomationProperties.getProperty("bobbyLampLoungeEndpoint"),
+				Zone.LOUNGE);
+		controllableDevices.add(bobbyLampLoungeEndpoint);
+		
 		// Kitchen
 		ControllableDevice ledRodKitchenEndpoint = new ColouredLedRod(HomeAutomationProperties.getProperty("ledRodKitchenEndpoint"),
 				Zone.KITCHEN);

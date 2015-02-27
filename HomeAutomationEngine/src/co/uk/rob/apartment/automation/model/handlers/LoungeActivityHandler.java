@@ -21,6 +21,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
 	private ControllableDevice kitchenLedRod;
+	private ControllableDevice bobbyLoungeLamp;
 	private Blind loungeWindowBlind;
 	private Blind loungePatioBlind;
 	
@@ -29,19 +30,25 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 		loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
 		stickLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(2);
 		kitchenLedRod = DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN).get(0);
+		bobbyLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(5);
 		loungeWindowBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
 		loungePatioBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(4);
+		
+		Calendar now = Calendar.getInstance();
+		Calendar eightPM = (Calendar) now.clone();
+		
+		eightPM.set(Calendar.HOUR_OF_DAY, 20);
+		eightPM.set(Calendar.MINUTE, 00);
 		
 		if (reportingDevice.isTriggered()) {
 			//will now continue turning lights on, opening blinds and speaking if not in bedroom mode
 			String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
 			if (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode))) {
 				
-				Calendar fiveAM = Calendar.getInstance();
-				Calendar nineAM = Calendar.getInstance();
-				Calendar midday = Calendar.getInstance();
-				Calendar threePM = Calendar.getInstance();
-				Calendar now = Calendar.getInstance();
+				Calendar fiveAM = (Calendar) now.clone();
+				Calendar nineAM = (Calendar) now.clone();
+				Calendar midday = (Calendar) now.clone();
+				Calendar threePM = (Calendar) now.clone();
 				
 				fiveAM.set(Calendar.HOUR_OF_DAY, 5);
 				fiveAM.set(Calendar.MINUTE, 00);
@@ -67,7 +74,8 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						stickLoungeLamp.turnDeviceOn(false, "99");
 						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on stick lounge lamp");
 					}
-					else if ("40".equals(stickLoungeLamp.getDeviceLevel()) && stickLoungeLamp.isAutoOverridden() && !stickLoungeLamp.isManuallyOverridden()) {
+					else if ("40".equals(stickLoungeLamp.getDeviceLevel()) && !"99".equals(stickLoungeLamp.getDeviceLevel()) &&
+							stickLoungeLamp.isAutoOverridden() && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOn(false, "99");
 						log.info("Lounge occupancy detected, auto overridden and blinds are closed: turning up stick lounge lamp");
 					}
@@ -81,6 +89,13 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 							(CommonQueries.isBrightnessBelow20() || CommonQueries.isBrightnessBetween20and200() || CommonQueries.isBrightnessBetween200and400())) {
 						loungeLamp.turnDeviceOn(false);
 						log.info("Lounge occupancy detected, not auto overridden or manually overridden, blinds are closed and it's dark outside: switching on tall lounge lamp");
+					}
+					
+					if (now.after(eightPM) || now.before(nineAM)) {
+						if (!"80".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+							bobbyLoungeLamp.turnDeviceOn(false, "80");
+							log.info("Lounge occupancy detected, not auto overridden and blinds are closed: turning up Bobby lounge lamp");
+						}
 					}
 				}
 				
@@ -177,6 +192,13 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 			if (loungeLamp.isDeviceOn() && !loungeLamp.isAutoOverridden() && !loungeLamp.isManuallyOverridden()) {
 				loungeLamp.turnDeviceOff(false);
 				log.info("Lounge not occupied and nobody has overridden: switching off tall lounge lamp");
+			}
+			
+			if (now.after(eightPM)) {
+				if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isManuallyOverridden()) {
+					bobbyLoungeLamp.turnDeviceOn(false, "30");
+					log.info("Lounge not occupied and nobody has overridden: switching down Bobby lounge lamp");
+				}
 			}
 		}
 	}

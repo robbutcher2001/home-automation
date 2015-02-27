@@ -53,6 +53,7 @@ public class LoungeKitchenController extends HttpServlet {
 		ControllableDevice lampOneLounge = devicesInLoungeAndKitchen.get(0);
 		ControllableDevice ledRodLounge = devicesInLoungeAndKitchen.get(1);
 		ControllableDevice lampTwoLounge = devicesInLoungeAndKitchen.get(2);
+		ControllableDevice bobbyLoungeLamp = devicesInLoungeAndKitchen.get(5);
 		Blind loungeWindowBlind = (Blind) devicesInLoungeAndKitchen.get(3);
 		Blind loungePatioBlind = (Blind) devicesInLoungeAndKitchen.get(4);
 		
@@ -74,6 +75,10 @@ public class LoungeKitchenController extends HttpServlet {
 				if (successfulCall) {
 					successfulCall = lampTwoLounge.turnDeviceOn(true, "99");
 					lampTwoLounge.resetAutoOverridden();
+					if (successfulCall) {
+						successfulCall = bobbyLoungeLamp.turnDeviceOn(true, "80");
+						bobbyLoungeLamp.resetAutoOverridden();
+					}
 				}
 			}
 			
@@ -119,6 +124,10 @@ public class LoungeKitchenController extends HttpServlet {
 					if (successfulCall) {
 						successfulCall = ledRodLounge.turnDeviceOn(true);
 						ledRodLounge.resetAutoOverridden();
+						if (successfulCall) {
+							successfulCall = bobbyLoungeLamp.turnDeviceOff(true);
+							bobbyLoungeLamp.resetAutoOverridden();
+						}
 					}
 				}
 				

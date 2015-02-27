@@ -22,6 +22,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 	private List<ControllableDevice> devicesToControl;
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
+	private ControllableDevice bobbyLoungeLamp;
 	private Blind loungeWindowBlind;
 	private Blind loungePatioBlind;
 	private ReportingDevice loungeReportingDevice;
@@ -36,6 +37,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 		
 		loungeLamp = devicesToControl.get(0);
 		stickLoungeLamp = devicesToControl.get(2);
+		bobbyLoungeLamp = devicesToControl.get(5);
 		loungeWindowBlind = (Blind) devicesToControl.get(3);
 		loungePatioBlind = (Blind) devicesToControl.get(4);
 		
@@ -53,6 +55,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 			Calendar now = Calendar.getInstance();
 			Calendar nineAM = (Calendar) now.clone();
 			Calendar halfThreePM = (Calendar) now.clone();
+			Calendar eightPM = (Calendar) now.clone();
 			Calendar elevenPM = (Calendar) now.clone();
 			Calendar elevenPmRandomMinute = (Calendar) now.clone();
 			
@@ -61,6 +64,9 @@ public class LoungeEnvironmentMonitor extends Thread {
 			
 			halfThreePM.set(Calendar.HOUR_OF_DAY, 15);
 			halfThreePM.set(Calendar.MINUTE, 30);
+			
+			eightPM.set(Calendar.HOUR_OF_DAY, 20);
+			eightPM.set(Calendar.MINUTE, 00);
 			
 			elevenPM.set(Calendar.HOUR_OF_DAY, 23);
 			elevenPM.set(Calendar.MINUTE, 00);
@@ -226,6 +232,11 @@ public class LoungeEnvironmentMonitor extends Thread {
 						stickLoungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into > 800 bucket, stick lamp auto off");
 					}
+					
+					if (!"0".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+						bobbyLoungeLamp.turnDeviceOffAutoOverride();
+						log.info("Outside brightness has fallen into > 800 bucket, Bobby lamp auto off");
+					}
 				}
 				else if (CommonQueries.isBrightnessBetween600and800()) {
 					if (!"0".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
@@ -236,6 +247,11 @@ public class LoungeEnvironmentMonitor extends Thread {
 					if (!"0".equals(stickLoungeLamp.getDeviceLevel()) && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into 600-800 bucket, stick lamp auto off");
+					}
+					
+					if (!"0".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+						bobbyLoungeLamp.turnDeviceOffAutoOverride();
+						log.info("Outside brightness has fallen into 600-800 bucket, Bobby lamp auto off");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween400and600() && now.after(halfThreePM)) {
@@ -249,12 +265,20 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 400-600 bucket, stick lamp auto off");
 					}
 					
-					//TODO: Turn on lounge table lamp slightly once bought
+					if (!"30".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
+						log.info("Outside brightness has fallen into 400-600 bucket, Bobby lamp auto on 40%");
+					}
 				}
 				else if (CommonQueries.isBrightnessBetween200and400() && now.after(halfThreePM)) {
 					if (!"30".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						loungeLamp.turnDeviceOnAutoOverride("30");
 						log.info("Outside brightness has fallen into 200-400 bucket and patio door shut, lounge lamp auto on 30%");
+					}
+					
+					if (!"30".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
+						log.info("Outside brightness has fallen into 200-400 bucket, Bobby lamp auto on 40%");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetween20and200() && now.after(halfThreePM)) {
@@ -262,11 +286,24 @@ public class LoungeEnvironmentMonitor extends Thread {
 						loungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 20-200 bucket and patio door shut, lounge lamp auto up to 40%");
 					}
+					
+					if (!"30".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
+						log.info("Outside brightness has fallen into 20-200 bucket, Bobby lamp auto on 40%");
+					}
 				}
 				else if (CommonQueries.isBrightnessBelow20() && now.after(halfThreePM)) {
 					if (lampsOnFull()) {
 						log.info("Outside brightness has fallen into < 20 bucket, lounge lamp auto up to 55% (max)");
 						log.info("Outside brightness has fallen into < 20 bucket, lounge stick lamp auto up to 40%");
+					}
+					
+					//turn Bobby lamp up to 80% if apartment is occupied and before 8pm then up/down upon kitchen occupancy
+					if (CommonQueries.isApartmentOccupied() && now.before(eightPM)) {
+						if (!"80".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+							bobbyLoungeLamp.turnDeviceOnAutoOverride("80");
+							log.info("Outside brightness has fallen into < 20 bucket and it's before 8pm, Bobby lamp auto up to 80%");
+						}
 					}
 				}
 			}
@@ -280,6 +317,11 @@ public class LoungeEnvironmentMonitor extends Thread {
 				if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isManuallyOverridden() && stickLoungeLamp.isAutoOverridden()) {
 					stickLoungeLamp.turnDeviceOffAutoOverride();
 					log.info("Lounge stick lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
+				}
+				
+				if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isManuallyOverridden() && bobbyLoungeLamp.isAutoOverridden()) {
+					bobbyLoungeLamp.turnDeviceOffAutoOverride();
+					log.info("Bobby lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
 					
 					//generate random minute for next day
 					randomMinuteLightsOff = randomLightsOff.nextInt(60);
@@ -296,6 +338,11 @@ public class LoungeEnvironmentMonitor extends Thread {
 				if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isManuallyOverridden() && stickLoungeLamp.isAutoOverridden()) {
 					stickLoungeLamp.turnDeviceOffAutoOverride();
 					log.info("Lounge stick lamp auto off at midnight");
+				}
+				
+				if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isManuallyOverridden() && bobbyLoungeLamp.isAutoOverridden()) {
+					bobbyLoungeLamp.turnDeviceOffAutoOverride();
+					log.info("Bobby lamp auto off at midnight");
 				}
 			}
 			
