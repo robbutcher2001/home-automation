@@ -76,7 +76,7 @@ public class LoungeKitchenController extends HttpServlet {
 					successfulCall = lampTwoLounge.turnDeviceOn(true, "99");
 					lampTwoLounge.resetAutoOverridden();
 					if (successfulCall) {
-						successfulCall = bobbyLoungeLamp.turnDeviceOn(true, "80");
+						successfulCall = bobbyLoungeLamp.turnDeviceOn(true, "99");
 						bobbyLoungeLamp.resetAutoOverridden();
 					}
 				}

@@ -265,7 +265,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 400-600 bucket, stick lamp auto off");
 					}
 					
-					if (!"30".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+					if (!"20".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
 						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 400-600 bucket, Bobby lamp auto on 40%");
 					}
@@ -276,7 +276,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 200-400 bucket and patio door shut, lounge lamp auto on 30%");
 					}
 					
-					if (!"30".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+					if (!"20".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
 						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 200-400 bucket, Bobby lamp auto on 40%");
 					}
@@ -287,7 +287,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 20-200 bucket and patio door shut, lounge lamp auto up to 40%");
 					}
 					
-					if (!"30".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+					if (!"20".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
 						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 20-200 bucket, Bobby lamp auto on 40%");
 					}
@@ -300,9 +300,9 @@ public class LoungeEnvironmentMonitor extends Thread {
 					
 					//turn Bobby lamp up to 80% if apartment is occupied and before 8pm then up/down upon kitchen occupancy
 					if (CommonQueries.isApartmentOccupied() && now.before(eightPM)) {
-						if (!"80".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
-							bobbyLoungeLamp.turnDeviceOnAutoOverride("80");
-							log.info("Outside brightness has fallen into < 20 bucket and it's before 8pm, Bobby lamp auto up to 80%");
+						if (!"60".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+							bobbyLoungeLamp.turnDeviceOnAutoOverride("60");
+							log.info("Outside brightness has fallen into < 20 bucket and it's before 8pm, Bobby lamp auto up to 60%");
 						}
 					}
 				}

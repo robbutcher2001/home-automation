@@ -92,8 +92,8 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					}
 					
 					if (now.after(eightPM) || now.before(nineAM)) {
-						if (!"80".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
-							bobbyLoungeLamp.turnDeviceOn(false, "80");
+						if (!"60".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+							bobbyLoungeLamp.turnDeviceOn(false, "60");
 							log.info("Lounge occupancy detected, not auto overridden and blinds are closed: turning up Bobby lounge lamp");
 						}
 					}
@@ -196,7 +196,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 			
 			if (now.after(eightPM)) {
 				if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isManuallyOverridden()) {
-					bobbyLoungeLamp.turnDeviceOn(false, "30");
+					bobbyLoungeLamp.turnDeviceOn(false, "20");
 					log.info("Lounge not occupied and nobody has overridden: switching down Bobby lounge lamp");
 				}
 			}
