@@ -194,11 +194,13 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				log.info("Lounge not occupied and nobody has overridden: switching off tall lounge lamp");
 			}
 			
-			if (now.after(eightPM)) {
-				if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isManuallyOverridden()) {
-					bobbyLoungeLamp.turnDeviceOn(false, "20");
-					log.info("Lounge not occupied and nobody has overridden: switching down Bobby lounge lamp");
-				}
+			if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isAutoOverridden() && !bobbyLoungeLamp.isManuallyOverridden()) {
+				bobbyLoungeLamp.turnDeviceOff(false);
+				log.info("Lounge not occupied and nobody has overridden and lamp not auto overridden: switching off Bobby lounge lamp");
+			}
+			else if ("60".equals(bobbyLoungeLamp.getDeviceLevel()) && bobbyLoungeLamp.isAutoOverridden() && now.after(eightPM)) {
+				bobbyLoungeLamp.turnDeviceOn(false, "20");
+				log.info("Lounge not occupied and nobody has overridden: switching down Bobby lounge lamp");
 			}
 		}
 	}
