@@ -24,6 +24,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 	private ControllableDevice bobbyLoungeLamp;
 	private Blind loungeWindowBlind;
 	private Blind loungePatioBlind;
+	private ReportingDevice patioDoor;
 	
 	@Override
 	public void run() {
@@ -33,6 +34,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 		bobbyLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(5);
 		loungeWindowBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);
 		loungePatioBlind = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(4);
+		patioDoor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
 		
 		Calendar now = Calendar.getInstance();
 		Calendar eightPM = (Calendar) now.clone();
@@ -85,14 +87,14 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on kitchen LED rod");
 					}
 					
-					if (!loungeLamp.isDeviceOn() && !loungeLamp.isAutoOverridden() && !loungeLamp.isManuallyOverridden() && now.after(fiveAM) &&
+					if (!loungeLamp.isDeviceOn() && !loungeLamp.isAutoOverridden() && !loungeLamp.isManuallyOverridden() && now.after(fiveAM) && !patioDoor.isTriggered() &&
 							(CommonQueries.isBrightnessBelow20() || CommonQueries.isBrightnessBetween20and200() || CommonQueries.isBrightnessBetween200and400())) {
 						loungeLamp.turnDeviceOn(false);
 						log.info("Lounge occupancy detected, not auto overridden or manually overridden, blinds are closed and it's dark outside: switching on tall lounge lamp");
 					}
 					
 					if (now.after(eightPM) || now.before(nineAM)) {
-						if (!"60".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
+						if (!"60".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 							bobbyLoungeLamp.turnDeviceOn(false, "60");
 							log.info("Lounge occupancy detected, not auto overridden and blinds are closed: turning up Bobby lounge lamp");
 						}
