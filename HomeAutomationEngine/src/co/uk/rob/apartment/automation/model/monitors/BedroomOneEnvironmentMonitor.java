@@ -205,7 +205,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 			
 			//turn on electric blanket if it's cold outside, after 10pm and apartment is occupied
 			Float[] outsideTemperatures = outsideMotionSensor.getTemperature();
-			if (now.after(ninePM) && outsideTemperatures[0] < 5f &&
+			if (now.after(ninePM) && doorSensor.isTriggered() && outsideTemperatures[0] < 5f &&
 					CommonQueries.isApartmentOccupied() && !electricBlanket.isDeviceOn() &&
 					!electricBlanket.isManuallyOverridden() && !electricBlanket.isAutoOverridden()) {
 				log.info("Turning on electric blanket as it's cold outside, after 9pm and apartment is occupied");

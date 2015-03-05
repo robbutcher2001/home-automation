@@ -39,7 +39,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		tenPM.set(Calendar.MINUTE, 00);
 		
 		halfSevenAM.set(Calendar.HOUR_OF_DAY, 7);
-		halfSevenAM.set(Calendar.MINUTE, 30);
+		halfSevenAM.set(Calendar.MINUTE, 35);
 		
 		String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
 		
@@ -54,8 +54,8 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 			else {
 				//bedroom mode not enabled
 				if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode))) {
-					//occupancy between 10pm and 7:30am next day
-					if (now.after(tenPM) || now.before(halfSevenAM)) {
+					//occupancy between 10pm and 7:30am next day on a weekday
+					if (now.after(tenPM) || now.before(halfSevenAM) || CommonQueries.isItTheWeekendOrBankHoliday()) {
 						if (!lamp.isDeviceOn()) {
 							log.info("Rob room occupied during bed time mode, lamp on 20%");
 							

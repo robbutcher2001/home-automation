@@ -23,6 +23,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 	private ControllableDevice electricBlanket;
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
+	private ControllableDevice bobbyLoungeLamp;
 
 	public BedroomOneDoorActivityHandler() {
 		devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM);
@@ -34,6 +35,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 		
 		loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
 		stickLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(2);
+		bobbyLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(5);
 	}
 	
 	@Override
@@ -80,6 +82,12 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 					log.info("Lounge stick lamp auto off as everyone has gone to bed");
 				}
 				
+				if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isManuallyOverridden() && bobbyLoungeLamp.isAutoOverridden()) {
+					bobbyLoungeLamp.turnDeviceOff(true);
+					bobbyLoungeLamp.resetAutoOverridden();
+					log.info("Lounge Bobby lamp auto off as everyone has gone to bed");
+				}
+				
 				if (ledRodRobRoom.isDeviceOn()) {
 					log.info("Rob room bed mode triggered, switching off LED rod");
 					ledRodRobRoom.turnDeviceOff(false);
@@ -103,15 +111,26 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 				}
 			}
 			else {
-				//bedroom door is opened at night
-				if (!ceilingLight.isDeviceOn()) {
-					log.info("Rob room door opened, switching off bed mode and switching on ceiling light");
-					ceilingLight.turnDeviceOn(false);
-				}
+				//bedroom door is opened at night, turn on main light but give it 30 seconds
+				Timer timer = new Timer("Main light timer");
 				
-				if (lamp.isDeviceOn()) {
-					lamp.turnDeviceOff(false);
-				}
+				TimerTask wait30secs = new TimerTask() {
+					@Override
+					public void run() {
+						if (reportingDevice.isTriggered()) {
+							if (!ceilingLight.isDeviceOn()) {
+								log.info("Rob room door opened, switching off bed mode and switching on ceiling light");
+								ceilingLight.turnDeviceOn(false);
+							}
+							
+							if (lamp.isDeviceOn()) {
+								lamp.turnDeviceOff(false);
+							}
+						}
+					}
+				};
+				
+				timer.schedule(wait30secs, 30000);
 			}
 		}
 	}
