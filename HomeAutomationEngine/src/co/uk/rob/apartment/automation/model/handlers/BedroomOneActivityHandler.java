@@ -45,10 +45,12 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		
 		if (reportingDeviceMotionSensor.isTriggered()) {
 			//door is open
-			if (reportingDeviceDoorSensor.isTriggered() && !CommonQueries.isBrightnessGreaterThan800()) {
-				log.info("Rob room occupied, dark enough outside and not bedtime mode, lamp off and ceiling light on");
-				
-				ceilingLightOnLampOff();
+			if (reportingDeviceDoorSensor.isTriggered()) {
+				if (!CommonQueries.isBrightnessGreaterThan800()) {
+					log.info("Rob room occupied, dark enough outside and not bedtime mode, lamp off and ceiling light on");
+					
+					ceilingLightOnLampOff();
+				}
 			}
 			//door is closed
 			else {
