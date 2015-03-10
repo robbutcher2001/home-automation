@@ -23,7 +23,7 @@ import co.uk.rob.apartment.automation.utilities.SMSHelper;
 @WebServlet("/LoungeKitchenCameraController")
 public class LoungeKitchenCameraController extends HttpServlet {
 	private Logger log = Logger.getLogger(LoungeKitchenCameraController.class);
-	private final String cameraOffAlertSent;
+	private String cameraOffAlertSent;
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -31,7 +31,6 @@ public class LoungeKitchenCameraController extends HttpServlet {
      */
     public LoungeKitchenCameraController() {
         super();
-        this.cameraOffAlertSent = HomeAutomationProperties.getProperty("CameraOffAlertSent");
     }
 
 	/**
@@ -41,6 +40,8 @@ public class LoungeKitchenCameraController extends HttpServlet {
 		URL url = new URL("http://192.168.1.56/image/jpeg.cgi");
 		OutputStream outputStream = new ByteArrayOutputStream();
 		InputStream is = null;
+		
+		this.cameraOffAlertSent = HomeAutomationProperties.getProperty("CameraOffAlertSent");
 		
 		try {
 			is = url.openStream();
