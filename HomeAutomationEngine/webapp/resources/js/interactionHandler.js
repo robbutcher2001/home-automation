@@ -66,6 +66,9 @@ var DeliveryHelper = {
 						$('.msoBar').html(response.data.mso_message);
 						$('.msoBar').slideDown(600);
 					}
+					else if (response.data.mso_message == null) {
+						$('.msoBar').slideUp(200);
+					}
 					
 					if (response.data.mso_message == 'Alarm system triggered. Click to disarm.') {
 						$('#mso').bind('click', function() {
