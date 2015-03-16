@@ -12,7 +12,7 @@ smsKey=a3b207b268910b6f8f6f79f51fc57c3f54eff716
 //Lounge
 lampOneLoungeEndpoint=/ZWaveAPI/Run/devices[2].instances[0].SwitchMultilevel
 lampTwoLoungeEndpoint=/ZWaveAPI/Run/devices[19].instances[0].SwitchMultilevel
-bobbyLampLoungeEndpoint=/ZWaveAPI/Run/devices[21].instances[0].SwitchMultilevel
+bobbyLampLoungeEndpoint=/ZWaveAPI/Run/devices[22].instances[0].SwitchMultilevel
 
 ledRodLoungeEndpoint=/ZWaveAPI/Run/devices[6].instances[0].SwitchBinary
 ledRodKitchenEndpoint=/ZWaveAPI/Run/devices[7].instances[0].SwitchBinary
