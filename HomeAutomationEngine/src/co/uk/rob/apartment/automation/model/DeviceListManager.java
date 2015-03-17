@@ -143,6 +143,7 @@ public class DeviceListManager {
 				Zone.HALLWAY,
 				HomeAutomationProperties.getProperty("indoorAlarmStrobeOnlyMode"),
 				HomeAutomationProperties.getProperty("indoorAlarmStrobeSirenMode"));
+		((AlarmUnit) indoorAlarmEndpoint).setToStrobeOnlyMode();
 		controllableDevices.add(indoorAlarmEndpoint);
 	}
 	
