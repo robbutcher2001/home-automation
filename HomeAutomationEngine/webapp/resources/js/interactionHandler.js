@@ -199,6 +199,14 @@ var DeliveryHelper = {
 						else {
 							$('#flat-alarm-system').html('Alarm system automatically enabled');
 						}
+						$('#flat-alarm-system').addClass('success-text');
+						$('#flat-alarm-system').removeClass('error-text');
+						$('#flat-alarm-system').show();
+					}
+					else if (response.apartment.force_disabled == true) {
+						$('#flat-alarm-system').html('Alarm system disabled');
+						$('#flat-alarm-system').removeClass('success-text');
+						$('#flat-alarm-system').addClass('error-text');
 						$('#flat-alarm-system').show();
 					}
 					else {
@@ -210,10 +218,22 @@ var DeliveryHelper = {
 						$('#flat-last-ocp').html('Last occupancy ' + response.apartment.last_occupied);
 						$('#flat-last-ocp').show();
 						$('.statusTitle').html('Apartment | Unoccupied');
+						
+						$('#forceDisableAlarm').hide();
 					}
 					else {
 						$('#flat-last-ocp').hide();
 						$('.statusTitle').html('Apartment | Occupied');
+						
+						if (response.apartment.force_disabled == true) {
+							$('#forceDisableAlarm').html('Resume normal alarm operation');
+							$('#forceDisableAlarm').removeClass('error');
+						}
+						else {
+							$('#forceDisableAlarm').html('Force alarm system off');
+							$('#forceDisableAlarm').addClass('error');
+						}
+						$('#forceDisableAlarm').show();
 					}
 
 					if (response.hallway.door_sensor.open == true) {

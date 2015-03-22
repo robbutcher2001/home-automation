@@ -24,6 +24,8 @@ public class DailyFlagManager extends Thread {
 			Calendar fourAM = (Calendar) now.clone();
 			Calendar halfFiveAM = (Calendar) now.clone();
 			Calendar halfSixAM = (Calendar) now.clone();
+			Calendar midday = (Calendar) now.clone();
+			Calendar onePM = (Calendar) now.clone();
 			
 			threeAM.set(Calendar.HOUR_OF_DAY, 3);
 			threeAM.set(Calendar.MINUTE, 00);
@@ -36,6 +38,12 @@ public class DailyFlagManager extends Thread {
 			
 			halfSixAM.set(Calendar.HOUR_OF_DAY, 6);
 			halfSixAM.set(Calendar.MINUTE, 30);
+			
+			midday.set(Calendar.HOUR_OF_DAY, 12);
+			midday.set(Calendar.MINUTE, 00);
+			
+			onePM.set(Calendar.HOUR_OF_DAY, 13);
+			onePM.set(Calendar.MINUTE, 00);
 			
 			if (now.after(threeAM) && now.before(fourAM)) {
 				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "false");
@@ -60,6 +68,14 @@ public class DailyFlagManager extends Thread {
 			if (now.after(halfFiveAM) && now.before(halfSixAM)) {
 				HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
 				log.info("Alarm has now been automatically disabled, resetting ContinuousAlarmMode flag");
+			}
+			
+			if (now.after(midday) && now.before(onePM)) {
+				String forceDisableAlarm = HomeAutomationProperties.getProperty("ForceDisableAlarm");
+				if ("true".equals(forceDisableAlarm)) {
+					HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "false");
+					log.info("'ForceDisableAlarm' is enabled, resetting flag");
+				}
 			}
 			
 			try {

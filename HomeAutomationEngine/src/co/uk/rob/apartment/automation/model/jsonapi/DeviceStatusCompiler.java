@@ -65,6 +65,14 @@ public class DeviceStatusCompiler {
 			else {
 				zoneStatuses.put("continuous_alarm_mode", "disabled");
 			}
+			
+			String forceDisableAlarm = HomeAutomationProperties.getProperty("ForceDisableAlarm");
+			if (forceDisableAlarm != null && "true".equals(forceDisableAlarm)) {
+				zoneStatuses.put("force_disabled", true);
+			}
+			else {
+				zoneStatuses.put("force_disabled", false);
+			}
 		}
 		
 		//sensors and devices

@@ -59,6 +59,7 @@ public class ApplicationInitialiser implements ServletContextListener {
 				HomeAutomationProperties.setOrUpdateProperty("RobRoomBedroomMode", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RobRoomNextLightingState", "soft");
 				HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
+				HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RouterIP", "0.0.0.0");
 				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "false");
 				

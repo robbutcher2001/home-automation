@@ -253,6 +253,7 @@ public class LoungeKitchenController extends HttpServlet {
 			String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
 			if (continuousAlarmMode != null && "false".equals(continuousAlarmMode)) {
 				HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "true");
+				HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "false");
 				log.info("Request for 'Continuous Alarm Mode' mode for full apartment [" + activeUser + "]");
 				out.print("Alarm now continuously on");
 			}
@@ -266,6 +267,32 @@ public class LoungeKitchenController extends HttpServlet {
 					log.info("Request for 'Normal Alarm Mode' mode for full apartment but apartment has to be occupied [" + activeUser + "]");
 					out.print("Apartment has to be occupied");
 				}
+			}
+		}
+		else if (action.equals("forceDisableAlarm")) {
+			if (activeUser.equalsIgnoreCase("rbutcher") || activeUser.equalsIgnoreCase("scat")) {
+				String forceDisableAlarm = HomeAutomationProperties.getProperty("ForceDisableAlarm");
+				if (forceDisableAlarm != null && "false".equals(forceDisableAlarm)) {
+					if (CommonQueries.isApartmentOccupied()) {
+						HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "true");
+						HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
+						log.info("Request to permanently disable alarm in apartment, 'ForceDisableAlarm' flag set [" + activeUser + "]");
+						out.print("Alarm now permanently disabled");
+					}
+					else {
+						log.info("Request to permanently disable alarm in apartment but apartment not occupied, 'ForceDisableAlarm' flag not set to true [" + activeUser + "]");
+						out.print("Apartment has to be occupied");
+					}
+				}
+				else {
+					HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "false");
+					log.info("Request to re-enable alarm in apartment, 'ForceDisableAlarm' flag set to false [" + activeUser + "]");
+					out.print("Alarm back to normal operating mode");
+				}
+			}
+			else {
+				log.info("Request to permanently disable alarm but user unknown [" + activeUser + "]");
+				out.print("You have to login to do this, bitch!");
 			}
 		}
 		

@@ -63,8 +63,12 @@ public class CommonQueries {
 		
 		//manual alarm override takes precedence
 		String continuousAlarmMode = HomeAutomationProperties.getProperty("ContinuousAlarmMode");
+		String forceDisableAlarm = HomeAutomationProperties.getProperty("ForceDisableAlarm");
 		if ("true".equals(continuousAlarmMode)) {
 			alarmEnabled = true;
+		}
+		else if ("true".equals(forceDisableAlarm)) {
+			alarmEnabled = false;
 		}
 		else {
 			Calendar now = Calendar.getInstance();
