@@ -47,13 +47,14 @@ public class ZwayChipRestartController extends HttpServlet {
 			
 			if (zwayResponse != null && zwayResponse.getResponseCode() == 200) {
 				successfulRestart = true;
+				log.info("SYSTEM: Request to restart chip by authorised user [" + activeUser + "]");
 			}
 			else {
-				log.error("Couldn't restart Zway chip [" + activeUser + "]");
+				log.error("SYSTEM: Couldn't restart Zway chip [" + activeUser + "]");
 			}
 		}
 		else {
-			log.info("Request to restart chip but by unauthorised user [" + activeUser + "]");
+			log.info("SYSTEM: Request to restart chip but by unauthorised user [" + activeUser + "]");
 		}
 		
 		if (successfulRestart) {
