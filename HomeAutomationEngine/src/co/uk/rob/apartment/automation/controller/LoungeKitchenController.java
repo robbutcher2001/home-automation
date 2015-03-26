@@ -274,8 +274,8 @@ public class LoungeKitchenController extends HttpServlet {
 		else if (action.equals("forceDisableAlarm")) {
 			if (activeUser.equalsIgnoreCase("rbutcher") || activeUser.equalsIgnoreCase("scat")) {
 				Calendar now = Calendar.getInstance();
-				now.add(Calendar.SECOND, 5);
-				if (forceAlarmOffTrigger.before(now)) {
+				now.add(Calendar.SECOND, -5);
+				if (now.before(forceAlarmOffTrigger)) {
 					String forceDisableAlarm = HomeAutomationProperties.getProperty("ForceDisableAlarm");
 					if (forceDisableAlarm != null && "false".equals(forceDisableAlarm)) {
 						if (CommonQueries.isApartmentOccupied()) {
