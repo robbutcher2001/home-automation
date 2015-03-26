@@ -204,7 +204,7 @@ var DeliveryHelper = {
 						$('#flat-alarm-system').show();
 					}
 					else if (response.apartment.force_disabled == true) {
-						$('#flat-alarm-system').html('Alarm system disabled');
+						$('#flat-alarm-system').html('Alarm system forcibly disabled');
 						$('#flat-alarm-system').removeClass('success-text');
 						$('#flat-alarm-system').addClass('error-text');
 						$('#flat-alarm-system').show();

@@ -2,6 +2,7 @@ package co.uk.rob.apartment.automation.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -28,12 +29,13 @@ import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 public class LoungeKitchenController extends HttpServlet {
 	private Logger log = Logger.getLogger(LoungeKitchenController.class);
 	private static final long serialVersionUID = 1L;
-       
+    private Calendar forceAlarmOffTrigger;
     /**
      * @see HttpServlet#HttpServlet()
      */
     public LoungeKitchenController() {
         super();
+        forceAlarmOffTrigger = Calendar.getInstance();
     }
 
 	/**
@@ -271,23 +273,31 @@ public class LoungeKitchenController extends HttpServlet {
 		}
 		else if (action.equals("forceDisableAlarm")) {
 			if (activeUser.equalsIgnoreCase("rbutcher") || activeUser.equalsIgnoreCase("scat")) {
-				String forceDisableAlarm = HomeAutomationProperties.getProperty("ForceDisableAlarm");
-				if (forceDisableAlarm != null && "false".equals(forceDisableAlarm)) {
-					if (CommonQueries.isApartmentOccupied()) {
-						HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "true");
-						HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
-						log.info("Request to permanently disable alarm in apartment, 'ForceDisableAlarm' flag set [" + activeUser + "]");
-						out.print("Alarm now permanently disabled");
+				Calendar now = Calendar.getInstance();
+				now.add(Calendar.SECOND, 5);
+				if (forceAlarmOffTrigger.before(now)) {
+					String forceDisableAlarm = HomeAutomationProperties.getProperty("ForceDisableAlarm");
+					if (forceDisableAlarm != null && "false".equals(forceDisableAlarm)) {
+						if (CommonQueries.isApartmentOccupied()) {
+							HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "true");
+							HomeAutomationProperties.setOrUpdateProperty("ContinuousAlarmMode", "false");
+							log.info("Request to permanently disable alarm in apartment, 'ForceDisableAlarm' flag set [" + activeUser + "]");
+							out.print("Alarm now permanently disabled");
+						}
+						else {
+							log.info("Request to permanently disable alarm in apartment but apartment not occupied, 'ForceDisableAlarm' flag not set to true [" + activeUser + "]");
+							out.print("Apartment has to be occupied");
+						}
 					}
 					else {
-						log.info("Request to permanently disable alarm in apartment but apartment not occupied, 'ForceDisableAlarm' flag not set to true [" + activeUser + "]");
-						out.print("Apartment has to be occupied");
+						HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "false");
+						log.info("Request to re-enable alarm in apartment, 'ForceDisableAlarm' flag set to false [" + activeUser + "]");
+						out.print("Alarm back to normal operating mode");
 					}
 				}
 				else {
-					HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "false");
-					log.info("Request to re-enable alarm in apartment, 'ForceDisableAlarm' flag set to false [" + activeUser + "]");
-					out.print("Alarm back to normal operating mode");
+					forceAlarmOffTrigger = Calendar.getInstance();
+					out.print("Press again within 5 seconds..");
 				}
 			}
 			else {

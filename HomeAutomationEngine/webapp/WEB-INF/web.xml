@@ -109,4 +109,13 @@
     <servlet-name>bedroom1</servlet-name>
     <url-pattern>/bedroom1</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>chipRestart</servlet-name>
+    <servlet-class>co.uk.rob.apartment.automation.controller.ZwayChipRestartController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>chipRestart</servlet-name>
+    <url-pattern>/chipRestart</url-pattern>
+  </servlet-mapping>
 </web-app>

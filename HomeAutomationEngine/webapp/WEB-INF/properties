@@ -8,6 +8,7 @@ usersStore=/home/pi/HomeAutomationUsers/users
 smsEndpoint=https://api.clockworksms.com/http/send.aspx
 smsKey=a3b207b268910b6f8f6f79f51fc57c3f54eff716
 
+chipRestart=/ZWaveAPI/Run/SerialAPISoftReset()
 
 //Lounge
 lampOneLoungeEndpoint=/ZWaveAPI/Run/devices[2].instances[0].SwitchMultilevel
