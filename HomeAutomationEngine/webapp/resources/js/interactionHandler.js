@@ -40,9 +40,7 @@ $(document).ready(function(){
 	window.setInterval(function() { DeliveryHelper.getDeviceStatuses(); }, 1000);
 
 	window.setInterval(function() { DeliveryHelper.refreshCamera(); }, 2000);
-
-	//window.setInterval(function() { Utilities.manageRefreshNotification(); }, 3000);
-
+	
 });
 
 var lat = "";
@@ -63,7 +61,7 @@ var DeliveryHelper = {
 				dataType: "json",
 				success: function(response) {
 					if (response.data.mso_message != null) {
-						$('.msoBar').html(response.data.mso_message);
+						$('.msoBar').html(response.data.mso_message.replace("'", "\'"));
 						$('.msoBar').slideDown(600);
 					}
 					else if (response.data.mso_message == null) {

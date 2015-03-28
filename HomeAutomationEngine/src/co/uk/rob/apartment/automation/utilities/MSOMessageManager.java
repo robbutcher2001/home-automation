@@ -131,11 +131,11 @@ public class MSOMessageManager {
 				if (device instanceof DoorWindowSensor && device.isTriggered()) {
 					if (device.getZone().equals(Zone.ROB_ROOM)) {
 						robWindowOpen = true;
-						messageBuilder += "Rob's bedroom window is open";
+						messageBuilder += "Rob's bedroom window is open and it's dark";
 					}
 					else if (device.getZone().equals(Zone.SCARLETT_ROOM)) {
 						scarlettWindowOpen = true;
-						messageBuilder += "Scarlett's bedroom window is open";
+						messageBuilder += "Scarlett's bedroom window is open and it's dark";
 					}
 				}
 			}
