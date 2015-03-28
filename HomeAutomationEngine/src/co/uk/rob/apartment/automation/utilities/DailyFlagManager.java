@@ -50,6 +50,8 @@ public class DailyFlagManager extends Thread {
 				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedScarlett", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentWelcomeHome", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "false");
+				HomeAutomationProperties.setOrUpdateProperty("RobWindowWarningSent", "false");
+				HomeAutomationProperties.setOrUpdateProperty("ScarlettWindowWarningSent", "false");
 				log.info("Daily flags have been reset");
 				
 				ControllableDevice loungeWindowBlind = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(3);

@@ -14,6 +14,7 @@ import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
+import co.uk.rob.apartment.automation.utilities.SMSHelper;
 
 public class BedroomOneEnvironmentMonitor extends Thread {
 	
@@ -26,6 +27,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 	private ControllableDevice electricBlanket;
 	private ReportingDevice motionSensor;
 	private ReportingDevice doorSensor;
+	private ReportingDevice windowSensor;
 	private ReportingDevice outsideMotionSensor;
 	private Random randomLightsOff;
 	private int randomMinuteLightsOff;
@@ -39,6 +41,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 		
 		motionSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0);
 		doorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
+		windowSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(2);
 		outsideMotionSensor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(0);
 		
 		randomLightsOff = new Random();
@@ -216,6 +219,17 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 			if (now.before(twoPM) && electricBlanket.isDeviceOn() && !electricBlanket.isManuallyOverridden()) {
 				log.info("Auto turning off electric blanket now it's been on for a couple of hours");
 				electricBlanket.turnDeviceOffAutoOverride();
+			}
+			
+			//check bedroom window is now shut
+			String robWindowWarningSent = HomeAutomationProperties.getProperty("RobWindowWarningSent");
+			if (robWindowWarningSent == null || (robWindowWarningSent != null && "false".equals(robWindowWarningSent))) {
+				if (now.after(tenPM) && CommonQueries.isBrightnessBelow20() && windowSensor.isTriggered()) {
+					final String smsText = "Warning: your bedroom window is still open and it's now dark";
+					SMSHelper.sendSMS("07965502960", smsText);
+					HomeAutomationProperties.setOrUpdateProperty("RobWindowWarningSent", "true");
+					log.info("Sending warning text to Rob as it's dark, after 10pm and his window is still open");
+				}
 			}
 			
 			try {

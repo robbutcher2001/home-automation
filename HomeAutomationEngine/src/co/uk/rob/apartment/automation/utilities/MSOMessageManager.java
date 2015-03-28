@@ -3,7 +3,9 @@ package co.uk.rob.apartment.automation.utilities;
 import java.util.List;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
+import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
+import co.uk.rob.apartment.automation.model.devices.DoorWindowSensor;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -27,6 +29,7 @@ public class MSOMessageManager {
 		testForOfflineSensors(apartmentReportingDevices);
 		testCameraOff();
 		testForAlarmUnitLowBatteries(apartmentControllableDevices);
+		testWindowsOpenWhenDark(apartmentReportingDevices);
 		testForUnexpectedOccupancy();
 		testForAlarmTrigger();
 		
@@ -110,6 +113,41 @@ public class MSOMessageManager {
 							((AlarmUnit) device).getBatteryLevel() + "%");
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Creates MSO if windows are open when it's dark
+	 * 
+	 * @param apartmentReportingDevices
+	 */
+	private void testWindowsOpenWhenDark(List<ReportingDevice> apartmentReportingDevices) {
+		boolean robWindowOpen = false;
+		boolean scarlettWindowOpen = false;
+		String messageBuilder = "";
+		
+		if (CommonQueries.isBrightnessBelow20()) {
+			for (ReportingDevice device : apartmentReportingDevices) {
+				if (device instanceof DoorWindowSensor && device.isTriggered()) {
+					if (device.getZone().equals(Zone.ROB_ROOM)) {
+						robWindowOpen = true;
+						messageBuilder += "Rob's bedroom window is open";
+					}
+					else if (device.getZone().equals(Zone.SCARLETT_ROOM)) {
+						scarlettWindowOpen = true;
+						messageBuilder += "Scarlett's bedroom window is open";
+					}
+				}
+			}
+		}
+		
+		if (robWindowOpen && scarlettWindowOpen) {
+			messageBuilder = "Both bedroom windows are open";
+		}
+		
+		if (robWindowOpen || scarlettWindowOpen) {
+			this.message = new StringBuilder();
+			this.message.append(messageBuilder);
 		}
 	}
 	

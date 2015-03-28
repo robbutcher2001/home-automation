@@ -22,6 +22,7 @@ import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.model.monitors.ApartmentActivityManager;
 import co.uk.rob.apartment.automation.model.monitors.BatteryStatusMonitor;
 import co.uk.rob.apartment.automation.model.monitors.BedroomOneEnvironmentMonitor;
+import co.uk.rob.apartment.automation.model.monitors.BedroomTwoEnvironmentMonitor;
 import co.uk.rob.apartment.automation.model.monitors.LoungeEnvironmentMonitor;
 import co.uk.rob.apartment.automation.model.monitors.NewUserMonitor;
 import co.uk.rob.apartment.automation.model.monitors.ReportingDeviceProber;
@@ -62,6 +63,8 @@ public class ApplicationInitialiser implements ServletContextListener {
 				HomeAutomationProperties.setOrUpdateProperty("ForceDisableAlarm", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RouterIP", "0.0.0.0");
 				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "false");
+				HomeAutomationProperties.setOrUpdateProperty("RobWindowWarningSent", "false");
+				HomeAutomationProperties.setOrUpdateProperty("ScarlettWindowWarningSent", "false");
 				
 				is = servlet.getServletContext().getResourceAsStream("/WEB-INF/audiofiles");
 				properties = new Properties();
@@ -110,6 +113,7 @@ public class ApplicationInitialiser implements ServletContextListener {
 	private void monitorApartmentEnvironment() {
 		new LoungeEnvironmentMonitor().start();
 		new BedroomOneEnvironmentMonitor().start();
+		new BedroomTwoEnvironmentMonitor().start();
 		//new PatioEnvironmentMonitor().start();
 	}
 	
