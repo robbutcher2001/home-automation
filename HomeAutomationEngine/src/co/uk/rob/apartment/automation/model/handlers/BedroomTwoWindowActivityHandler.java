@@ -5,29 +5,33 @@ import org.apache.log4j.Logger;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractExternalDoorActivityHandler;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
 
-public class FrontDoorActivityHandler extends AbstractExternalDoorActivityHandler {
+/**
+ * @author Rob
+ *
+ */
+public class BedroomTwoWindowActivityHandler extends AbstractExternalDoorActivityHandler {
+
+	private Logger log = Logger.getLogger(BedroomTwoWindowActivityHandler.class);
 	
-	private Logger log = Logger.getLogger(FrontDoorActivityHandler.class);
-	
+	/**
+	 * Handle Rob's room window activity
+	 */
 	@Override
 	public void run() {
 		super.run();
 		
-		this.entrance = "Front door";
+		this.entrance = "Scarlett's window";
 		
 		if (this.reportingDevice.isTriggered()) {
-			log.info("Front door opened");
+			log.info("Scarlett's bedrom window opened");
 			
 			//check false occupancy
 			if (CommonQueries.isApartmentAlarmEnabled()) {
 				runUnexpectedOccupancyControl();
 			}
-			else {
-				welcomeHome();
-			}
 		}
 		else {
-			log.info("Front door now closed");
+			log.info("Scarlett's bedrom window now closed");
 		}
 	}
 }

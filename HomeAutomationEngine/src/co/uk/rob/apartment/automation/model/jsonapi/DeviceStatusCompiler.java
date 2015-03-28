@@ -13,7 +13,7 @@ import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
-import co.uk.rob.apartment.automation.model.devices.DoorSensor;
+import co.uk.rob.apartment.automation.model.devices.DoorWindowSensor;
 import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
@@ -102,7 +102,7 @@ public class DeviceStatusCompiler {
 					if (sensor instanceof Multisensor) {
 						zoneStatuses.put("multisensor", sensorStatuses);
 					}
-					else if (sensor instanceof DoorSensor) {
+					else if (sensor instanceof DoorWindowSensor) {
 						zoneStatuses.put("door_sensor", sensorStatuses);
 					}
 					else {

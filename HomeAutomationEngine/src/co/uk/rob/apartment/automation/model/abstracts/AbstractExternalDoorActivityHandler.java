@@ -23,7 +23,7 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 	
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
-	protected String door;
+	protected String entrance;
 	
 	protected void welcomeHome() {
 		Calendar now = Calendar.getInstance();
@@ -40,7 +40,7 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 				new SpeechOrchestrationManager("Welcome home!", false, false, false, null).start();
 			}
 			
-			log.info(this.door + " door opened, apartment unoccupied for more than 1 hour, welcoming home");
+			log.info(this.entrance + " opened, apartment unoccupied for more than 1 hour, welcoming home");
 			
 			if (CommonQueries.isBrightnessBelow20() || CommonQueries.isBrightnessBetween20and200()) {
 				boolean lampsTurnedOn = false;
@@ -93,8 +93,8 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			
 			alarmOneTimeUrl = OneTimeUrlGenerator.getOneTimeString();
 			HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
-			final String smsText = "Apartment occupied from " + this.door.toLowerCase() + 
-					" door. Alarm will trigger. Deactivate now: "
+			final String smsText = "Apartment occupied from " + this.entrance.toLowerCase() + 
+					". Alarm will trigger. Deactivate now: "
 					+ "http://robsflat.noip.me/disableApartmentAlarm/" + alarmOneTimeUrl;
 			SMSHelper.sendSMS("07965502960", smsText);
 			SMSHelper.sendSMS("07875468023", smsText);

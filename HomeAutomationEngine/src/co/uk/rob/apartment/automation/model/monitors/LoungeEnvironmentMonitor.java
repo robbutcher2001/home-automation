@@ -115,7 +115,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 				else {
 					loungePatioBlind.turnDeviceOffAutoOverride();
 				}
-				log.info("Moving patio blind back to where the other blinds are now door is shut");
+				log.info("Moving patio blind back to where the other blinds are now door is shut [" + loungeWindowBlind.getDeviceLevel() + "%]");
 			}
 			
 			if (now.after(nineAM) && (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode)))) {

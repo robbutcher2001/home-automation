@@ -17,7 +17,7 @@ public class PatioDoorActivityHandler extends AbstractExternalDoorActivityHandle
 	public void run() {
 		super.run();
 		
-		this.door = "Patio";
+		this.entrance = "Patio door";
 		
 		if (this.reportingDevice.isTriggered()) {
 			log.info("Patio door opened");

@@ -28,6 +28,8 @@ public class BatteryStatusMonitor extends Thread {
 			
 			ReportingDevice multisensorRobRoom = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0);
 			ReportingDevice doorSensorRobRoom = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
+			ReportingDevice windowSensorRobRoom = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(2);
+			ReportingDevice windowSensorScarlettsRoom = DeviceListManager.getReportingDeviceByLocation(Zone.SCARLETT_ROOM).get(0);
 			ReportingDevice multisensorLounge = DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0);
 			ReportingDevice frontDoorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.HALLWAY).get(0);
 			ReportingDevice multisensorPatioSensor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(0);
@@ -45,6 +47,16 @@ public class BatteryStatusMonitor extends Thread {
 			
 			if (doorSensorRobRoom.getBatteryLevel() >= 0 && doorSensorRobRoom.getBatteryLevel() <= 10) {
 				textToSend = preLoadTextString(textToSend) + "Rob room door sensor";
+				batteriesLow = true;
+			}
+			
+			if (windowSensorRobRoom.getBatteryLevel() >= 0 && windowSensorRobRoom.getBatteryLevel() <= 10) {
+				textToSend = preLoadTextString(textToSend) + "Rob room window sensor";
+				batteriesLow = true;
+			}
+			
+			if (windowSensorScarlettsRoom.getBatteryLevel() >= 0 && windowSensorScarlettsRoom.getBatteryLevel() <= 10) {
+				textToSend = preLoadTextString(textToSend) + "Scarlett's room window sensor";
 				batteriesLow = true;
 			}
 			

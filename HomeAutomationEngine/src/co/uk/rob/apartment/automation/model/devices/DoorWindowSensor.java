@@ -4,9 +4,9 @@ import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractReportingDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ActivityHandler;
 
-public class DoorSensor extends AbstractReportingDevice {
+public class DoorWindowSensor extends AbstractReportingDevice {
 
-	public DoorSensor(String batteryUpdateEndpoint, String dataEndpoint, ActivityHandler handler, Zone zone) {
+	public DoorWindowSensor(String batteryUpdateEndpoint, String dataEndpoint, ActivityHandler handler, Zone zone) {
 		super(batteryUpdateEndpoint, dataEndpoint, handler, zone);
 		this.setTriggered(false);
 	}

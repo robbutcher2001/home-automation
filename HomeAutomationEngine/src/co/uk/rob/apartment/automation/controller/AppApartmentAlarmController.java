@@ -44,7 +44,7 @@ public class AppApartmentAlarmController extends HttpServlet {
 		
 		//leave actual switch off command after check in case device is on but we think it isn't
 		if (outdoorAlarmUnit.isDeviceOn() || indoorAlarmUnit.isDeviceOn()) {
-			log.info("Alarm is sounding - forcing stop now");
+			log.info("Alarm is activated - forcing deactivation now");
 		}
 		outdoorAlarmUnit.turnDeviceOff(false);
 		indoorAlarmUnit.turnDeviceOff(false);

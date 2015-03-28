@@ -54,14 +54,14 @@ public class ApartmentAlarmController extends HttpServlet {
 	    				
 	    				//leave actual switch off command after check in case device is on but we think it isn't
 	    				if (outdoorAlarmUnit.isDeviceOn() || indoorAlarmUnit.isDeviceOn()) {
-	    					log.info("Alarm is sounding - forcing stop now via one-time URL");
+	    					log.info("Alarm is activated - forcing deactivation now via one-time URL");
 	    				}
 						outdoorAlarmUnit.turnDeviceOff(false);
 						indoorAlarmUnit.turnDeviceOff(false);
 						indoorAlarmUnit.setToStrobeOnlyMode();
 	    			}
 	    			else {
-	    				log.info("One time alarm URL not recognised [" + pathInfoTidied[1] + "] - alarm still enabled");
+	    				log.info("One time alarm URL not recognised [" + pathInfoTidied[1] + "]");
 	    			}
 	    		}
 	    	}
