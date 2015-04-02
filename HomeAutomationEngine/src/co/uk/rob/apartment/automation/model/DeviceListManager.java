@@ -180,7 +180,6 @@ public class DeviceListManager {
 				HomeAutomationProperties.getProperty("robWindowSensorEndpoint"),
 				new BedroomOneWindowActivityHandler(),
 				Zone.ROB_ROOM);
-		robWindowSensorEndpoint.setTriggered(true);
 		reportingDevices.add(robWindowSensorEndpoint);
 		
 		// Hallway
@@ -210,7 +209,6 @@ public class DeviceListManager {
 				HomeAutomationProperties.getProperty("scarlettWindowSensorEndpoint"),
 				new BedroomTwoWindowActivityHandler(),
 				Zone.SCARLETT_ROOM);
-		scarlettWindowSensorEndpoint.setTriggered(true);
 		reportingDevices.add(scarlettWindowSensorEndpoint);
 	}
 }

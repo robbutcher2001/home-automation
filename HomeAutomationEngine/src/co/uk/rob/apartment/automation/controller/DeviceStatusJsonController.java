@@ -66,6 +66,7 @@ public class DeviceStatusJsonController extends HttpServlet {
                 		this.statusCompiler.getZoneStatus(Zone.APARTMENT, rootObject);
                 		this.statusCompiler.getZoneStatus(Zone.LOUNGE, rootObject);
                 		this.statusCompiler.getZoneStatus(Zone.ROB_ROOM, rootObject);
+                		this.statusCompiler.getZoneStatus(Zone.SCARLETT_ROOM, rootObject);
                 		this.statusCompiler.getZoneStatus(Zone.HALLWAY, rootObject);
                 		this.statusCompiler.getZoneStatus(Zone.PATIO, rootObject);
                 	}
