@@ -4,8 +4,8 @@ import java.util.List;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.abstracts.AbstractDoorWindowSensor;
 import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
-import co.uk.rob.apartment.automation.model.devices.DoorWindowSensor;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -128,7 +128,7 @@ public class MSOMessageManager {
 		
 		if (CommonQueries.isBrightnessBelow20()) {
 			for (ReportingDevice device : apartmentReportingDevices) {
-				if (device instanceof DoorWindowSensor && device.isTriggered()) {
+				if (device instanceof AbstractDoorWindowSensor && device.isTriggered()) {
 					if (device.getZone().equals(Zone.ROB_ROOM)) {
 						robWindowOpen = true;
 						messageBuilder += "Rob's bedroom window is open and it's dark";

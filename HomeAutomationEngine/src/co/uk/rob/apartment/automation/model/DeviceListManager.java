@@ -7,11 +7,12 @@ import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
 import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.ColouredLedRod;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
-import co.uk.rob.apartment.automation.model.devices.DoorWindowSensor;
+import co.uk.rob.apartment.automation.model.devices.DoorSensor;
 import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.devices.Lamp;
 import co.uk.rob.apartment.automation.model.devices.MainCeilingLight;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
+import co.uk.rob.apartment.automation.model.devices.WindowSensor;
 import co.uk.rob.apartment.automation.model.handlers.BedroomOneActivityHandler;
 import co.uk.rob.apartment.automation.model.handlers.BedroomOneDoorActivityHandler;
 import co.uk.rob.apartment.automation.model.handlers.BedroomOneWindowActivityHandler;
@@ -168,14 +169,14 @@ public class DeviceListManager {
 				Zone.ROB_ROOM);
 		reportingDevices.add(multisensorRobEndpoint);
 		
-		ReportingDevice robDoorSensorEndpoint = new DoorWindowSensor(HomeAutomationProperties.getProperty("robDoorSensorBatteryUpdateEndpoint"),
+		ReportingDevice robDoorSensorEndpoint = new DoorSensor(HomeAutomationProperties.getProperty("robDoorSensorBatteryUpdateEndpoint"),
 				HomeAutomationProperties.getProperty("robDoorSensorEndpoint"),
 				new BedroomOneDoorActivityHandler(),
 				Zone.ROB_ROOM);
 		robDoorSensorEndpoint.setTriggered(true);
 		reportingDevices.add(robDoorSensorEndpoint);
 		
-		ReportingDevice robWindowSensorEndpoint = new DoorWindowSensor(HomeAutomationProperties.getProperty("robWindowSensorBatteryUpdateEndpoint"),
+		ReportingDevice robWindowSensorEndpoint = new WindowSensor(HomeAutomationProperties.getProperty("robWindowSensorBatteryUpdateEndpoint"),
 				HomeAutomationProperties.getProperty("robWindowSensorEndpoint"),
 				new BedroomOneWindowActivityHandler(),
 				Zone.ROB_ROOM);
@@ -183,7 +184,7 @@ public class DeviceListManager {
 		reportingDevices.add(robWindowSensorEndpoint);
 		
 		// Hallway
-		ReportingDevice frontDoorSensorEndpoint = new DoorWindowSensor(HomeAutomationProperties.getProperty("frontDoorSensorBatteryUpdateEndpoint"),
+		ReportingDevice frontDoorSensorEndpoint = new DoorSensor(HomeAutomationProperties.getProperty("frontDoorSensorBatteryUpdateEndpoint"),
 				HomeAutomationProperties.getProperty("frontDoorSensorEndpoint"),
 				new FrontDoorActivityHandler(),
 				Zone.HALLWAY);
@@ -198,14 +199,14 @@ public class DeviceListManager {
 		patioSensorEndpoint.setTriggered(false);
 		reportingDevices.add(patioSensorEndpoint);
 		
-		ReportingDevice patioDoorEndpoint = new DoorWindowSensor(HomeAutomationProperties.getProperty("patioDoorSensorBatteryUpdateEndpoint"),
+		ReportingDevice patioDoorEndpoint = new DoorSensor(HomeAutomationProperties.getProperty("patioDoorSensorBatteryUpdateEndpoint"),
 				HomeAutomationProperties.getProperty("patioDoorSensorEndpoint"),
 				new PatioDoorActivityHandler(),
 				Zone.PATIO);
 		reportingDevices.add(patioDoorEndpoint);
 		
 		//Scarlett's room
-		ReportingDevice scarlettWindowSensorEndpoint = new DoorWindowSensor(HomeAutomationProperties.getProperty("scarlettWindowSensorBatteryUpdateEndpoint"),
+		ReportingDevice scarlettWindowSensorEndpoint = new WindowSensor(HomeAutomationProperties.getProperty("scarlettWindowSensorBatteryUpdateEndpoint"),
 				HomeAutomationProperties.getProperty("scarlettWindowSensorEndpoint"),
 				new BedroomTwoWindowActivityHandler(),
 				Zone.SCARLETT_ROOM);
