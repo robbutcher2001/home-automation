@@ -312,6 +312,20 @@ var DeliveryHelper = {
 					else {
 						$('#rob-door-last-ocp').html('Room door closed at ' + response.rob_room.door_sensor.last_triggered);
 					}
+					
+					if (response.rob_room.window_sensor.open == true) {
+						$('#rob-window-last-ocp').html('Room window opened at ' + response.rob_room.window_sensor.last_triggered);
+					}
+					else {
+						$('#rob-window-last-ocp').html('Room window closed at ' + response.rob_room.window_sensor.last_triggered);
+					}
+					
+					if (response.scarlett_room.window_sensor.open == true) {
+						$('#scat-window-last-ocp').html('Scat window opened at ' + response.scarlett_room.window_sensor.last_triggered);
+					}
+					else {
+						$('#scat-window-last-ocp').html('Scat window closed at ' + response.scarlett_room.window_sensor.last_triggered);
+					}
 
 					if (response.apartment.bedroom_to_render == 'bedroomOne') {
 						if (response.rob_room.multisensor.occupied == true) {
