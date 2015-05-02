@@ -307,4 +307,18 @@ public class CommonQueries {
 		
 		return movementTime * 1000;
 	}
+	
+	public static boolean hasDehumidifierBeenInStateForOverHour(Date lastUpdated) {
+		Calendar lastDateOccupied = Calendar.getInstance();
+		lastDateOccupied.setTime(lastUpdated);
+		lastDateOccupied.add(Calendar.MINUTE, 60);
+		
+		Calendar now = Calendar.getInstance();
+		
+		if (now.after(lastDateOccupied)) {
+			return true;
+		}
+		
+		return false;
+	}
 }

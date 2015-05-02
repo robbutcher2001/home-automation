@@ -61,9 +61,7 @@ public class ElectricBlanket extends AbstractControllableDevice {
 	
 	public String toggleNextState() {
 		boolean result = false;
-		String confirmationString = "Oops, issue warming bed";
-		
-		DateFormat format = new SimpleDateFormat("HH:mm");
+		String confirmationString = "";
 		
 		if (this.blanketState.equals(State.OFF)) {
 			result = turnDeviceOnFor20Minutes();
@@ -82,16 +80,25 @@ public class ElectricBlanket extends AbstractControllableDevice {
 		}
 		
 		if (result) {
-			if (!isDeviceOn()) {
-				confirmationString = "Bed warming off";
-			}
-			else {
-				String switchOffAtFormatted = format.format(switchOffAt.getTime());
-				confirmationString = "Warming bed until " + switchOffAtFormatted;
-			}
+			confirmationString = getCurrentStateText();
 		}
 		
 		return confirmationString;
+	}
+	
+	public String getCurrentStateText() {
+		String currentState = "Oops, issue warming bed";
+		DateFormat format = new SimpleDateFormat("HH:mm");
+		
+		if (!isDeviceOn()) {
+			currentState = "Bed warming off";
+		}
+		else {
+			String switchOffAtFormatted = format.format(switchOffAt.getTime());
+			currentState = "Warming bed until " + switchOffAtFormatted;
+		}
+		
+		return currentState;
 	}
 	
 	public String getNextStateText() {
@@ -127,7 +134,7 @@ public class ElectricBlanket extends AbstractControllableDevice {
 		return switchOff;
 	}
 	
-	private boolean turnDeviceOnFor20Minutes() {
+	public boolean turnDeviceOnFor20Minutes() {
 		this.blanketState = State.TWENTY_MINS;
 		this.switchOffAt = Calendar.getInstance();
 		this.switchOffAt.add(Calendar.MINUTE, 20);
@@ -135,7 +142,7 @@ public class ElectricBlanket extends AbstractControllableDevice {
 		return turnDeviceOn(true);
 	}
 	
-	private boolean turnDeviceOnForOneHour() {
+	public boolean turnDeviceOnForOneHour() {
 		this.blanketState = State.ONE_HOUR;
 		this.switchOffAt = Calendar.getInstance();
 		this.switchOffAt.add(Calendar.HOUR_OF_DAY, 1);
@@ -143,7 +150,7 @@ public class ElectricBlanket extends AbstractControllableDevice {
 		return turnDeviceOn(true);
 	}
 	
-	private boolean turnDeviceOnForThreeHours() {
+	public boolean turnDeviceOnForThreeHours() {
 		this.blanketState = State.THREE_HOURS;
 		this.switchOffAt = Calendar.getInstance();
 		this.switchOffAt.add(Calendar.HOUR_OF_DAY, 3);
@@ -151,7 +158,7 @@ public class ElectricBlanket extends AbstractControllableDevice {
 		return turnDeviceOn(true);
 	}
 	
-	private boolean turnDeviceOnUntilMorning() {
+	public boolean turnDeviceOnUntilMorning() {
 		this.blanketState = State.UNTIL_MORNING;
 		this.switchOffAt = Calendar.getInstance();
 		this.switchOffAt.set(Calendar.HOUR_OF_DAY, 07);

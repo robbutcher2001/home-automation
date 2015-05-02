@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -21,6 +19,7 @@ import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
+import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 /**
@@ -147,7 +146,7 @@ public class BedroomOneController extends HttpServlet {
 				log.info("Electric blanket toggle request for Rob's room [" + activeUser + "]");
 			}
 			else if (action.equals("dehumRobRoom")) {
-				if (dehumidifier.isDeviceOn() && hasDehumidifierBeenInStateForOverHour(dehumidifier.getLastInteractedTime())) {
+				if (dehumidifier.isDeviceOn() && CommonQueries.hasDehumidifierBeenInStateForOverHour(dehumidifier.getLastInteractedTime())) {
 					log.info("Request for dehumidifier off in Rob's room - been on for over an hour so switching off [" + activeUser + "]");
 					dehumidifier.turnDeviceOff(true);
 					out.print("Dehumidifier is now off");
@@ -198,20 +197,6 @@ public class BedroomOneController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher dispatch = request.getRequestDispatcher("index.html");
 		dispatch.forward(request, response);
-	}
-	
-	private boolean hasDehumidifierBeenInStateForOverHour(Date lastUpdated) {
-		Calendar lastDateOccupied = Calendar.getInstance();
-		lastDateOccupied.setTime(lastUpdated);
-		lastDateOccupied.add(Calendar.MINUTE, 60);
-		
-		Calendar now = Calendar.getInstance();
-		
-		if (now.after(lastDateOccupied)) {
-			return true;
-		}
-		
-		return false;
 	}
 
 }

@@ -114,7 +114,8 @@ public class AuthenticationManagementFilter implements Filter {
 				(requestURI.contains("/disableApartmentAlarm/")) ||
 				(requestURI.equals("/") || requestURI.equals("/HomeAutomationEngine/")) ||
 				(requestURI.contains(".html") && requestURI.contains(".htm")) ||
-				(requestURI.contains("/login"))) {
+				(requestURI.contains("/login")) ||
+				(requestURI.contains("/bedroomOneTabletView"))) {
 			return true;
 		}
 		
