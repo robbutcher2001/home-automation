@@ -78,13 +78,13 @@ public class Blind extends AbstractControllableDevice {
 	public Boolean tiltBlindOpen() {
 		if (this.lastDirection.equals(LastDirection.DOWN)) {
 			tilted = true;
-			callParseResult(host + this.switchBinaryEndpoint + ".Set(255)");
 			callParseResult(host + this.switchBinaryEndpoint + ".Set(0)");
+			callParseResult(host + this.switchBinaryEndpoint + ".Set(255)");
 		}
 		else {
 			tilted = true;
-			callParseResult(host + this.switchBinaryEndpoint + ".Set(0)");
 			callParseResult(host + this.switchBinaryEndpoint + ".Set(255)");
+			callParseResult(host + this.switchBinaryEndpoint + ".Set(0)");
 		}
 		
 		return true;
@@ -93,13 +93,13 @@ public class Blind extends AbstractControllableDevice {
 	public Boolean tiltBlindClosed() {
 		if (this.lastDirection.equals(LastDirection.DOWN)) {
 			tilted = false;
-			callParseResult(host + this.switchBinaryEndpoint + ".Set(0)");
 			callParseResult(host + this.switchBinaryEndpoint + ".Set(255)");
+			callParseResult(host + this.switchBinaryEndpoint + ".Set(0)");
 		}
 		else {
 			tilted = false;
-			callParseResult(host + this.switchBinaryEndpoint + ".Set(255)");
 			callParseResult(host + this.switchBinaryEndpoint + ".Set(0)");
+			callParseResult(host + this.switchBinaryEndpoint + ".Set(255)");
 		}
 		
 		return true;

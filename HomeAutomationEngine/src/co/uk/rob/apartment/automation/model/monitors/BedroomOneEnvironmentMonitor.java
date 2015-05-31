@@ -137,9 +137,9 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 						}
 					}
 					else if (CommonQueries.isBrightnessBetween20and200() && now.after(halfThreePM)) {
-						if (!"99".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
-							lamp.turnDeviceOnAutoOverride("99");
-							log.info("Outside brightness has fallen into 20-200 bucket, Rob's room lamp auto up to max");
+						if (!"60".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
+							lamp.turnDeviceOnAutoOverride("60");
+							log.info("Outside brightness has fallen into 20-200 bucket, Rob's room lamp auto up to 60%");
 						}
 						
 						if (ledRod.isDeviceOn() && !ledRod.isManuallyOverridden()) {
@@ -148,9 +148,9 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 						}
 					}
 					else if (CommonQueries.isBrightnessBelow20() && now.after(halfThreePM)) {
-						if (!"99".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
-							lamp.turnDeviceOnAutoOverride("99");
-							log.info("Outside brightness is below 20, Rob's room lamp auto up to max");
+						if (!"60".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
+							lamp.turnDeviceOnAutoOverride("60");
+							log.info("Outside brightness is below 20, Rob's room lamp auto up to 60%");
 						}
 						
 						if (!ledRod.isDeviceOn() && !ledRod.isManuallyOverridden()) {
@@ -192,7 +192,8 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				Float[] humidity = motionSensor.getHumidity();
 				
 				if (humidity[0] > 65f && humidity[1] > 65f && humidity[2] > 65f && !dehumidifier.isDeviceOn()
-						&& now.before(tenPM) && now.after(eightAM) && !dehumidifier.isManuallyOverridden() && (!CommonQueries.isItTheWeekendOrBankHoliday() || now.after(midday))) {
+						&& now.before(tenPM) && now.after(eightAM) && !dehumidifier.isManuallyOverridden() &&
+						doorSensor.isTriggered() && (!CommonQueries.isItTheWeekendOrBankHoliday() || now.after(midday))) {
 					log.info("Humidity in apartment is above 65%, initialising dehumidification");
 					dehumidifier.turnDeviceOn(false);
 				}

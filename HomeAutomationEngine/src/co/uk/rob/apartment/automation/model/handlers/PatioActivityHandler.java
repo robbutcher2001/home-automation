@@ -35,8 +35,6 @@ public class PatioActivityHandler extends AbstractActivityHandler {
 				
 				log.info("Patio occupied during Continuous Alarm Mode - flashing strobe on siren as warning");
 			}
-			
-			log.info("PATIO OCCUPIED - bat: " + reportingDevice.getBatteryLevel() + "%, lux: " + reportingDevice.getLuminiscence()[0]);
 		}
 	}
 }

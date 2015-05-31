@@ -2,10 +2,10 @@ package co.uk.rob.apartment.automation.model.abstracts;
 
 import java.util.Calendar;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
+import co.uk.rob.apartment.automation.model.ApartmentSirenTrigger;
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.devices.AlarmUnit;
@@ -103,39 +103,17 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			//TODO: http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/
 			Timer timer = new Timer("Sound alarm in 1 minute");
 			
-			TimerTask task = new TimerTask() {
-				
-				@Override
-				public void run() {
-					
-					final String alarmOneTimeUrl = HomeAutomationProperties.getProperty("AlarmOneTimeUrl");
-	    			if (!"".equals(alarmOneTimeUrl)) {
-	    				ControllableDevice outdoorAlarmUnit = DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
-						outdoorAlarmUnit.turnDeviceOn(false);
-						
-						AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
-						indoorAlarmUnit.turnDeviceOff(false);
-						indoorAlarmUnit.setToStrobeSirenMode();
-						
-						SMSHelper.sendSMS("07965502960", "Alarm now sounding @ 106dB in apartment");
-						
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							//no op
-						}
-						
-						indoorAlarmUnit.turnDeviceOn(false);
-						
-						log.info("ALARM TRIGGERED - now sounding @ 106dB");
-	    			}
-	    			else {
-	    				log.info("Alarm successfully disarmed within one minute - siren cancelled");
-	    			}
-				}
-			};
+			ApartmentSirenTrigger alarmOne = new ApartmentSirenTrigger("Alarm now sounding @ 106dB in apartment");
+			ApartmentSirenTrigger alarmTwo = new ApartmentSirenTrigger("Alarm now sounding @ 106dB in apartment again (2)");
+			ApartmentSirenTrigger alarmThree = new ApartmentSirenTrigger("Alarm now sounding @ 106dB in apartment again (3)");
+			ApartmentSirenTrigger alarmFour = new ApartmentSirenTrigger("Alarm now sounding @ 106dB in apartment again (4)");
+			ApartmentSirenTrigger alarmFive = new ApartmentSirenTrigger("Alarm now sounding @ 106dB in apartment again (5)");
 			
-			timer.schedule(task, 60000);
+			timer.schedule(alarmOne, 60000); //1 min
+			timer.schedule(alarmTwo, 240000); //4 mins - wait for first siren then wait 2 mins
+			timer.schedule(alarmThree, 420000); //7 mins - wait for second siren then wait 2 mins
+			timer.schedule(alarmFour, 600000); //10 mins - wait for third siren then wait 2 mins
+			timer.schedule(alarmFive, 780000); //13 mins - wait for fourth siren then wait 2 mins
 		}
 	}
 }
