@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -30,6 +32,11 @@ public class LoungeKitchenController extends HttpServlet {
 	private Logger log = Logger.getLogger(LoungeKitchenController.class);
 	private static final long serialVersionUID = 1L;
     private Calendar forceAlarmOffTrigger;
+    private ControllableDevice lampOneLounge;
+    private ControllableDevice ledRodLounge;
+    private ControllableDevice lampTwoLounge;
+    private ControllableDevice bobbyLoungeLamp;
+    
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -54,10 +61,10 @@ public class LoungeKitchenController extends HttpServlet {
 		List<ControllableDevice> devicesInLoungeAndKitchen = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE);
 		devicesInLoungeAndKitchen.addAll(DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN));
 		
-		ControllableDevice lampOneLounge = devicesInLoungeAndKitchen.get(0);
-		ControllableDevice ledRodLounge = devicesInLoungeAndKitchen.get(1);
-		ControllableDevice lampTwoLounge = devicesInLoungeAndKitchen.get(2);
-		ControllableDevice bobbyLoungeLamp = devicesInLoungeAndKitchen.get(5);
+		lampOneLounge = devicesInLoungeAndKitchen.get(0);
+		ledRodLounge = devicesInLoungeAndKitchen.get(1);
+		lampTwoLounge = devicesInLoungeAndKitchen.get(2);
+		bobbyLoungeLamp = devicesInLoungeAndKitchen.get(5);
 		Blind loungeWindowBlind = (Blind) devicesInLoungeAndKitchen.get(3);
 		Blind loungePatioBlind = (Blind) devicesInLoungeAndKitchen.get(4);
 		
@@ -100,47 +107,43 @@ public class LoungeKitchenController extends HttpServlet {
 			}
 			else {
 				log.info("Request for film mode in Lounge and Kitchen, turning lamps off, LED on and blinds closed [" + activeUser + "]");
+				int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "0");
+				int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungePatioBlind, "0");
+				
+				if (patioBlindMovementTime > windowBlindMovementTime) {
+					windowBlindMovementTime = patioBlindMovementTime;
+				}
+				
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
-					int windowBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungeWindowBlind, "0");
 					successfulCall = loungeWindowBlind.turnDeviceOn(true);
 					
-					int patioBlindMovementTime = CommonQueries.calculateBlindMovementTime(loungePatioBlind, "0");
 					if (successfulCall) {
 						successfulCall = loungePatioBlind.turnDeviceOn(true);
 					}
-					
-					if (patioBlindMovementTime > windowBlindMovementTime) {
-						windowBlindMovementTime = patioBlindMovementTime;
-					}
-					
-					try {
-						Thread.sleep(windowBlindMovementTime);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 				}
-				
-				successfulCall = lampOneLounge.turnDeviceOff(true);
-				lampOneLounge.resetAutoOverridden();
-				if (successfulCall) {
-					successfulCall = lampTwoLounge.turnDeviceOff(true);
-					lampTwoLounge.resetAutoOverridden();
-					if (successfulCall) {
-						successfulCall = ledRodLounge.turnDeviceOn(true);
+
+				TimerTask continueFilmModeTask = new TimerTask() {
+					
+					@Override
+					public void run() {
+						lampOneLounge.turnDeviceOff(true);
+						lampOneLounge.resetAutoOverridden();
+						
+						lampTwoLounge.turnDeviceOff(true);
+						lampTwoLounge.resetAutoOverridden();
+						
+						ledRodLounge.turnDeviceOn(true);
 						ledRodLounge.resetAutoOverridden();
-						if (successfulCall) {
-							successfulCall = bobbyLoungeLamp.turnDeviceOff(true);
-							bobbyLoungeLamp.resetAutoOverridden();
-						}
+						
+						bobbyLoungeLamp.turnDeviceOff(true);
+						bobbyLoungeLamp.resetAutoOverridden();
 					}
-				}
+				};
 				
-				if (successfulCall) {
-					out.print("Film mode now on in lounge");
-				}
-				else {
-					out.print("Issue turning film mode on");
-				}
+				Timer timer = new Timer("Continue switching to film/TV mode");
+				timer.schedule(continueFilmModeTask, windowBlindMovementTime);
+				
+				out.print("Switching to film mode..");
 			}
 		}
 		else if (action.equals("offLounge")) {

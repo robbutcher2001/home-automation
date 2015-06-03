@@ -1,10 +1,14 @@
 package co.uk.rob.apartment.automation.model.devices;
 
+import org.apache.log4j.Logger;
+
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractControllableDevice;
 
 public class Blind extends AbstractControllableDevice {
 
+	private Logger log = Logger.getLogger(Blind.class);
+	
 	private enum LastDirection {
 		UP(), DOWN();
 	}
@@ -15,6 +19,7 @@ public class Blind extends AbstractControllableDevice {
 	
 	public Blind(String endpoint, Zone location, String switchBinaryEndpoint) {
 		this.lastDirection = LastDirection.DOWN;
+		log.info(this.lastDirection);
 		this.endpoint = endpoint;
 		this.zone = location;
 		this.switchBinaryEndpoint = switchBinaryEndpoint;
@@ -129,5 +134,7 @@ public class Blind extends AbstractControllableDevice {
 		else {
 			this.lastDirection = LastDirection.DOWN;
 		}
+		
+		log.info(this.lastDirection);
 	}
 }
