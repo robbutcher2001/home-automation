@@ -12,7 +12,9 @@ import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.devices.Lamp;
 import co.uk.rob.apartment.automation.model.devices.MainCeilingLight;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
+import co.uk.rob.apartment.automation.model.devices.ShockSensor;
 import co.uk.rob.apartment.automation.model.devices.WindowSensor;
+import co.uk.rob.apartment.automation.model.handlers.BathroomActivityHandler;
 import co.uk.rob.apartment.automation.model.handlers.BedroomOneActivityHandler;
 import co.uk.rob.apartment.automation.model.handlers.BedroomOneDoorActivityHandler;
 import co.uk.rob.apartment.automation.model.handlers.BedroomOneWindowActivityHandler;
@@ -21,6 +23,7 @@ import co.uk.rob.apartment.automation.model.handlers.FrontDoorActivityHandler;
 import co.uk.rob.apartment.automation.model.handlers.LoungeActivityHandler;
 import co.uk.rob.apartment.automation.model.handlers.PatioActivityHandler;
 import co.uk.rob.apartment.automation.model.handlers.PatioDoorActivityHandler;
+import co.uk.rob.apartment.automation.model.handlers.PatioDoorShockSensorActivityHandler;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
@@ -204,11 +207,25 @@ public class DeviceListManager {
 				Zone.PATIO);
 		reportingDevices.add(patioDoorEndpoint);
 		
+		ReportingDevice patioWindowShockSensorEndpoint = new ShockSensor(HomeAutomationProperties.getProperty("patioWindowShockSensorBatteryUpdateEndpoint"),
+				HomeAutomationProperties.getProperty("patioWindowShockSensorEndpoint"),
+				new PatioDoorShockSensorActivityHandler(),
+				Zone.PATIO);
+		reportingDevices.add(patioWindowShockSensorEndpoint);
+		
 		//Scarlett's room
 		ReportingDevice scarlettWindowSensorEndpoint = new WindowSensor(HomeAutomationProperties.getProperty("scarlettWindowSensorBatteryUpdateEndpoint"),
 				HomeAutomationProperties.getProperty("scarlettWindowSensorEndpoint"),
 				new BedroomTwoWindowActivityHandler(),
 				Zone.SCARLETT_ROOM);
 		reportingDevices.add(scarlettWindowSensorEndpoint);
+		
+		// Bathroom
+		ReportingDevice multisensorBathroomEndpoint = new Multisensor(HomeAutomationProperties.getProperty("multisensorBathroomBatteryUpdateEndpoint"),
+				HomeAutomationProperties.getProperty("multisensorBathroomUpdateEndpoint"),
+				HomeAutomationProperties.getProperty("multisensorBathroomEndpoint"),
+				new BathroomActivityHandler(),
+				Zone.BATHROOM);
+		reportingDevices.add(multisensorBathroomEndpoint);
 	}
 }

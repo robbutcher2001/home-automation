@@ -287,6 +287,14 @@ var DeliveryHelper = {
 						$('#patio-last-ocp').html('Patio last occupied ' + response.patio.multisensor.last_occupied);
 						$('#patio-last-ocp').removeClass('error-text');
 					}
+					if (response.patio.shock_sensor.shock_detected == true) {
+						$('#patio-door-shock').html('Patio door shock detected');
+						$('#patio-door-shock').show();
+					}
+					else {
+						$('#patio-door-shock').hide();
+						$('#patio-door-shock').html('');
+					}
 					$('#patio-lux').html('Outside brightness is ' + response.patio.multisensor.luminiscence);
 					$('#patio-humidity').html('Outside humidity is ' + response.patio.multisensor.humidity + '%');
 					$('#patio-temp').html('Outside temperature is ' + response.patio.multisensor.temperature + '&deg;C');
@@ -326,6 +334,10 @@ var DeliveryHelper = {
 					else {
 						$('#scat-window-last-ocp').html('Scat window closed at ' + response.scarlett_room.window_sensor.last_triggered);
 					}
+					
+					$('#bathroom-lux').html('Bathroom brightness is ' + response.bathroom.multisensor.luminiscence);
+					$('#bathroom-humidity').html('Bathroom humidity is ' + response.bathroom.multisensor.humidity + '%');
+					$('#bathroom-temp').html('Bathroom temperature is ' + response.bathroom.multisensor.temperature + '&deg;C');
 
 					if (response.apartment.bedroom_to_render == 'bedroomOne') {
 						if (response.rob_room.multisensor.occupied == true) {

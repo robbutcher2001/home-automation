@@ -16,6 +16,7 @@ import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.devices.DoorSensor;
 import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.devices.Multisensor;
+import co.uk.rob.apartment.automation.model.devices.ShockSensor;
 import co.uk.rob.apartment.automation.model.devices.WindowSensor;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -93,6 +94,10 @@ public class DeviceStatusCompiler {
 						sensorStatuses.put("occupied", sensor.isTriggered());
 						sensorStatuses.put("last_occupied", dateFormat.format(lastOccupied.getTime()));
 					}
+					else if (sensor instanceof ShockSensor) {
+						sensorStatuses.put("shock_detected", sensor.isTriggered());
+						sensorStatuses.put("last_triggered", dateFormat.format(lastOccupied.getTime()));
+					}
 					else {
 						sensorStatuses.put("open", sensor.isTriggered());
 						sensorStatuses.put("last_triggered", dateFormat.format(lastOccupied.getTime()));
@@ -108,6 +113,9 @@ public class DeviceStatusCompiler {
 					}
 					else if (sensor instanceof WindowSensor) {
 						zoneStatuses.put("window_sensor", sensorStatuses);
+					}
+					else if (sensor instanceof ShockSensor) {
+						zoneStatuses.put("shock_sensor", sensorStatuses);
 					}
 					else {
 						zoneStatuses.put("unknown_sensor", sensorStatuses);

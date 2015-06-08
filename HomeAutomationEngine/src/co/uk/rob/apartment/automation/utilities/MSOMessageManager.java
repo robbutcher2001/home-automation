@@ -107,7 +107,7 @@ public class MSOMessageManager {
 	private void testForAlarmUnitLowBatteries(List<ControllableDevice> apartmentControllableDevices) {
 		for (ControllableDevice device : apartmentControllableDevices) {
 			if (device instanceof AlarmUnit) {
-				if (((AlarmUnit) device).getBatteryLevel() <= 10) {
+				if (((AlarmUnit) device).getBatteryLevel() <= 20) {
 					this.message = new StringBuilder();
 					this.message.append(device.getZone().toString().replace("_", " ") + " alarm unit battery at " + 
 							((AlarmUnit) device).getBatteryLevel() + "%");

@@ -84,23 +84,31 @@ public class CommonQueries {
 			halfFiveAM.set(Calendar.HOUR_OF_DAY, 5);
 			halfFiveAM.set(Calendar.MINUTE, 30);
 			
+			Calendar halfSevenAM = (Calendar) now.clone();
+			halfSevenAM.set(Calendar.HOUR_OF_DAY, 7);
+			halfSevenAM.set(Calendar.MINUTE, 30);
+			
 			Calendar loungeMultisensor = (Calendar) now.clone();
 			loungeMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0).getLastUpdated()));
 
 			Calendar robRoomMultisensor = (Calendar) now.clone();
 			robRoomMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0).getLastUpdated()));
 			
+			Calendar bathroomMultisensor = (Calendar) now.clone();
+			bathroomMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.BATHROOM).get(0).getLastUpdated()));
+			
 			//check whether it's between 00:00 and 05:30
 			if (now.before(halfFiveAM)) {
 				alarmEnabled = true;
 			}
-			//or check whether lounge sensor has not been triggered yet today (away from home)
+			//or check whether lounge or bathroom sensor has not been triggered yet today (away from home)
 			//this means if sensor is triggered in the morning the alarm will be disabled after 17:30 (fall into below)
-			else if (!loungeMultisensor.after(halfFiveAM)) {
+			else if (!loungeMultisensor.after(halfFiveAM) || !bathroomMultisensor.after(halfSevenAM)) {
 				alarmEnabled = true;
 			}
-			//or if above isn't true, check whether it's before 5:30pm and lounge multisensor OR robs multisensor has not been triggered within the last hour
-			else if (now.before(halfFivePM) && !loungeMultisensor.after(hourAgo) && !robRoomMultisensor.after(hourAgo)) {
+			//or if above isn't true, check whether it's before 5:30pm and lounge multisensor OR robs multisensor OR bathroom multisensor has not been triggered within the last hour
+			else if (now.before(halfFivePM) && !loungeMultisensor.after(hourAgo) &&
+					!robRoomMultisensor.after(hourAgo) && !bathroomMultisensor.after(hourAgo)) {
 				alarmEnabled = true;
 			}
 		}
