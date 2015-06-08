@@ -36,6 +36,7 @@ public class BatteryStatusMonitor extends Thread {
 			ReportingDevice patioDoorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
 			AlarmUnit outdoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
 			AlarmUnit indoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.HALLWAY).get(0);
+			ReportingDevice multisensorBathroomSensor = DeviceListManager.getReportingDeviceByLocation(Zone.BATHROOM).get(0);
 			
 			boolean batteriesLow = false;
 			String textToSend = "";
@@ -87,6 +88,11 @@ public class BatteryStatusMonitor extends Thread {
 			
 			if (indoorAlarmUnit.getBatteryLevel() >= 0 && indoorAlarmUnit.getBatteryLevel() <= 10) {
 				textToSend = preLoadTextString(textToSend) + "indoor alarm unit";
+				batteriesLow = true;
+			}
+			
+			if (multisensorBathroomSensor.getBatteryLevel() >= 0 && multisensorBathroomSensor.getBatteryLevel() <= 10) {
+				textToSend = preLoadTextString(textToSend) + "bathroom multisensor";
 				batteriesLow = true;
 			}
 			

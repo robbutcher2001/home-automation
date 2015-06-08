@@ -31,6 +31,10 @@ public class ReportingDeviceProber extends Thread {
 			triggerEndpoint += HomeAutomationProperties.getProperty("multisensorPatioUpdateEndpoint");
 			CallZwaveModule.speakToModule(triggerEndpoint);
 			
+			triggerEndpoint = HomeAutomationProperties.getProperty("host");
+			triggerEndpoint += HomeAutomationProperties.getProperty("multisensorBathroomUpdateEndpoint");
+			CallZwaveModule.speakToModule(triggerEndpoint);
+			
 			try {
 				int fourMinutes = 60000 * 4;
 				Thread.sleep(fourMinutes);
