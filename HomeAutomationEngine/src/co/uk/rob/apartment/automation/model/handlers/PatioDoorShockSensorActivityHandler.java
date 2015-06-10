@@ -20,25 +20,12 @@ import co.uk.rob.apartment.automation.utilities.SMSHelper;
 public class PatioDoorShockSensorActivityHandler extends AbstractActivityHandler {
 
 	private Logger log = Logger.getLogger(PatioDoorShockSensorActivityHandler.class);
-	private TimerTask disableAlarmTask;
 	private Calendar alarmOnTrigger;
 	
 	public PatioDoorShockSensorActivityHandler() {
 		alarmOnTrigger = Calendar.getInstance();
         //prevents button being accepted on first class instantiation
 		alarmOnTrigger.add(Calendar.MINUTE, -6);
-
-		disableAlarmTask = new TimerTask() {
-			
-			@Override
-			public void run() {
-
-				AlarmUnit outdoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
-				
-				outdoorAlarmUnit.turnDeviceOff(false);
-				outdoorAlarmUnit.setToStrobeSirenMode();
-			}
-		};
 	}
 	
 	@Override
@@ -63,7 +50,7 @@ public class PatioDoorShockSensorActivityHandler extends AbstractActivityHandler
 				outdoorAlarmUnit.setToStrobeOnlyMode();
 				outdoorAlarmUnit.turnDeviceOn(false);
 				
-				new Timer("Disable silent alarm").schedule(disableAlarmTask, 10000);
+				new Timer("Disable silent alarm").schedule(setupDisableAlarmTask(), 10000);
 
 				log.info("PATIO DOOR STRONG VIBRATION DETECTED - visual outside alarm run for 10 seconds");
 				SMSHelper.sendSMS("07965502960", "Patio door vibration detected, flashing outside light");
@@ -74,6 +61,20 @@ public class PatioDoorShockSensorActivityHandler extends AbstractActivityHandler
 		}
 
 		log.info("End " + System.currentTimeMillis());
+	}
+	
+	private TimerTask setupDisableAlarmTask() {
+		return new TimerTask() {
+			
+			@Override
+			public void run() {
+
+				AlarmUnit outdoorAlarmUnit = (AlarmUnit) DeviceListManager.getControllableDeviceByLocation(Zone.PATIO).get(0);
+				
+				outdoorAlarmUnit.turnDeviceOff(false);
+				outdoorAlarmUnit.setToStrobeSirenMode();
+			}
+		};
 	}
 
 }

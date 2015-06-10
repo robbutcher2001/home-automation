@@ -65,7 +65,7 @@ public abstract class AbstractControllableDevice extends AbstractDevice implemen
 		this.manuallyOverridden = manuallyOverride;
 		this.lastUpdated = System.currentTimeMillis();
 		
-		return null;
+		return true;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public abstract class AbstractControllableDevice extends AbstractDevice implemen
 		this.level = level;
 		this.lastUpdated = System.currentTimeMillis();
 		
-		return null;
+		return true;
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public abstract class AbstractControllableDevice extends AbstractDevice implemen
 		this.manuallyOverridden = manuallyOverride;
 		this.lastUpdated = System.currentTimeMillis();
 		
-		return null;
+		return true;
 	}
 
 	@Override
@@ -98,18 +98,16 @@ public abstract class AbstractControllableDevice extends AbstractDevice implemen
 		this.state = true;
 		this.level = level;
 		this.autoOverridden = true;
-		turnDeviceOn(false, level);
 		
-		return null;
+		return turnDeviceOn(false, level);
 	}
 
 	@Override
 	public Boolean turnDeviceOffAutoOverride() {
 		this.state = false;
 		this.autoOverridden = false;
-		turnDeviceOff(false);
 		
-		return null;
+		return turnDeviceOff(false);
 	}
 
 	protected boolean callParseResult(String path) {
