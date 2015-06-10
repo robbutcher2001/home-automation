@@ -43,19 +43,5 @@ public class Lamp extends AbstractControllableDevice {
 		
 		return callParseResult(host + endpoint + ".Set(0)");
 	}
-	
-	@Override
-	public Boolean turnDeviceOnAutoOverride(String level) {
-		super.turnDeviceOnAutoOverride(level);
-		
-		return turnDeviceOn(false, level);
-	}
-
-	@Override
-	public Boolean turnDeviceOffAutoOverride() {
-		super.turnDeviceOffAutoOverride();
-		
-		return turnDeviceOff(false);
-	}
 
 }

@@ -103,7 +103,7 @@ public class CommonQueries {
 			}
 			//or check whether lounge or bathroom sensor has not been triggered yet today (away from home)
 			//this means if sensor is triggered in the morning the alarm will be disabled after 17:30 (fall into below)
-			else if (!loungeMultisensor.after(halfFiveAM) || !bathroomMultisensor.after(halfSevenAM)) {
+			else if (!loungeMultisensor.after(halfFiveAM) && !bathroomMultisensor.after(halfSevenAM)) {
 				alarmEnabled = true;
 			}
 			//or if above isn't true, check whether it's before 5:30pm and lounge multisensor OR robs multisensor OR bathroom multisensor has not been triggered within the last hour

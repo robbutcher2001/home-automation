@@ -66,20 +66,6 @@ public class Blind extends AbstractControllableDevice {
 		return callParseResult(host + endpoint + ".Set(80)");
 	}
 	
-	@Override
-	public Boolean turnDeviceOnAutoOverride(String level) {
-		super.turnDeviceOnAutoOverride(level);
-		
-		return turnDeviceOn(false, level);
-	}
-
-	@Override
-	public Boolean turnDeviceOffAutoOverride() {
-		super.turnDeviceOffAutoOverride();
-		
-		return turnDeviceOff(false);
-	}
-	
 	public Boolean tiltBlindOpen() {
 		log.info("Tilting and direction is: " + this.lastDirection + " for " + this.endpoint);
 		if (this.lastDirection.equals(LastDirection.DOWN)) {

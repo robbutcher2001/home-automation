@@ -43,20 +43,12 @@ public class ElectricBlanket extends AbstractControllableDevice {
 		
 		return callParseResult(host + endpoint + ".Set(0)");
 	}
-	
-	@Override
-	public Boolean turnDeviceOnAutoOverride(String level) {
-		super.turnDeviceOnAutoOverride(level);
-		
-		return turnDeviceOn(false, level);
-	}
 
 	@Override
 	public Boolean turnDeviceOffAutoOverride() {
 		this.blanketState = State.OFF;
-		super.turnDeviceOffAutoOverride();
 		
-		return turnDeviceOff(false);
+		return super.turnDeviceOffAutoOverride();
 	}
 	
 	public String toggleNextState() {
