@@ -23,15 +23,15 @@ public class BedroomTwoWindowActivityHandler extends AbstractExternalDoorActivit
 		this.entrance = "Scarlett's window";
 		
 		if (this.reportingDevice.isTriggered()) {
-			log.info("Scarlett's bedrom window opened");
+			log.info("Scarlett's bedroom window opened");
 			
 			//check false occupancy
-			if (CommonQueries.isApartmentAlarmEnabled()) {
+			if (CommonQueries.isApartmentOccupied() && CommonQueries.isApartmentAlarmEnabled()) {
 				runUnexpectedOccupancyControl();
 			}
 		}
 		else {
-			log.info("Scarlett's bedrom window now closed");
+			log.info("Scarlett's bedroom window now closed");
 		}
 	}
 }

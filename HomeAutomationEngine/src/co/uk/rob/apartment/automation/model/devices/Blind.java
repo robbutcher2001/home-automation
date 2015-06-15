@@ -1,14 +1,10 @@
 package co.uk.rob.apartment.automation.model.devices;
 
-import org.apache.log4j.Logger;
-
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractControllableDevice;
 
 public class Blind extends AbstractControllableDevice {
 
-	private Logger log = Logger.getLogger(Blind.class);
-	
 	private enum LastDirection {
 		UP(), DOWN();
 	}
@@ -19,7 +15,6 @@ public class Blind extends AbstractControllableDevice {
 	
 	public Blind(String endpoint, Zone location, String switchBinaryEndpoint) {
 		this.lastDirection = LastDirection.DOWN;
-		log.info("Constructor: " + this.lastDirection + " for " + this.endpoint);
 		this.endpoint = endpoint;
 		this.zone = location;
 		this.switchBinaryEndpoint = switchBinaryEndpoint;
@@ -67,7 +62,6 @@ public class Blind extends AbstractControllableDevice {
 	}
 	
 	public Boolean tiltBlindOpen() {
-		log.info("Tilting and direction is: " + this.lastDirection + " for " + this.endpoint);
 		if (this.lastDirection.equals(LastDirection.DOWN)) {
 			tilted = true;
 			callParseResult(host + this.switchBinaryEndpoint + ".Set(255)");
@@ -83,7 +77,6 @@ public class Blind extends AbstractControllableDevice {
 	}
 
 	public Boolean tiltBlindClosed() {
-		log.info("Tilting and direction is: " + this.lastDirection + " for " + this.endpoint);
 		if (this.lastDirection.equals(LastDirection.DOWN)) {
 			tilted = false;
 			callParseResult(host + this.switchBinaryEndpoint + ".Set(0)");
@@ -122,7 +115,5 @@ public class Blind extends AbstractControllableDevice {
 		else {
 			this.lastDirection = LastDirection.DOWN;
 		}
-		
-		log.info(this.lastDirection + " for " + this.endpoint + " and target [" + targetLevel + "] and current [" + currentLevel + "]");
 	}
 }

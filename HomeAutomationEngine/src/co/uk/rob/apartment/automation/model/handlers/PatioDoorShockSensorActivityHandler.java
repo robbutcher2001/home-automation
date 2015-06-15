@@ -30,7 +30,6 @@ public class PatioDoorShockSensorActivityHandler extends AbstractActivityHandler
 	
 	@Override
 	public void run() {
-		log.info("Start " + System.currentTimeMillis());
 		Calendar fiveMinsAgo = Calendar.getInstance();
 		Calendar twentySecondsAgo = (Calendar) fiveMinsAgo.clone();
 
@@ -59,8 +58,6 @@ public class PatioDoorShockSensorActivityHandler extends AbstractActivityHandler
 		else {
 			log.info("Patio door vibration detected but either too soon or whilst alarm is disabled so ignoring");
 		}
-
-		log.info("End " + System.currentTimeMillis());
 	}
 	
 	private TimerTask setupDisableAlarmTask() {

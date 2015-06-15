@@ -126,28 +126,15 @@ public class CommonQueries {
 		Calendar bathroomMultisensor = Calendar.getInstance();
 		bathroomMultisensor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.BATHROOM).get(0).getLastUpdated()));
 		
-//		Calendar frontDoor = Calendar.getInstance();
-//		frontDoor.setTime(new Date(DeviceListManager.getReportingDeviceByLocation(Zone.HALLWAY).get(0).getLastUpdated()));
+		Calendar lastOccupancy = loungeMultisensor;
 		
-		Calendar lastOccupancy = null;
-		
-		if (loungeMultisensor.after(robRoomMultisensor)) {
-			lastOccupancy = loungeMultisensor;
-		}
-		
-		if (robRoomMultisensor.after(loungeMultisensor)) {
+		if (robRoomMultisensor.after(lastOccupancy)) {
 			lastOccupancy = robRoomMultisensor;
 		}
 		
-		if (bathroomMultisensor.after(robRoomMultisensor)) {
+		if (bathroomMultisensor.after(lastOccupancy)) {
 			lastOccupancy = bathroomMultisensor;
 		}
-		
-		//removed because as the door is opened as you come in, the last occupancy time is updated to the
-		//time that happens so the FrontDoorActivityHandler cannot detect whether you've been out the flat for an hour
-//		if (frontDoor.after(lounge) && frontDoor.after(robRoom)) {
-//			lastOccupancy = frontDoor;
-//		}
 		
 		return lastOccupancy;
 	}
