@@ -26,7 +26,7 @@ public class BedroomOneWindowActivityHandler extends AbstractExternalDoorActivit
 			log.info("Rob's bedroom window opened");
 			
 			//check false occupancy
-			if (CommonQueries.isApartmentOccupied() && CommonQueries.isApartmentAlarmEnabled()) {
+			if (!CommonQueries.isApartmentOccupied() && CommonQueries.isApartmentAlarmEnabled()) {
 				runUnexpectedOccupancyControl();
 			}
 		}
