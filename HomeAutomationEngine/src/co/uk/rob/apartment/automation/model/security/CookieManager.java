@@ -34,7 +34,6 @@ public class CookieManager
 	//TODO: once this cookie is returned, you need to write this to a file - DONE but check no ConcurrentModificationException will be called when this happens
 	public static Cookie createUserCookie() {
 		int cookieExpiry = 60 * 60 * (24 * cookieBestBeforeDays);
-//		int cookieExpiry = 60;
 		
 		Long salt = System.currentTimeMillis();
 		String hash = Hash.getHash(Hash.generateRandomHash() + salt.toString());
@@ -43,6 +42,8 @@ public class CookieManager
 		if (hash != null) {
 			cookie = new Cookie("RobsApartment", hash);
 	    	cookie.setMaxAge(cookieExpiry);
+	    	cookie.setHttpOnly(true);
+	    	cookie.setSecure(true);
 		}
 		
     	return cookie;

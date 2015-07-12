@@ -74,6 +74,19 @@ public class LoungeEnvironmentMonitor extends Thread {
 			elevenPmRandomMinute.set(Calendar.HOUR_OF_DAY, 23);
 			elevenPmRandomMinute.set(Calendar.MINUTE, randomMinuteLightsOff);
 			
+			//if blinds are tilted open and apartment becomes unoccupied, un-tilt
+			if (CommonQueries.isApartmentAlarmEnabled() && !CommonQueries.isApartmentOccupied()) {
+				if (loungeWindowBlind.isTilted()) {
+					loungeWindowBlind.tiltBlindClosed();
+					log.info("Lounge window blind is tilted but now no one is home so un-tilting");
+				}
+				
+				if (loungePatioBlind.isTilted()) {
+					loungePatioBlind.tiltBlindClosed();
+					log.info("Lounge patio door blind is tilted but now no one is home so un-tilting");
+				}
+			}
+			
 			//if after 11pm and blinds are still not 0%, presume patio sensor is offline - close blinds
 			if (now.after(elevenPM)) {
 				boolean moved = false;
