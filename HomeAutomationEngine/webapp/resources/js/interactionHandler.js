@@ -163,7 +163,11 @@ var DeliveryHelper = {
 						$('.statusTitle').removeClass('error-text');
 
 						//Remove dropdown
+						$('.statusBar').html('');
 						Utilities.removeBar(200);
+
+						//Enable buttons
+						$('.button').removeAttr('disabled');
 					}
 
 					if (response.apartment.bedroom_to_render == 'bedroomOne') {
