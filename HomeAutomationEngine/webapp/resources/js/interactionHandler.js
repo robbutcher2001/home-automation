@@ -163,7 +163,6 @@ var DeliveryHelper = {
 						$('.statusTitle').removeClass('error-text');
 
 						//Remove dropdown
-						$('.statusBar').html('');
 						Utilities.removeBar(200);
 
 						//Enable buttons
