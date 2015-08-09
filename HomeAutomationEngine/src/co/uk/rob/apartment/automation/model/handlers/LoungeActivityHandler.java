@@ -154,13 +154,13 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				if ((now.after(nineAM) && now.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) ||
 						(now.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && (now.after(nineAM) && now.before(midday) || now.after(threePM)))) {
 					boolean tilted = false;
-					if (!loungeWindowBlind.isTilted()) {
+					if (!loungeWindowBlind.isTilted() && !"100".equals(loungeWindowBlind.getDeviceLevel())) {
 						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungeWindowBlind.getDeviceLevel())) {
 							tilted = loungeWindowBlind.tiltBlindOpen();
 						}
 					}
 					
-					if (!loungePatioBlind.isTilted()) {
+					if (!loungePatioBlind.isTilted() && !"100".equals(loungePatioBlind.getDeviceLevel())) {
 						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungePatioBlind.getDeviceLevel())) {
 							tilted = loungePatioBlind.tiltBlindOpen();
 						}
