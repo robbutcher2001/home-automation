@@ -1,0 +1,85 @@
+@CHARSET "UTF-8";
+
+html {
+	overflow-y: scroll;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: black;
+	background-color: white;
+	overflow: hidden;
+	font-family: Georgia, "Bitstream Charter", serif;
+	font-size: 16px;
+	height: 100%;
+}
+
+.statusBar {
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	height: 48px;
+	line-height: 48px;
+	font-size: 26px !important; 
+	top: 0;
+	left: 0;
+	display: none;
+}
+
+.error {
+	background-color: #FF8C8C !important; /*red*/ /*#1FDE1F; 34E02B*/
+}
+
+.error-text {
+	color: #FF8C8C !important;
+}
+
+.success {
+	background-color: #34E02B !important;
+}
+
+.success-text {
+	color: #34E02B !important;
+}
+
+.button {
+	height: 70px;
+	line-height: 70px;
+	background-color: #65ADD0;
+	color: black;
+	cursor: pointer;
+	display: block;
+	border: none;
+	padding: 0;
+	font-size: 18px;
+}
+
+#loungeCamera {
+	cursor: pointer;
+}
+
+.title {
+	width: 100%;
+	height: 38px;
+	line-height: 38px;
+	background-color: #0B6FA0;
+	text-align: center;
+	margin: 10px 0px;
+	color: white;
+	cursor: pointer;
+	display: block;
+	border: none;
+	padding: 0;
+	font-size: 18px;
+}
+
+.lighting {
+	margin-top: 20px;
+}
+
+.button:disabled {
+	background-color: #D3D3D3;
+	color: white !important;
+	cursor: default;
+}
