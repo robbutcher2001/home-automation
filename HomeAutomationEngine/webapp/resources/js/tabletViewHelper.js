@@ -77,7 +77,7 @@ var DeliveryHelper = {
 					//Change title bars
 					$('.lighting').html('Lighting - not auto updating');
 					$('.lighting').addClass('error-text');
-					$('.blinds').html('Blinds - not auto updating');
+					$('.blinds').html('Window and Blinds - not auto updating');
 					$('.blinds').addClass('error-text');
 					$('.bedHeating').html('Bed Heating - not auto updating');
 					$('.bedHeating').addClass('error-text');
@@ -106,6 +106,13 @@ var DeliveryHelper = {
 					}
 					
 					$('.top-title').html('Lighting');
+					
+					if (response.rob_room.window_sensor.open == true) {
+						$('.blinds').html('Window and Blinds | Window open');
+					}
+					else {
+						$('.blinds').html('Window and Blinds | Window closed');
+					}
 
 					if (response.rob_room.electric_blanket1.is_warming == true) {
 						$('.bedHeating').html('Bed Heating | Currently Warming');
