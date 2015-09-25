@@ -113,6 +113,13 @@ var DeliveryHelper = {
 					else {
 						$('.blinds').html('Window and Blinds | Window closed');
 					}
+					
+					if (response.rob_room.door_sensor.open == true) {
+						$('body').removeClass('night-time');
+					}
+					else {
+						$('body').addClass('night-time');
+					}
 
 					if (response.rob_room.electric_blanket1.is_warming == true) {
 						$('.bedHeating').html('Bed Heating | Currently Warming');

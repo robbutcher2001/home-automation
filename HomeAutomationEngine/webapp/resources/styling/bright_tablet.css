@@ -15,6 +15,10 @@ body {
 	height: 100%;
 }
 
+.night-time {
+	background-color: black !important;
+}
+
 .statusBar {
 	position: absolute;
 	text-align: center;
