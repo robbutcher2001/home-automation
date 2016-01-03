@@ -354,7 +354,7 @@ var DeliveryHelper = {
 							$('.rob-room-title').html($('.rob-room-title').html() + ' | Blinds closed');
 						}
 						else {
-							$('.rob-room-title').html($('.rob-room-title').html() + ' | Blinds open ' + response.lounge.blind1.percent_open + '%');
+							$('.rob-room-title').html($('.rob-room-title').html() + ' | Blinds open ' + response.rob_room.blind1.percent_open + '%');
 						}
 						
 						$('.rob-room-title').html($('.rob-room-title').html() + ' | ' + response.rob_room.multisensor.temperature + '&deg;C');
