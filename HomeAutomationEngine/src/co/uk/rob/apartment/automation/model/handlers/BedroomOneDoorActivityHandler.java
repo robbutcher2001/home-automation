@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractActivityHandler;
+import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 
 public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
@@ -24,6 +25,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
 	private ControllableDevice bobbyLoungeLamp;
+	private Blind robWindowBlind;
 
 	public BedroomOneDoorActivityHandler() {
 		devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM);
@@ -32,6 +34,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 		ceilingLight = devicesToControl.get(1);
 		ledRodRobRoom = devicesToControl.get(3);
 		electricBlanket = devicesToControl.get(4);
+		robWindowBlind = (Blind) devicesToControl.get(5);
 		
 		loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
 		stickLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(2);
@@ -62,9 +65,17 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 		quarterToEightAM.set(Calendar.HOUR_OF_DAY, 7);
 		quarterToEightAM.set(Calendar.MINUTE, 45);
 		
-		if (now.after(halfSixPM) && now.before(halfSevenPM) && !this.reportingDevice.isTriggered()) {
-			//TODO: Add closure of blinds now door is shut and it's after work
-			log.info("Door closed between 18:30 and 19:30 so assuming Rob wants to get changed, closing blinds");
+		if (now.after(halfSixPM) && now.before(halfSevenPM) &&
+				!this.reportingDevice.isTriggered()) {
+			if (!"0".equals(robWindowBlind.getDeviceLevel())) {
+				robWindowBlind.turnDeviceOn(true, "0");
+				log.info("Door closed between 18:30 and 19:30 so assuming Rob wants to get changed, closing blinds");
+			}
+		}
+		else {
+			if (robWindowBlind.isManuallyOverridden()) {
+				robWindowBlind.resetManuallyOverridden();
+			}
 		}
 		
 		if (now.after(tenPM) || now.before(quarterToEightAM)) {
