@@ -88,7 +88,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					}
 					
 					if (!loungeLamp.isDeviceOn() && !loungeLamp.isAutoOverridden() && !loungeLamp.isManuallyOverridden() && now.after(fiveAM) && !patioDoor.isTriggered() &&
-							(CommonQueries.isBrightnessBelow20() || CommonQueries.isBrightnessBetween20and200() || CommonQueries.isBrightnessBetween200and400())) {
+							(CommonQueries.isBrightnessBelow20() || CommonQueries.isBrightnessBetweenXandY(20f, 200f) || CommonQueries.isBrightnessBetweenXandY(200f, 400f))) {
 						loungeLamp.turnDeviceOn(false);
 						log.info("Lounge occupancy detected, not auto overridden or manually overridden, blinds are closed and it's dark outside: switching on tall lounge lamp");
 					}
@@ -155,13 +155,13 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						(now.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && (now.after(nineAM) && now.before(midday) || now.after(threePM)))) {
 					boolean tilted = false;
 					if (!loungeWindowBlind.isTilted() && !"100".equals(loungeWindowBlind.getDeviceLevel())) {
-						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungeWindowBlind.getDeviceLevel())) {
+						if ((CommonQueries.isBrightnessBetweenXandY(600f, 800f) || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungeWindowBlind.getDeviceLevel())) {
 							tilted = loungeWindowBlind.tiltBlindOpen();
 						}
 					}
 					
 					if (!loungePatioBlind.isTilted() && !"100".equals(loungePatioBlind.getDeviceLevel())) {
-						if ((CommonQueries.isBrightnessBetween600and800() || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungePatioBlind.getDeviceLevel())) {
+						if ((CommonQueries.isBrightnessBetweenXandY(600f, 800f) || CommonQueries.isBrightnessGreaterThan800()) && !"0".equals(loungePatioBlind.getDeviceLevel())) {
 							tilted = loungePatioBlind.tiltBlindOpen();
 						}
 					}

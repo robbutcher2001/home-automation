@@ -103,7 +103,6 @@ public class LoungeEnvironmentMonitor extends Thread {
 				}
 			}
 			
-			//blinds
 			String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
 			if (loungeBedroomMode == null || (loungeBedroomMode != null && "true".equals(loungeBedroomMode))) {
 				boolean moved = false;
@@ -132,6 +131,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 			}
 			
 			if (now.after(nineAM) && (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode)))) {
+				//blinds
 				if (CommonQueries.isBrightnessGreaterThan800()) {
 					boolean moved = false;
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
@@ -146,7 +146,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into > 800 bucket, moving blinds to 80% (max)");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween600and800()) {
+				else if (CommonQueries.isBrightnessBetweenXandY(600f, 800f)) {
 					boolean moved = false;
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
@@ -160,7 +160,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 600-800 bucket, moving blinds to 80% (max)");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween400and600()) {
+				else if (CommonQueries.isBrightnessBetweenXandY(400f, 600f)) {
 					boolean moved = false;
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
@@ -174,7 +174,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 400-600 bucket, moving blinds to 80% (max)");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween200and400() && now.after(halfThreePM)) {
+				else if (CommonQueries.isBrightnessBetweenXandY(200f, 400f) && now.after(halfThreePM)) {
 					boolean moved = false;
 					if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("55");
@@ -188,7 +188,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 200-400 bucket, moving blinds to 55%");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween20and200() && now.after(halfThreePM)) {
+				else if (CommonQueries.isBrightnessBetweenXandY(20f, 200f) && now.after(halfThreePM)) {
 					boolean moved = false;
 					if (!"40".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("40");
@@ -251,7 +251,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into > 800 bucket, Bobby lamp auto off");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween600and800()) {
+				else if (CommonQueries.isBrightnessBetweenXandY(600f, 800f)) {
 					if (!"0".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
 						loungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into 600-800 bucket, lounge lamp auto off");
@@ -267,7 +267,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 600-800 bucket, Bobby lamp auto on 40%");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween400and600() && now.after(halfThreePM)) {
+				else if (CommonQueries.isBrightnessBetweenXandY(400f, 600f) && now.after(halfThreePM)) {
 					if (!"0".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden()) {
 						loungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into 400-600 bucket, lounge lamp auto off");
@@ -283,7 +283,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 400-600 bucket, Bobby lamp auto on 40%");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween200and400() && now.after(halfThreePM)) {
+				else if (CommonQueries.isBrightnessBetweenXandY(200f, 400f) && now.after(halfThreePM)) {
 					if (!"30".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						loungeLamp.turnDeviceOnAutoOverride("30");
 						log.info("Outside brightness has fallen into 200-400 bucket and patio door shut, lounge lamp auto on 30%");
@@ -294,7 +294,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into 200-400 bucket, Bobby lamp auto on 40%");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetween20and200() && now.after(halfThreePM)) {
+				else if (CommonQueries.isBrightnessBetweenXandY(20f, 200f) && now.after(halfThreePM)) {
 					if (!"40".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						loungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 20-200 bucket and patio door shut, lounge lamp auto up to 40%");

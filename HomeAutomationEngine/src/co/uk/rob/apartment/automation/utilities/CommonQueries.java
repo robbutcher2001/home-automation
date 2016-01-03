@@ -188,44 +188,11 @@ public class CommonQueries {
 		return false;
 	}
 	
-	public static boolean isBrightnessBetween600and800() {
+	public static boolean isBrightnessBetweenXandY(float x, float y) {
 		Float[] outsideLux = getCurrentBrightness();
-		if ((outsideLux[0] < 800f && outsideLux[0] > 600f) &&
-				(outsideLux[1] < 800f && outsideLux[1] > 600f) &&
-					(outsideLux[2] < 800f && outsideLux[2] > 600f)) {
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public static boolean isBrightnessBetween400and600() {
-		Float[] outsideLux = getCurrentBrightness();
-		if ((outsideLux[0] < 600f && outsideLux[0] > 400f) &&
-				(outsideLux[1] < 600f && outsideLux[1] > 400f) &&
-					(outsideLux[2] < 600f && outsideLux[2] > 400f)) {
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public static boolean isBrightnessBetween200and400() {
-		Float[] outsideLux = getCurrentBrightness();
-		if ((outsideLux[0] < 400f && outsideLux[0] > 200f) &&
-				(outsideLux[1] < 400f && outsideLux[1] > 200f) &&
-					(outsideLux[2] < 400f && outsideLux[2] > 200f)) {
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public static boolean isBrightnessBetween20and200() {
-		Float[] outsideLux = getCurrentBrightness();
-		if ((outsideLux[0] < 200f && outsideLux[0] > 20f) &&
-				(outsideLux[1] < 200f && outsideLux[1] > 20f) &&
-					(outsideLux[2] < 200f && outsideLux[2] > 20f)) {
+		if ((outsideLux[0] < y && outsideLux[0] > x) &&
+				(outsideLux[1] < y && outsideLux[1] > x) &&
+					(outsideLux[2] < y && outsideLux[2] > x)) {
 			return true;
 		}
 		

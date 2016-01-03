@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -25,6 +26,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 	private ControllableDevice dehumidifier;
 	private ControllableDevice ledRod;
 	private ControllableDevice electricBlanket;
+	private Blind robWindowBlind;
 	private ReportingDevice motionSensor;
 	private ReportingDevice doorSensor;
 	private ReportingDevice windowSensor;
@@ -38,6 +40,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 		dehumidifier = devicesToControl.get(2);
 		ledRod = devicesToControl.get(3);
 		electricBlanket = devicesToControl.get(4);
+		robWindowBlind = (Blind) devicesToControl.get(5);
 		
 		motionSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0);
 		doorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
@@ -87,9 +90,92 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 			elevenPmRandomMinute.set(Calendar.HOUR_OF_DAY, 23);
 			elevenPmRandomMinute.set(Calendar.MINUTE, randomMinuteLightsOff);
 			
-			//bedroom mode not enabled
+			//if blinds are tilted open and apartment becomes unoccupied, un-tilt
+			if (CommonQueries.isApartmentAlarmEnabled() && !CommonQueries.isApartmentOccupied()) {
+				if (robWindowBlind.isTilted()) {
+					robWindowBlind.tiltBlindClosed();
+					log.info("Rob window blind is tilted but now no one is home so un-tilting");
+				}
+			}
+			
+			//if after 11pm and blinds are still not 0%, presume patio sensor is offline - close blinds
+			if (now.after(elevenPM)) {
+				if (!"0".equals(robWindowBlind.getDeviceLevel())) {
+					robWindowBlind.turnDeviceOn(true);
+					log.info("Patio sensor appears to be offline, closing blinds as precaution");
+				}
+			}
+			
+			//bedroom mode enabled
 			String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
+			if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "true".equals(robRoomBedroomMode))) {
+				if (!"0".equals(robWindowBlind.getDeviceLevel())) {
+					robWindowBlind.turnDeviceOn(false);
+					log.info("Rob room bedroom mode is on, closing blinds");
+				}
+			}
+			
+			//bedroom mode not enabled
 			if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode))) {
+				//blinds
+				if (CommonQueries.isBrightnessGreaterThan800()) {
+					if (!"88".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
+						//equivalent to running device.turnDeviceOffAutoOverride() but moving blind to 88%
+						robWindowBlind.turnDeviceOn(false, "88");
+						robWindowBlind.resetAutoOverridden();
+						log.info("Outside brightness has fallen into > 800 bucket, moving blinds to 88% (max)");
+					}
+				}
+				else if (CommonQueries.isBrightnessBetweenXandY(600f, 800f)) {
+					if (!"88".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
+						//equivalent to running device.turnDeviceOffAutoOverride() but moving blind to 88%
+						robWindowBlind.turnDeviceOn(false, "88");
+						robWindowBlind.resetAutoOverridden();
+						log.info("Outside brightness has fallen into 600-800 bucket, moving blinds to 88% (max)");
+					}
+				}
+				else if (CommonQueries.isBrightnessBetweenXandY(400f, 600f)) {
+					if (!"88".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
+						//equivalent to running device.turnDeviceOffAutoOverride() but moving blind to 88%
+						robWindowBlind.turnDeviceOn(false, "88");
+						robWindowBlind.resetAutoOverridden();
+						log.info("Outside brightness has fallen into 400-600 bucket, moving blinds to 88% (max)");
+					}
+				}
+				//isBrightnessBetween300and500
+				//isBrightnessBetween100and300
+				//isBrightnessBetween20and100
+				//isBrightnessBetweenBelow20
+				else if (CommonQueries.isBrightnessBetweenXandY(200f, 400f) && now.after(halfThreePM)) {
+					if (!"55".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
+						robWindowBlind.turnDeviceOnAutoOverride("55");
+						log.info("Outside brightness has fallen into 200-400 bucket, moving blinds to 55%");
+					}
+				}
+				else if (CommonQueries.isBrightnessBetweenXandY(20f, 200f) && now.after(halfThreePM)) {
+					if (!"40".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
+						robWindowBlind.turnDeviceOnAutoOverride("40");
+						log.info("Outside brightness has fallen into 20-200 bucket, moving blinds to 40%");
+					}
+				}
+				else if (CommonQueries.isBrightnessBelow20() && now.after(halfThreePM)) {
+					if (!"0".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
+						robWindowBlind.turnDeviceOnAutoOverride("0");
+						log.info("Outside brightness has fallen into < 20 bucket, moving blinds to 0%");
+					}
+					
+					if (robWindowBlind.isTilted()) {
+						robWindowBlind.tiltBlindClosed();
+						log.info("Rob window blind is down and tilted but it's now dark so un-tilting");
+					}
+				}
+				
+				
+				
+				
+				
+				
+				
 				//lighting
 				if (now.after(twoPM) && now.before(elevenPM) && doorSensor.isTriggered()) {
 					if (CommonQueries.isBrightnessGreaterThan800()) {
@@ -103,7 +189,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into > 800 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessBetween600and800()) {
+					else if (CommonQueries.isBrightnessBetweenXandY(600f, 800f)) {
 						if (!"0".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOffAutoOverride();
 							log.info("Outside brightness has fallen into 600-800 bucket, Rob's room lamp auto off");
@@ -114,7 +200,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into 600-800 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessBetween400and600() && now.after(halfThreePM)) {
+					else if (CommonQueries.isBrightnessBetweenXandY(400f, 600f) && now.after(halfThreePM)) {
 						if (!"40".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("40");
 							log.info("Outside brightness has fallen into 400-600 bucket, Rob's room lamp auto up to 40%");
@@ -125,7 +211,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into 400-600 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessBetween200and400() && now.after(halfThreePM)) {
+					else if (CommonQueries.isBrightnessBetweenXandY(200f, 400f) && now.after(halfThreePM)) {
 						if (!"60".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("60");
 							log.info("Outside brightness has fallen into 200-400 bucket, Rob's room lamp auto up to 60%");
@@ -136,7 +222,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 							log.info("Outside brightness has fallen into 200-400 bucket, Rob's room LED rod auto off");
 						}
 					}
-					else if (CommonQueries.isBrightnessBetween20and200() && now.after(halfThreePM)) {
+					else if (CommonQueries.isBrightnessBetweenXandY(20f, 200f) && now.after(halfThreePM)) {
 						if (!"60".equals(lamp.getDeviceLevel()) && !lamp.isManuallyOverridden()) {
 							lamp.turnDeviceOnAutoOverride("60");
 							log.info("Outside brightness has fallen into 20-200 bucket, Rob's room lamp auto up to 60%");
