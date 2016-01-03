@@ -133,6 +133,10 @@ public class DeviceListManager {
 				Zone.ROB_ROOM);
 		controllableDevices.add(electricBlanket);
 		
+		ControllableDevice robWindowBlindEndpoint = new Blind(HomeAutomationProperties.getProperty("robWindowBlindEndpoint"),
+				Zone.ROB_ROOM, HomeAutomationProperties.getProperty("robWindowBlindSwitchBinaryEndpoint"));
+		controllableDevices.add(robWindowBlindEndpoint);
+		
 		// Patio
 		ControllableDevice outdoorAlarmEndpoint = new AlarmUnit(HomeAutomationProperties.getProperty("outdoorAlarmBatteryUpdateEndpoint"),
 				HomeAutomationProperties.getProperty("outdoorAlarmReadEndpoint"),

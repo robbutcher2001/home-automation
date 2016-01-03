@@ -49,6 +49,9 @@ multisensorRobUpdateEndpoint=/ZWaveAPI/Run/devices[8].instances[0].commandClasse
 multisensorRobBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[8].instances[0].commandClasses[128].Get()
 multisensorRobEndpoint=devices.8.instances.0.commandClasses.
 
+robWindowBlindEndpoint=/ZWaveAPI/Run/devices[28].instances[0].SwitchMultilevel
+robWindowBlindSwitchBinaryEndpoint=/ZWaveAPI/Run/devices[28].instances[0].SwitchBinary
+
 
 //Scarlett's room
 scarlettWindowSensorEndpoint=devices.24.instances.0.commandClasses.
