@@ -203,7 +203,7 @@ public class BedroomOneTabletViewController extends HttpServlet {
 				log.info("Request for blind peak in Rob's room [" + activeUser + "]");
 				
 				if ("0".equals(robWindowBlind.getDeviceLevel())) {
-					successfulCall = robWindowBlind.turnDeviceOn(false, "15");
+					successfulCall = robWindowBlind.turnDeviceOn(false, "20");
 					
 					TimerTask peakingOutsideTask = new TimerTask() {
 						

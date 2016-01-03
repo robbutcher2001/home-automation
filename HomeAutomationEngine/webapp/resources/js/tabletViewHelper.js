@@ -106,12 +106,13 @@ var DeliveryHelper = {
 					}
 					
 					$('.top-title').html('Lighting');
+					$('.blinds').html('Window and Blinds');
 					
 					if (response.rob_room.blind1.percent_open == '0') {
 						$('.blinds').html($('.blinds').html() + ' | Blinds closed');
 					}
 					else {
-						$('.blinds').html($('.blinds').html() + ' | Blinds open ' + response.lounge.blind1.percent_open + '%');
+						$('.blinds').html($('.blinds').html() + ' | Blinds open ' + response.rob_room.blind1.percent_open + '%');
 					}
 					
 					if (response.rob_room.window_sensor.open == true) {
