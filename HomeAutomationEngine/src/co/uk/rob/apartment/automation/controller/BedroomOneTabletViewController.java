@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
@@ -62,6 +65,7 @@ public class BedroomOneTabletViewController extends HttpServlet {
 			ControllableDevice dehumidifier = devicesToControl.get(2);
 			ControllableDevice ledRodRobEndpoint = devicesToControl.get(3);
 			ControllableDevice electricBlanket = devicesToControl.get(4);
+			Blind robWindowBlind = (Blind) devicesToControl.get(5);
 			
 			if (action == null || action.equals("")) {
 				RequestDispatcher dispatch = request.getRequestDispatcher("index.html");
@@ -134,6 +138,91 @@ public class BedroomOneTabletViewController extends HttpServlet {
 				
 				//set next toggle as lights on full
 				HomeAutomationProperties.setOrUpdateProperty("RobRoomNextLightingState", "full");
+			}
+			else if (action.equals("toggleBlinds")) {
+				log.info("Request for blind toggle in Rob's room [" + activeUser + "]");
+				if ("0".equals(robWindowBlind.getDeviceLevel())) {
+					if (!CommonQueries.isBrightnessBelow20()) {
+						successfulCall = robWindowBlind.turnDeviceOn(true, "88");
+						robWindowBlind.resetAutoOverridden();
+						
+						if (successfulCall) {
+							out.print("Blinds opening in Rob's room");
+							log.info("Blinds opening in Rob's room [" + activeUser + "]");
+						}
+						else {
+							out.print("Issue opening blinds");
+						}
+					}
+					else {
+						out.print("Too dark outside");
+					}
+				}
+				else {
+					successfulCall = robWindowBlind.turnDeviceOn(true);
+					robWindowBlind.resetAutoOverridden();
+					
+					if (successfulCall) {
+						out.print("Blinds closing in Rob's room");
+						log.info("Blinds closing in Rob's room [" + activeUser + "]");
+					}
+					else {
+						out.print("Issue closing blinds");
+					}
+				}
+			}
+			else if (action.equals("tiltBlinds")) {
+				log.info("Request for blind tilt in Rob's room [" + activeUser + "]");
+				if (!CommonQueries.isBrightnessBelow20()) {
+					if (!robWindowBlind.isTilted()) {
+						successfulCall = robWindowBlind.tiltBlindOpen();
+						if (successfulCall) {
+							out.print("Blinds tilted down in Rob's room");
+							log.info("Blinds tilted down in Rob's room [" + activeUser + "]");
+						}
+						else {
+							out.print("Issue tilting blinds");
+						}
+					}
+					else {
+						successfulCall = robWindowBlind.tiltBlindClosed();
+						if (successfulCall) {
+							out.print("Blinds tilted back up in Rob's room");
+							log.info("Blinds tilted up in Rob's room [" + activeUser + "]");
+						}
+						else {
+							out.print("Issue tilting blinds");
+						}
+					}
+				}
+				else {
+					out.print("Too dark outside");
+				}
+			}
+			else if (action.equals("peakBlinds")) {
+				log.info("Request for blind peak in Rob's room [" + activeUser + "]");
+				
+				if ("0".equals(robWindowBlind.getDeviceLevel())) {
+					successfulCall = robWindowBlind.turnDeviceOn(false, "15");
+					
+					TimerTask peakingOutsideTask = new TimerTask() {
+						
+						@Override
+						public void run() {
+							Blind robWindowBlindTask = (Blind) DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(5);
+							robWindowBlindTask.turnDeviceOnAutoOverride("0");
+						}
+					};
+					
+					Timer timer = new Timer("Continue Rob room peak mode");
+					timer.schedule(peakingOutsideTask, 12000);
+					
+					out.print("Having a Peking Duck..");
+					log.info("Peaking outside of Rob's room [" + activeUser + "]");
+				}
+				else {
+					out.print("Can only peak when blinds are closed");
+				}
 			}
 			else if (action.equals("blanket20")) {
 				if (electricBlanket instanceof ElectricBlanket) {

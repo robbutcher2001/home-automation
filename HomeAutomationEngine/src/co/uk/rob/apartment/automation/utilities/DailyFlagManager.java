@@ -65,6 +65,12 @@ public class DailyFlagManager extends Thread {
 					loungePatioBlind.resetManuallyOverridden();
 					log.info("Lounge patio blind manual override has been reset");
 				}
+				
+				ControllableDevice robWindowBlind = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(5);
+				if (robWindowBlind.isManuallyOverridden()) {
+					robWindowBlind.resetManuallyOverridden();
+					log.info("Rob room blind manual override has been reset");
+				}
 			}
 			
 			if (now.after(halfFiveAM) && now.before(halfSixAM)) {

@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.ElectricBlanket;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
@@ -58,6 +59,7 @@ public class BedroomOneController extends HttpServlet {
 			ControllableDevice dehumidifier = devicesToControl.get(2);
 			ControllableDevice ledRodRobEndpoint = devicesToControl.get(3);
 			ControllableDevice electricBlanket = devicesToControl.get(4);
+			Blind robWindowBlind = (Blind) devicesToControl.get(5);
 			
 			if (action == null || action.equals("")) {
 				RequestDispatcher dispatch = request.getRequestDispatcher("index.html");
@@ -144,6 +146,34 @@ public class BedroomOneController extends HttpServlet {
 					out.print(((ElectricBlanket) electricBlanket).toggleNextState());
 				}
 				log.info("Electric blanket toggle request for Rob's room [" + activeUser + "]");
+			}
+			else if (action.equals("blindTiltToggleRobRoom")) {
+				log.info("Request for blind tilt in Rob's room [" + activeUser + "]");
+				if (!CommonQueries.isBrightnessBelow20()) {
+					if (!robWindowBlind.isTilted()) {
+						successfulCall = robWindowBlind.tiltBlindOpen();
+						if (successfulCall) {
+							out.print("Blinds tilted down in Rob's room");
+							log.info("Blinds tilted down in Rob's room [" + activeUser + "]");
+						}
+						else {
+							out.print("Issue tilting blinds");
+						}
+					}
+					else {
+						successfulCall = robWindowBlind.tiltBlindClosed();
+						if (successfulCall) {
+							out.print("Blinds tilted back up in Rob's room");
+							log.info("Blinds tilted up in Rob's room [" + activeUser + "]");
+						}
+						else {
+							out.print("Issue tilting blinds");
+						}
+					}
+				}
+				else {
+					out.print("Too dark outside");
+				}
 			}
 			else if (action.equals("dehumRobRoom")) {
 				if (dehumidifier.isDeviceOn() && CommonQueries.hasDehumidifierBeenInStateForOverHour(dehumidifier.getLastInteractedTime())) {

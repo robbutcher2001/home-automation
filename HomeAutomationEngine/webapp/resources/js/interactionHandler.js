@@ -350,6 +350,13 @@ var DeliveryHelper = {
 							$('.rob-room-title').html($('.rob-room-title').html() + ' | Unoccupied');
 						}
 						
+						if (response.rob_room.blind1.percent_open == '0') {
+							$('.rob-room-title').html($('.rob-room-title').html() + ' | Blinds closed');
+						}
+						else {
+							$('.rob-room-title').html($('.rob-room-title').html() + ' | Blinds open ' + response.lounge.blind1.percent_open + '%');
+						}
+						
 						$('.rob-room-title').html($('.rob-room-title').html() + ' | ' + response.rob_room.multisensor.temperature + '&deg;C');
 					}
 
@@ -374,11 +381,18 @@ var DeliveryHelper = {
 					
 					$('#toggleBlanket').html(response.rob_room.electric_blanket1.next_state);
 
-					if (response.lounge.blind1.tilted == false) {
-						$('#blindTiltToggle').html('Tilt blinds');
+					if (response.rob_room.blind1.tilted == false) {
+						$('#blindTiltToggleRobRoom').html('Tilt blinds');
 					}
 					else {
-						$('#blindTiltToggle').html('Tilt blinds back up');
+						$('#blindTiltToggleRobRoom').html('Tilt blinds back up');
+					}
+					
+					if (response.lounge.blind1.tilted == false) {
+						$('#blindTiltToggleLounge').html('Tilt blinds');
+					}
+					else {
+						$('#blindTiltToggleLounge').html('Tilt blinds back up');
 					}
 
 					if (response.lounge.bedroom_mode == 'enabled') {

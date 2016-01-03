@@ -115,10 +115,20 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				}
 			}
 			
+			//has door been open for 15 minutes?
+			boolean doorOpen15Mins = false;
+			Calendar doorLastOpened = (Calendar) now.clone();
+			doorLastOpened.setTime(new Date(doorSensor.getLastUpdated()));
+			doorLastOpened.add(Calendar.MINUTE, 15);
+			
+			if (now.after(doorLastOpened)) {
+				doorOpen15Mins = true;
+			}
+			
 			//bedroom mode not enabled
 			if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode))) {
 				//blinds
-				if (CommonQueries.isBrightnessGreaterThan800()) {
+				if (CommonQueries.isBrightnessGreaterThan800() && doorSensor.isTriggered() && doorOpen15Mins) {
 					if (!"88".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
 						//equivalent to running device.turnDeviceOffAutoOverride() but moving blind to 88%
 						robWindowBlind.turnDeviceOn(false, "88");
@@ -126,36 +136,30 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into > 800 bucket, moving blinds to 88% (max)");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetweenXandY(600f, 800f)) {
+				else if (CommonQueries.isBrightnessBetweenXandY(500f, 800f) && doorSensor.isTriggered() && doorOpen15Mins) {
 					if (!"88".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
 						//equivalent to running device.turnDeviceOffAutoOverride() but moving blind to 88%
 						robWindowBlind.turnDeviceOn(false, "88");
 						robWindowBlind.resetAutoOverridden();
-						log.info("Outside brightness has fallen into 600-800 bucket, moving blinds to 88% (max)");
+						log.info("Outside brightness has fallen into 500-800 bucket, moving blinds to 88% (max)");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetweenXandY(400f, 600f)) {
-					if (!"88".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
-						//equivalent to running device.turnDeviceOffAutoOverride() but moving blind to 88%
-						robWindowBlind.turnDeviceOn(false, "88");
-						robWindowBlind.resetAutoOverridden();
-						log.info("Outside brightness has fallen into 400-600 bucket, moving blinds to 88% (max)");
+				else if (CommonQueries.isBrightnessBetweenXandY(300f, 500f) && doorSensor.isTriggered() && doorOpen15Mins && now.after(halfThreePM)) {
+					if (!"70".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
+						robWindowBlind.turnDeviceOnAutoOverride("70");
+						log.info("Outside brightness has fallen into 300-500 bucket, moving blinds to 70%");
 					}
 				}
-				//isBrightnessBetween300and500
-				//isBrightnessBetween100and300
-				//isBrightnessBetween20and100
-				//isBrightnessBetweenBelow20
-				else if (CommonQueries.isBrightnessBetweenXandY(200f, 400f) && now.after(halfThreePM)) {
-					if (!"55".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
-						robWindowBlind.turnDeviceOnAutoOverride("55");
-						log.info("Outside brightness has fallen into 200-400 bucket, moving blinds to 55%");
+				else if (CommonQueries.isBrightnessBetweenXandY(100f, 300f) && doorSensor.isTriggered() && doorOpen15Mins && now.after(halfThreePM)) {
+					if (!"50".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
+						robWindowBlind.turnDeviceOnAutoOverride("50");
+						log.info("Outside brightness has fallen into 100-300 bucket, moving blinds to 50%");
 					}
 				}
-				else if (CommonQueries.isBrightnessBetweenXandY(20f, 200f) && now.after(halfThreePM)) {
+				else if (CommonQueries.isBrightnessBetweenXandY(20f, 100f) && doorSensor.isTriggered() && doorOpen15Mins && now.after(halfThreePM)) {
 					if (!"40".equals(robWindowBlind.getDeviceLevel()) && !robWindowBlind.isManuallyOverridden()) {
 						robWindowBlind.turnDeviceOnAutoOverride("40");
-						log.info("Outside brightness has fallen into 20-200 bucket, moving blinds to 40%");
+						log.info("Outside brightness has fallen into 20-100 bucket, moving blinds to 40%");
 					}
 				}
 				else if (CommonQueries.isBrightnessBelow20() && now.after(halfThreePM)) {
@@ -169,12 +173,6 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 						log.info("Rob window blind is down and tilted but it's now dark so un-tilting");
 					}
 				}
-				
-				
-				
-				
-				
-				
 				
 				//lighting
 				if (now.after(twoPM) && now.before(elevenPM) && doorSensor.isTriggered()) {

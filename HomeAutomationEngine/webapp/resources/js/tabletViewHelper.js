@@ -107,11 +107,32 @@ var DeliveryHelper = {
 					
 					$('.top-title').html('Lighting');
 					
-					if (response.rob_room.window_sensor.open == true) {
-						$('.blinds').html('Window and Blinds | Window open');
+					if (response.rob_room.blind1.percent_open == '0') {
+						$('.blinds').html($('.blinds').html() + ' | Blinds closed');
 					}
 					else {
-						$('.blinds').html('Window and Blinds | Window closed');
+						$('.blinds').html($('.blinds').html() + ' | Blinds open ' + response.lounge.blind1.percent_open + '%');
+					}
+					
+					if (response.rob_room.window_sensor.open == true) {
+						$('.blinds').html($('.blinds').html() + ' | Window open');
+					}
+					else {
+						$('.blinds').html($('.blinds').html() + ' | Window closed');
+					}
+					
+					if (response.rob_room.blind1.percent_open == '0') {
+						$('#toggleBlinds').html('Open');
+					}
+					else {
+						$('#toggleBlinds').html('Close');
+					}
+					
+					if (response.rob_room.blind1.tilted == false) {
+						$('#tiltBlinds').html('Tilt');
+					}
+					else {
+						$('#tiltBlinds').html('Tilt back up');
 					}
 					
 					if (response.rob_room.door_sensor.open == true) {

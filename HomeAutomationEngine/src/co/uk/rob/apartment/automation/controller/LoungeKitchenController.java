@@ -213,7 +213,7 @@ public class LoungeKitchenController extends HttpServlet {
 				}
 			}
 		}
-		else if (action.equals("blindTiltToggle")) {
+		else if (action.equals("blindTiltToggleLounge")) {
 			log.info("Request for blind tilt in lounge [" + activeUser + "]");
 			if (!CommonQueries.isBrightnessBelow20()) {
 				if (!loungeWindowBlind.isTilted() || !loungePatioBlind.isTilted()) {

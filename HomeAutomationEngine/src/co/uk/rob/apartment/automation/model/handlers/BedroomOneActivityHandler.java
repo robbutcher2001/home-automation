@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
 import co.uk.rob.apartment.automation.model.abstracts.AbstractActivityHandler;
+import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
@@ -20,6 +21,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 	private List<ControllableDevice> devicesToControl;
 	private ControllableDevice lamp;
 	private ControllableDevice ceilingLight;
+	private Blind robWindowBlind;
 	private ReportingDevice reportingDeviceMotionSensor;
 	private ReportingDevice reportingDeviceDoorSensor;
 	
@@ -28,6 +30,8 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM);
 		lamp = devicesToControl.get(0);
 		ceilingLight = devicesToControl.get(1);
+		robWindowBlind = (Blind) devicesToControl.get(5);
+		
 		reportingDeviceMotionSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0);
 		reportingDeviceDoorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
 		
@@ -46,7 +50,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		if (reportingDeviceMotionSensor.isTriggered()) {
 			//door is open
 			if (reportingDeviceDoorSensor.isTriggered()) {
-				if (!CommonQueries.isBrightnessGreaterThan800()) {
+				if (!CommonQueries.isBrightnessGreaterThan800() && !"88".equals(robWindowBlind.getDeviceLevel())) {
 					log.info("Rob room occupied, dark enough outside and not bedtime mode, lamp off and ceiling light on");
 					
 					ceilingLightOnLampOff();
