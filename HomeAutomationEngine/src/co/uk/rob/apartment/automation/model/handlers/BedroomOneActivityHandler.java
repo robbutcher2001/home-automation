@@ -85,7 +85,8 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		else {
 			int index = 1;
 			for (ControllableDevice device : devicesToControl) {
-				if (device.isDeviceOn() && !device.isManuallyOverridden() && !device.isAutoOverridden() && !(device instanceof Dehumidifier)) {
+				if (device.isDeviceOn() && !device.isManuallyOverridden() &&
+						!device.isAutoOverridden() && !(device instanceof Dehumidifier) && !(device instanceof Blind)) {
 					device.turnDeviceOff(false);
 					log.info("Rob room not occupied, device not manually or auto overridden, switching off light " + index);
 				}
