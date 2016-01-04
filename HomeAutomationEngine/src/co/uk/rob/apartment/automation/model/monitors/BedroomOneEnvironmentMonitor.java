@@ -338,7 +338,8 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 		int index = 1;
 		if (now.after(lastDateOccupied)) {
 			for (ControllableDevice device : devicesToControl) {
-				if (device.isManuallyOverridden() && !device.isAutoOverridden() && !(device instanceof ElectricBlanket)) {
+				if (device.isManuallyOverridden() && !device.isAutoOverridden() &&
+						!(device instanceof ElectricBlanket) && !(device instanceof Blind)) {
 					log.info("Rob room unoccupied for more than 1 hour, resetting overridden flags for device " + index);
 					device.resetManuallyOverridden();
 					device.turnDeviceOff(false);
