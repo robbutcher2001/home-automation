@@ -174,6 +174,14 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 					}
 				}
 				
+				//open blinds in winter if it's after 8am and they're still shut (similar to lounge)
+				if (doorOpen15Mins && "0".equals(robWindowBlind.getDeviceLevel()) &&
+						!robWindowBlind.isManuallyOverridden() && now.after(eightAM) &&
+						now.before(midday) && !CommonQueries.isItTheWeekendOrBankHoliday()) {
+					robWindowBlind.turnDeviceOnAutoOverride("40");
+					log.info("Rob window blind open in morning now it's after 8am and door open for > 15 mins");
+				}
+				
 				//lighting
 				if (now.after(twoPM) && now.before(elevenPM) && doorSensor.isTriggered()) {
 					if (CommonQueries.isBrightnessGreaterThan800()) {
