@@ -175,7 +175,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				}
 				
 				//open blinds in winter if it's after 8am and they're still shut (similar to lounge)
-				if (doorOpen15Mins && "0".equals(robWindowBlind.getDeviceLevel()) &&
+				if (doorOpen15Mins && doorSensor.isTriggered() && "0".equals(robWindowBlind.getDeviceLevel()) &&
 						!robWindowBlind.isManuallyOverridden() && now.after(eightAM) &&
 						now.before(midday) && !CommonQueries.isItTheWeekendOrBankHoliday()) {
 					robWindowBlind.turnDeviceOnAutoOverride("40");
@@ -299,7 +299,7 @@ public class BedroomOneEnvironmentMonitor extends Thread {
 				}
 			}
 			
-			//turn on electric blanket if it's cold outside, after 10pm and apartment is occupied
+			//turn on electric blanket if it's cold outside, after 9pm and apartment is occupied
 			Float[] outsideTemperatures = outsideMotionSensor.getTemperature();
 			if (now.after(ninePM) && doorSensor.isTriggered() && outsideTemperatures[0] < 5f &&
 					CommonQueries.isApartmentOccupied() && !electricBlanket.isDeviceOn() &&
