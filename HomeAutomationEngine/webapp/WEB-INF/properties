@@ -13,7 +13,7 @@ chipRestart=/ZWaveAPI/Run/SerialAPISoftReset()
 //Lounge
 lampOneLoungeEndpoint=/ZWaveAPI/Run/devices[2].instances[0].SwitchMultilevel
 lampTwoLoungeEndpoint=/ZWaveAPI/Run/devices[19].instances[0].SwitchMultilevel
-bobbyLampLoungeEndpoint=/ZWaveAPI/Run/devices[22].instances[0].SwitchMultilevel
+bobbyLampLoungeEndpoint=/ZWaveAPI/Run/devices[29].instances[0].SwitchMultilevel
 
 ledRodLoungeEndpoint=/ZWaveAPI/Run/devices[6].instances[0].SwitchBinary
 ledRodKitchenEndpoint=/ZWaveAPI/Run/devices[7].instances[0].SwitchBinary
