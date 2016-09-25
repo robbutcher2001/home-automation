@@ -16,7 +16,7 @@ lampTwoLoungeEndpoint=/ZWaveAPI/Run/devices[19].instances[0].SwitchMultilevel
 bobbyLampLoungeEndpoint=/ZWaveAPI/Run/devices[29].instances[0].SwitchMultilevel
 
 ledRodLoungeEndpoint=/ZWaveAPI/Run/devices[6].instances[0].SwitchBinary
-ledRodKitchenEndpoint=/ZWaveAPI/Run/devices[7].instances[0].SwitchBinary
+ledRodKitchenEndpoint=/ZWaveAPI/Run/devices[30].instances[0].SwitchBinary
 
 patioDoorSensorEndpoint=devices.14.instances.0.commandClasses.
 patioDoorSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[14].instances[0].commandClasses[128].Get()
