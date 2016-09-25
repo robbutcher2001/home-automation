@@ -62,7 +62,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 				if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode))) {
 					//occupancy between 10pm and 7:30am next day on a weekday
 					if ((now.after(tenPM) || now.before(halfSevenAM) || CommonQueries.isItTheWeekendOrBankHoliday())) {
-						if (!lamp.isDeviceOn() && !CommonQueries.isBrightnessGreaterThan800()) {
+						if (!lamp.isDeviceOn() && !CommonQueries.isBrightnessBetweenXandY(500f, 1001f)) {
 							log.info("Rob room occupied during bed time mode, lamp on 20%");
 							
 							lamp.turnDeviceOn(false, "20");
