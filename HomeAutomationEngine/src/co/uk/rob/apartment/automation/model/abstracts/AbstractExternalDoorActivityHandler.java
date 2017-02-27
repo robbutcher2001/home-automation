@@ -95,9 +95,8 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			HomeAutomationProperties.setOrUpdateProperty("AlarmOneTimeUrl", alarmOneTimeUrl);
 			final String smsText = "Apartment occupied from " + this.entrance.toLowerCase() + 
 					". Alarm will trigger. Deactivate now: "
-					+ "http://robsflat.noip.me/disableApartmentAlarm/" + alarmOneTimeUrl;
+					+ "https://robsflat.co.uk/disableApartmentAlarm/" + alarmOneTimeUrl;
 			SMSHelper.sendSMS("07965502960", smsText);
-			SMSHelper.sendSMS("07875468023", smsText);
 			
 			//trigger outdoor AlarmUnit in 1 minute
 			//TODO: http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/

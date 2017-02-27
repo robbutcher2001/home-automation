@@ -26,7 +26,7 @@ public class NewUserMonitor extends Thread {
 				for (int index = 0; index < users.size(); index++) {
 					if (!users.get(index).isActivationTextSent()) {
 						log.info("Sending activation text to " + users.get(index).getFirstName() + " " + users.get(index).getLastName());
-						SMSHelper.sendSMS(users.get(index).getMobileNumber(), users.get(index).getFirstName() + ", your user has now been activated. You can control Rob's flat here: http://www.robsflat.co.uk/");
+						SMSHelper.sendSMS(users.get(index).getMobileNumber(), users.get(index).getFirstName() + ", your user has now been activated. You can control Rob's flat here: https://robsflat.co.uk/");
 						toUpdate = index;
 					}
 				}

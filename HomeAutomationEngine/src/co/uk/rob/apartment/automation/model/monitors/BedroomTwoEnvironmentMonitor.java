@@ -35,10 +35,10 @@ public class BedroomTwoEnvironmentMonitor extends Thread {
 			String scarlettWindowWarningSent = HomeAutomationProperties.getProperty("ScarlettWindowWarningSent");
 			if (scarlettWindowWarningSent == null || (scarlettWindowWarningSent != null && "false".equals(scarlettWindowWarningSent))) {
 				if (now.after(tenPM) && CommonQueries.isBrightnessBelow20() && windowSensor.isTriggered()) {
-					final String smsText = "Warning: your bedroom window is still open and it's now dark";
-					SMSHelper.sendSMS("07875468023", smsText);
+					final String smsText = "Warning: other bedroom window is still open and it's now dark";
+					SMSHelper.sendSMS("07965502960", smsText);
 					HomeAutomationProperties.setOrUpdateProperty("ScarlettWindowWarningSent", "true");
-					log.info("Sending warning text to Scarlett as it's dark, after 10pm and her window is still open");
+					log.info("Sending warning text to Rob as it's dark, after 10pm and the other bedroom window is still open");
 				}
 			}
 			
