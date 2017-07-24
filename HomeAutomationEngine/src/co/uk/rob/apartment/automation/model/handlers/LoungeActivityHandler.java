@@ -116,7 +116,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						}
 						if (!CommonQueries.isItTheWeekendOrBankHoliday()) {
 							log.info("Saying good morning to Rob, opening blinds, relaying current weather information, latest train information and M25 traffic report");
-							new SpeechOrchestrationManager(robWelcomeText, true, true, true, "0815").start();
+							new SpeechOrchestrationManager(robWelcomeText, true, true, true, "0845").start();
 						}
 						else {
 							log.info("Saying generic good morning to Rob and opening blinds");

@@ -25,7 +25,7 @@ public class SpeechOrchestrationManager extends Thread {
 	
 	@Override
 	public void run() {
-		GoogleTranslate.convertTextToWaveFile(initialWords, HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
+		Polly.convertTextToWaveFile(initialWords, HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
 		boolean played = AudioHelper.playAudio(HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
 		if (played) {
 			log.info("Played generic text through speaker");
@@ -57,19 +57,19 @@ public class SpeechOrchestrationManager extends Thread {
 		
 		if (weather) {
 			String textToSpeak = LiveWeatherCaller.getCurrentWeatherInLondon();
-			GoogleTranslate.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
+			Polly.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
 			filesToPlay[0] = HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile");
 		}
 		
 		if (trainTimes) {
 			String textToSpeak = TrainTimeCaller.getCurrentTrainStatus(this.requestedTrainTime);
-			GoogleTranslate.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("secondAudioFile"));
+			Polly.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("secondAudioFile"));
 			filesToPlay[1] = HomeAutomationAudioFiles.getAudioFileLocation("secondAudioFile");
 		}
 		
 		if (traffic) {
 			String textToSpeak = M25TrafficReportCaller.getM25TrafficReport();
-			GoogleTranslate.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("thirdAudioFile"));
+			Polly.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("thirdAudioFile"));
 			filesToPlay[2] = HomeAutomationAudioFiles.getAudioFileLocation("thirdAudioFile");
 		}
 		
