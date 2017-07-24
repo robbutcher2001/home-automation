@@ -1,4 +1,4 @@
-//System
+//System 
 host=http://192.168.1.40:8083
 zwaydata=/ZWaveAPI/Data/
 zWayUpdateRequest=/ZWaveAPI/Data/
