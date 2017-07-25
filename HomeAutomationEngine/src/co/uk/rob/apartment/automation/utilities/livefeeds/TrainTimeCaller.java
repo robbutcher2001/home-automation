@@ -60,7 +60,7 @@ public class TrainTimeCaller {
 		
 		if (timesFound) {
 			for (Map.Entry<String, String> entry : trainTimes.entrySet()) {
-				if ("07:48".equals(entry.getKey()) || "08:21".equals(entry.getKey())) {
+				if ("08:04".equals(entry.getKey()) || "08:48".equals(entry.getKey())) {
 					if (entry.getValue().startsWith("bus")) {
 						textToSpeak = "Your usual " + entry.getKey() + " train is unfortunately a " + entry.getValue() + " service today.";
 					}

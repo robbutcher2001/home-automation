@@ -1,4 +1,4 @@
 root=/home/pi/HomeAutomationAudio/
-firstAudioFile=one.wav
-secondAudioFile=two.wav
-thirdAudioFile=three.wav
+firstAudioFile=one.ogg
+secondAudioFile=two.ogg
+thirdAudioFile=three.ogg

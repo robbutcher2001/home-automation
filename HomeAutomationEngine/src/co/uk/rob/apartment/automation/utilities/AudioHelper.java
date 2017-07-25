@@ -24,7 +24,7 @@ public class AudioHelper {
 			List<String> args = new ArrayList<String>();
 			args.add("mplayer");
 			args.add("-af");
-			args.add("volume=12");
+			args.add("volume=18");
 			
 			for (String fileLocation : fileLocations) {
 				if (fileLocation != null && !"".equals(fileLocation)) {

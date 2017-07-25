@@ -110,9 +110,14 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					String played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
 					if (played != null && "false".equals(played) && robRoomDoorSensor.isTriggered()) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
+						
+						if (openBlinds) {
+							runBlindControl();
+						}
+						
 						String robWelcomeText = "Good morning Robert.";
 						if (openBlinds) {
-							robWelcomeText += " I'll open the blinds slightly for you.";
+							robWelcomeText += " I've opened the blinds slightly for you.";
 						}
 						if (!CommonQueries.isItTheWeekendOrBankHoliday()) {
 							log.info("Saying good morning to Rob, opening blinds, relaying current weather information, latest train information and M25 traffic report");
@@ -122,18 +127,19 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 							log.info("Saying generic good morning to Rob and opening blinds");
 							new SpeechOrchestrationManager(robWelcomeText, false, false, false, null).start();
 						}
-						
-						if (openBlinds) {
-							runBlindControl();
-						}
 					}
 					
 					played = HomeAutomationProperties.getProperty("LoungeWelcomedScarlett");
 					if (played != null && "false".equals(played) && !robRoomDoorSensor.isTriggered()) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedScarlett", "true");
+						
+						if (openBlinds) {
+							runBlindControl();
+						}
+						
 						String scarlettWelcomeText = "Good morning Scarlett.";
 						if (openBlinds) {
-							scarlettWelcomeText += " I'll open the blinds slightly for you.";
+							scarlettWelcomeText += " I've opened the blinds slightly for you.";
 						}
 						if (!CommonQueries.isItTheWeekendOrBankHoliday()) {
 							log.info("Saying good morning to Scarlett, opening blinds, relaying current weather information and latest train information");
@@ -142,10 +148,6 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						else {
 							log.info("Saying generic good morning to Scarlett and opening blinds");
 							new SpeechOrchestrationManager(scarlettWelcomeText, false, false, false, null).start();
-						}
-						
-						if (openBlinds) {
-							runBlindControl();
 						}
 					}
 				}
@@ -208,12 +210,6 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 	}
 	
 	private void runBlindControl() {
-		try {
-			Thread.sleep(6500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
 		loungeWindowBlind.turnDeviceOn(false, "55");
 		loungePatioBlind.turnDeviceOn(false, "55");
 	}

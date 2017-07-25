@@ -202,8 +202,7 @@ public class ApplicationInitialiser implements ServletContextListener {
 	}
 	
 	private void playOnlineAudio() {
-		//Hello. The automation engine is now online. I will begin managing the apartment for you.
-		new SpeechOrchestrationManager("The automation engine is now online.", false, false, false, null).start();
+		new SpeechOrchestrationManager("Hello. The automation engine is now online. I will begin managing the apartment for you.", false, false, false, null).start();
 	}
 	
 	@Override

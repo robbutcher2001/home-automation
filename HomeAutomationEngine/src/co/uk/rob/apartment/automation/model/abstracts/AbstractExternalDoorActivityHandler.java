@@ -37,7 +37,7 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			String played = HomeAutomationProperties.getProperty("ApartmentWelcomeHome");
 			if (played != null && "false".equals(played)) {
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentWelcomeHome", "true");
-				new SpeechOrchestrationManager("Welcome home!", false, false, false, null).start();
+				new SpeechOrchestrationManager("Welcome home! How are you?", false, false, false, null).start();
 			}
 			
 			log.info(this.entrance + " opened, apartment unoccupied for more than 1 hour, welcoming home");

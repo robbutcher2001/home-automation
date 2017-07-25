@@ -54,24 +54,22 @@ public class SpeechOrchestrationManager extends Thread {
 		}
 		
 		String[] filesToPlay = new String[3];
+		String textToSpeak = "";
 		
 		if (weather) {
-			String textToSpeak = LiveWeatherCaller.getCurrentWeatherInLondon();
-			Polly.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
-			filesToPlay[0] = HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile");
+			textToSpeak += LiveWeatherCaller.getCurrentWeatherInLondon();
 		}
 		
 		if (trainTimes) {
-			String textToSpeak = TrainTimeCaller.getCurrentTrainStatus(this.requestedTrainTime);
-			Polly.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("secondAudioFile"));
-			filesToPlay[1] = HomeAutomationAudioFiles.getAudioFileLocation("secondAudioFile");
+			textToSpeak += TrainTimeCaller.getCurrentTrainStatus(this.requestedTrainTime);
 		}
 		
 		if (traffic) {
-			String textToSpeak = M25TrafficReportCaller.getM25TrafficReport();
-			Polly.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("thirdAudioFile"));
-			filesToPlay[2] = HomeAutomationAudioFiles.getAudioFileLocation("thirdAudioFile");
+			textToSpeak += M25TrafficReportCaller.getM25TrafficReport();
 		}
+		
+		Polly.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
+		filesToPlay[0] = HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile");
 		
 		played = AudioHelper.playAudio(filesToPlay);
 		if (played) {

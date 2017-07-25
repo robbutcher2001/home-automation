@@ -35,7 +35,8 @@ public class Polly {
 		SynthesizeSpeechRequest synthRequset = new SynthesizeSpeechRequest()
 			.withText(toSay)
 			.withVoiceId("Amy")
-			.withOutputFormat("mp3");
+			.withOutputFormat("ogg_vorbis")
+			.withSampleRate("22050");
 		SynthesizeSpeechResult synthResponse = pollyClient.synthesizeSpeech(synthRequset);
 				
 		boolean response = false;
