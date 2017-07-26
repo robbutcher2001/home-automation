@@ -47,7 +47,7 @@ public class DailyFlagManager extends Thread {
 			
 			if (now.after(threeAM) && now.before(fourAM)) {
 				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "false");
-				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedScarlett", "false");
+				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentWelcomeHome", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RobWindowWarningSent", "false");

@@ -12,17 +12,17 @@ import org.jsoup.select.Elements;
 
 public class TrainTimeCaller {
 	
-	public static String getCurrentTrainStatus(String requestedTrainTime) {
+	public static String getCurrentTrainStatus(String requestedTrainTime, String stationsString) {
 		boolean timesFound = false;
 		Map<String, String> trainTimes = new HashMap<String, String>();
 		String textToSpeak = "";
 		Document doc = null;
 		try {
-			if (requestedTrainTime != null && !"".equals(requestedTrainTime)) {
-				doc = Jsoup.connect("http://ojp.nationalrail.co.uk/service/timesandfares/NWD/LBG/today/" + requestedTrainTime + "/dep").get();
+			if (requestedTrainTime != null && !"".equals(requestedTrainTime) && stationsString != null && !"".equals(stationsString)) {
+				doc = Jsoup.connect("http://ojp.nationalrail.co.uk/service/timesandfares/" + stationsString + "/today/" + requestedTrainTime + "/dep").get();
 			}
 			else {
-				doc = Jsoup.connect("http://ojp.nationalrail.co.uk/service/timesandfares/NWD/LBG/today/0815/dep").get();
+				doc = Jsoup.connect("http://ojp.nationalrail.co.uk/service/timesandfares/NWD/LBG/today/0845/dep").get();
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -62,21 +62,21 @@ public class TrainTimeCaller {
 			for (Map.Entry<String, String> entry : trainTimes.entrySet()) {
 				if ("08:04".equals(entry.getKey()) || "08:48".equals(entry.getKey())) {
 					if (entry.getValue().startsWith("bus")) {
-						textToSpeak = "Your usual " + entry.getKey() + " train is unfortunately a " + entry.getValue() + " service today.";
+						textToSpeak = "<p>Your usual " + entry.getKey() + " train is unfortunately a " + entry.getValue() + " service today.</p> ";
 					}
 					else {
-						textToSpeak = "Your usual " + entry.getKey() + " train is " + entry.getValue() + " today.";
+						textToSpeak = "<p>Your usual " + entry.getKey() + " train is " + entry.getValue() + " today.</p> ";
 					}
 					break;
 				}
 			}
 			
 			if ("".equals(textToSpeak)) {
-				textToSpeak = "I'm afraid I cannot find information on your usual train.";
+				textToSpeak = "<p>I'm afraid I cannot find information on your usual train.</p> ";
 			}
 		}
 		else {
-			textToSpeak = "I couldn't get any details on your normal train times today. Sorry.";
+			textToSpeak = "<p><prosody pitch=\"+40%\">Shit.</prosody> I couldn't get any details on your normal train times <prosody pitch=\"-10%\">today. Sorry. </prosody></p>";
 		}
 		
 		return textToSpeak;

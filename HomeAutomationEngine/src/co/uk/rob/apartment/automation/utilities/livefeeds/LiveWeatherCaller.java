@@ -95,7 +95,7 @@ public class LiveWeatherCaller {
 									Node PPd = morningNodeAttrMap.getNamedItem("PPd");
 									
 									if (w != null && w.getNodeValue() != null) {
-										textToSpeak += "Today's weather is " + weatherType.get(w.getNodeValue());
+										textToSpeak += "<p>Today's weather is " + weatherType.get(w.getNodeValue());
 										if ("NA".equals(w.getNodeValue()) || "4".equals(w.getNodeValue())) {
 											break;
 										}
@@ -110,7 +110,7 @@ public class LiveWeatherCaller {
 									}
 
 									if (PPd != null && PPd.getNodeValue() != null) {
-										textToSpeak += "The chance of rain today is about " + PPd.getNodeValue() + " percent.";
+										textToSpeak += "The chance of rain today is about " + PPd.getNodeValue() + " percent.</p> ";
 									}
 								}
 							}
@@ -129,7 +129,7 @@ public class LiveWeatherCaller {
 		}
 		
 		if ("".equals(textToSpeak)) {
-			textToSpeak = "Shit, I couldn't find any weather info for you. Sorry.";
+			textToSpeak = "<p><prosody pitch=\"+40%\">Shit.</prosody> I couldn't find any weather info <prosody pitch=\"-10%\">for you. Sorry. </prosody></p>";
 		}
 		
 		return textToSpeak;

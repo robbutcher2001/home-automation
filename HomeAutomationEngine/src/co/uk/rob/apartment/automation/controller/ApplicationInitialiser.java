@@ -53,7 +53,7 @@ public class ApplicationInitialiser implements ServletContextListener {
 				// Save properties to application-wide accessible location
 				HomeAutomationProperties.setProperties(properties);
 				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "false");
-				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedScarlett", "false");
+				HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentWelcomeHome", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentUnexpectedOccupancy", "false");
 				HomeAutomationProperties.setOrUpdateProperty("LoungeBedroomMode", "false");
@@ -202,7 +202,8 @@ public class ApplicationInitialiser implements ServletContextListener {
 	}
 	
 	private void playOnlineAudio() {
-		new SpeechOrchestrationManager("Hello. The automation engine is now online. I will begin managing the apartment for you.", false, false, false, null).start();
+		new SpeechOrchestrationManager("Hello. The automation engine is now <prosody pitch=\"+15%\">online. </prosody>I will begin managing the apartment <prosody pitch=\"-15%\">for you.</prosody>",
+				false, false, false, null, null).start();
 	}
 	
 	@Override

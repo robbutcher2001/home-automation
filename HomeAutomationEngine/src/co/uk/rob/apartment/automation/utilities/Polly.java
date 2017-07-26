@@ -12,6 +12,7 @@ import com.amazonaws.services.polly.AmazonPolly;
 import com.amazonaws.services.polly.AmazonPollyClientBuilder;
 import com.amazonaws.services.polly.model.SynthesizeSpeechRequest;
 import com.amazonaws.services.polly.model.SynthesizeSpeechResult;
+import com.amazonaws.services.polly.model.TextType;
 
 public class Polly {
 	
@@ -32,11 +33,15 @@ public class Polly {
 	}
 	
 	private static boolean sendHTTPRequest(String toSay, String fileLocation) {
+		
+		toSay = "<speak>" + toSay.concat("</speak>");
+		
 		SynthesizeSpeechRequest synthRequset = new SynthesizeSpeechRequest()
 			.withText(toSay)
 			.withVoiceId("Amy")
 			.withOutputFormat("ogg_vorbis")
-			.withSampleRate("22050");
+			.withSampleRate("22050")
+			.withTextType(TextType.Ssml);
 		SynthesizeSpeechResult synthResponse = pollyClient.synthesizeSpeech(synthRequset);
 				
 		boolean response = false;

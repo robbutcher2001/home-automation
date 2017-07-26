@@ -2,8 +2,8 @@ package co.uk.rob.apartment.automation.utilities;
 
 import org.apache.log4j.Logger;
 
+import co.uk.rob.apartment.automation.utilities.livefeeds.BBCNewsCaller;
 import co.uk.rob.apartment.automation.utilities.livefeeds.LiveWeatherCaller;
-import co.uk.rob.apartment.automation.utilities.livefeeds.M25TrafficReportCaller;
 import co.uk.rob.apartment.automation.utilities.livefeeds.TrainTimeCaller;
 
 public class SpeechOrchestrationManager extends Thread {
@@ -12,67 +12,51 @@ public class SpeechOrchestrationManager extends Thread {
 	private String initialWords = null;
 	private boolean weather = false;
 	private boolean trainTimes = false;
-	private boolean traffic = false;
+	private boolean news = false;
 	private String requestedTrainTime;
+	private String stationsString;
 	
-	public SpeechOrchestrationManager(String initialWords, boolean weather, boolean trainTimes, boolean traffic, String requestedTrainTime) {
+	public SpeechOrchestrationManager(String initialWords, boolean weather, boolean trainTimes,
+			boolean news, String requestedTrainTime, String stationsString) {
 		this.initialWords = initialWords;
 		this.weather = weather;
 		this.trainTimes = trainTimes;
-		this.traffic = traffic;
+		this.news = news;
 		this.requestedTrainTime = requestedTrainTime;
+		this.stationsString = stationsString;
 	}
 	
 	@Override
 	public void run() {
-		Polly.convertTextToWaveFile(initialWords, HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
-		boolean played = AudioHelper.playAudio(HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
-		if (played) {
-			log.info("Played generic text through speaker");
-		}
-		else {
-			log.error("Could not speak following text through speaker: \"" + initialWords + "\"");
-		}
-		
-		if (!weather && !trainTimes && !traffic) {
-			return;
-		}
-		else {
-			played = false;
-		}
+		String textToSpeak = this.initialWords;
 		
 		if (weather) {
 			log.info("Attemping to retrieve latest weather information for today");
-		}
-		
-		if (trainTimes) {
-			log.info("Attemping to retrieve latest train time information for today at " + this.requestedTrainTime);
-		}
-		
-		if (traffic) {
-			log.info("Attemping to retrieve latest traffic information for the M25 today");
-		}
-		
-		String[] filesToPlay = new String[3];
-		String textToSpeak = "";
-		
-		if (weather) {
 			textToSpeak += LiveWeatherCaller.getCurrentWeatherInLondon();
 		}
 		
 		if (trainTimes) {
-			textToSpeak += TrainTimeCaller.getCurrentTrainStatus(this.requestedTrainTime);
+			log.info("Attemping to retrieve latest train time information for today at " + this.requestedTrainTime);
+			textToSpeak += TrainTimeCaller.getCurrentTrainStatus(this.requestedTrainTime, this.stationsString);
 		}
 		
-		if (traffic) {
-			textToSpeak += M25TrafficReportCaller.getM25TrafficReport();
+		if (news) {
+			log.info("Attemping to retrieve latest news headlines for today");
+			textToSpeak += "<p>I'll now read you today's top news articles. </p>";
+			textToSpeak += BBCNewsCaller.getCurrentUKNewsHeadlines();
 		}
 		
-		Polly.convertTextToWaveFile(textToSpeak, HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile"));
-		filesToPlay[0] = HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile");
+		if (weather || trainTimes || news) {
+			textToSpeak += "<p>That's all from me this morning. Have <prosody pitch=\"+30%\">a nice day. </prosody></p>";
+		}
 		
-		played = AudioHelper.playAudio(filesToPlay);
+		String fileToPlay = HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile");
+		Polly.convertTextToWaveFile(textToSpeak, fileToPlay);
+		
+		boolean played = AudioHelper.playAudio(fileToPlay);
 		if (played) {
+			log.info("Played generic text through speaker: \"" + this.initialWords + "\"");
+			
 			if (weather) {
 				log.info("Played latest weather information through speaker");
 			}
@@ -81,11 +65,13 @@ public class SpeechOrchestrationManager extends Thread {
 				log.info("Played train time information through speaker");
 			}
 			
-			if (traffic) {
+			if (news) {
 				log.info("Played M25 information through speaker");
 			}
 		}
 		else {
+			log.error("Could not speak following text through speaker: \"" + this.initialWords + "\"");
+			
 			if (weather) {
 				log.error("Could not speak latest weather information through speaker");
 			}
@@ -94,7 +80,7 @@ public class SpeechOrchestrationManager extends Thread {
 				log.error("Could not speak train time information through speaker");
 			}
 			
-			if (traffic) {
+			if (news) {
 				log.error("Could not speak M25 information through speaker");
 			}
 		}

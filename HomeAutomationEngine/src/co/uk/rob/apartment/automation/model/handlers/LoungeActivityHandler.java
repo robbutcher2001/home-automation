@@ -107,7 +107,29 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				//if it's a weekend, speak and move blinds after 9am
 				if ((now.after(fiveAM) && now.before(midday) && !CommonQueries.isItTheWeekendOrBankHoliday()) || 
 						(now.after(nineAM) && now.before(midday) && CommonQueries.isItTheWeekendOrBankHoliday())) {
-					String played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
+					String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
+					if (played != null && "false".equals(played) && !robRoomDoorSensor.isTriggered()) {
+						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
+						
+						if (openBlinds) {
+							runBlindControl();
+						}
+						
+						String sliceWelcomeText = "Good morning <prosody pitch=\"+25%\">Alice. </prosody>";
+						if (openBlinds) {
+							sliceWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
+						}
+						if (!CommonQueries.isItTheWeekendOrBankHoliday()) {
+							log.info("Saying good morning to Slice, opening blinds, relaying current weather information, latest train information and BBC News headlines");
+							new SpeechOrchestrationManager(sliceWelcomeText, true, true, true, "0803", "NWD/ECR").start();
+						}
+						else {
+							log.info("Saying generic good morning to Slice and opening blinds");
+							new SpeechOrchestrationManager(sliceWelcomeText, false, false, false, null, null).start();
+						}
+					}
+					
+					played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
 					if (played != null && "false".equals(played) && robRoomDoorSensor.isTriggered()) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
 						
@@ -115,39 +137,17 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 							runBlindControl();
 						}
 						
-						String robWelcomeText = "Good morning Robert.";
+						String robWelcomeText = "Good morning <prosody pitch=\"+25%\">Robert. </prosody>";
 						if (openBlinds) {
-							robWelcomeText += " I've opened the blinds slightly for you.";
+							robWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
 						}
 						if (!CommonQueries.isItTheWeekendOrBankHoliday()) {
-							log.info("Saying good morning to Rob, opening blinds, relaying current weather information, latest train information and M25 traffic report");
-							new SpeechOrchestrationManager(robWelcomeText, true, true, true, "0845").start();
+							log.info("Saying good morning to Rob, opening blinds, relaying current weather information, latest train information and BBC News headlines");
+							new SpeechOrchestrationManager(robWelcomeText, true, true, true, "0845", "NWD/LBG").start();
 						}
 						else {
 							log.info("Saying generic good morning to Rob and opening blinds");
-							new SpeechOrchestrationManager(robWelcomeText, false, false, false, null).start();
-						}
-					}
-					
-					played = HomeAutomationProperties.getProperty("LoungeWelcomedScarlett");
-					if (played != null && "false".equals(played) && !robRoomDoorSensor.isTriggered()) {
-						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedScarlett", "true");
-						
-						if (openBlinds) {
-							runBlindControl();
-						}
-						
-						String scarlettWelcomeText = "Good morning Scarlett.";
-						if (openBlinds) {
-							scarlettWelcomeText += " I've opened the blinds slightly for you.";
-						}
-						if (!CommonQueries.isItTheWeekendOrBankHoliday()) {
-							log.info("Saying good morning to Scarlett, opening blinds, relaying current weather information and latest train information");
-							new SpeechOrchestrationManager(scarlettWelcomeText, true, true, false, "0745").start();
-						}
-						else {
-							log.info("Saying generic good morning to Scarlett and opening blinds");
-							new SpeechOrchestrationManager(scarlettWelcomeText, false, false, false, null).start();
+							new SpeechOrchestrationManager(robWelcomeText, false, false, false, null, null).start();
 						}
 					}
 				}

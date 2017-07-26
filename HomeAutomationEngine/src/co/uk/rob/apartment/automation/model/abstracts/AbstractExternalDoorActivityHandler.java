@@ -37,7 +37,8 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 			String played = HomeAutomationProperties.getProperty("ApartmentWelcomeHome");
 			if (played != null && "false".equals(played)) {
 				HomeAutomationProperties.setOrUpdateProperty("ApartmentWelcomeHome", "true");
-				new SpeechOrchestrationManager("Welcome home! How are you?", false, false, false, null).start();
+				new SpeechOrchestrationManager("<prosody pitch=\"+20%\">Welcome home!</prosody> How <prosody pitch=\"+20%\">are you?</prosody>",
+						false, false, false, null, null).start();
 			}
 			
 			log.info(this.entrance + " opened, apartment unoccupied for more than 1 hour, welcoming home");
@@ -75,7 +76,8 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 				}
 				
 				if (lampsTurnedOn) {
-					new SpeechOrchestrationManager("I've turned some lounge lights on for you.", false, false, false, null).start();
+					new SpeechOrchestrationManager("</prosody>I've turned some lounge lights <prosody pitch=\"-15%\">on for you.</prosody>",
+							false, false, false, null, null).start();
 				}
 			}
 		}
