@@ -101,14 +101,12 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					}
 				}
 				
-				ReportingDevice robRoomDoorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
-				
 				//if it's a weekday, speak and move blinds after 5am
 				//if it's a weekend, speak and move blinds after 9am
 				if ((now.after(fiveAM) && now.before(midday) && !CommonQueries.isItTheWeekendOrBankHoliday()) || 
 						(now.after(nineAM) && now.before(midday) && CommonQueries.isItTheWeekendOrBankHoliday())) {
 					String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
-					if (played != null && "false".equals(played) && !robRoomDoorSensor.isTriggered()) {
+					if (played != null && "false".equals(played)) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
 						
 						if (openBlinds) {
@@ -130,7 +128,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					}
 					
 					played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
-					if (played != null && "false".equals(played) && robRoomDoorSensor.isTriggered()) {
+					if (played != null && "false".equals(played)) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
 						
 						if (openBlinds) {
