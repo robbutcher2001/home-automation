@@ -22,9 +22,7 @@ public class AudioHelper {
 		
 		if (root != null && !"".equals(root) && fileLocations != null && fileLocations.length > 0) {
 			List<String> args = new ArrayList<String>();
-			args.add("mplayer");
-			args.add("-af");
-			args.add("volume=18");
+			args.add("ogg123");
 			
 			for (String fileLocation : fileLocations) {
 				if (fileLocation != null && !"".equals(fileLocation)) {
