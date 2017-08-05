@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import javax.crypto.BadPaddingException;
@@ -33,6 +34,9 @@ public class AlexaRequestAuthorisationController extends HttpServlet {
 	private JsonResponder responder;
 	private final String defaultResponse;
     
+	//controllers
+	private final LoungeAlexaController loungeController;
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -49,11 +53,13 @@ public class AlexaRequestAuthorisationController extends HttpServlet {
 		}
 		
 		this.defaultResponse = this.responder.createFailAsJson("Request could not be completed.");
+		this.loungeController = new LoungeAlexaController();
     }
     
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String responseMessage = this.defaultResponse;
 		PrintWriter out = response.getWriter();
@@ -83,12 +89,25 @@ public class AlexaRequestAuthorisationController extends HttpServlet {
 							requestTime.setTimeInMillis(Long.parseLong(authHeaderTokenised[1]));
 							
 							if (oneMinuteInFuture.after(requestTime)) {
-								JSONObject message = new JSONObject();
-								message.put("message", "Request accepted.");
-								responseMessage = this.responder.createSuccessAsJson(message);
+								String pathInfo = request.getPathInfo();
+								if (pathInfo != null && !"".equals(pathInfo)) {
+									final String[] pathInfoTidied = pathInfo.split("/");
+									
+									if (pathInfoTidied.length == 3 && "lounge".equals(pathInfoTidied[1])) {
+										final boolean rsp = this.loungeController.informLounge(pathInfoTidied[2]);
+										JSONObject actioned = new JSONObject();
+										actioned.put("actioned", rsp);
+										responseMessage = this.responder.createSuccessAsJson(actioned);
+									}
+									else {
+										responseMessage = this.responder.createFailAsJson("Too many URL tokens passed.");
+										this.log.error("Too many URL tokens passed " + Arrays.toString(pathInfoTidied));
+									}
+								}
 							}
 							else {
 								responseMessage = this.responder.createFailAsJson("Request expired.");
+								this.log.info("Request from Alexa failed: request expired [" + requestTime.toString() + "]");
 							}
 						}
 						catch (NumberFormatException nfe) {
@@ -97,6 +116,7 @@ public class AlexaRequestAuthorisationController extends HttpServlet {
 					}
 					else {
 						responseMessage = this.responder.createFailAsJson("Symmetric key mismatch.");
+						this.log.info("Request from Alexa failed: symmetric key mismatch");
 					}
 				}
 				

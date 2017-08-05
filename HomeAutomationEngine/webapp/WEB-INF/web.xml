@@ -121,6 +121,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>alexaAuthorisor</servlet-name>
-    <url-pattern>/alexa-authorisor</url-pattern>
+    <url-pattern>/alexa-authorisor/*</url-pattern>
   </servlet-mapping>
 </web-app>
