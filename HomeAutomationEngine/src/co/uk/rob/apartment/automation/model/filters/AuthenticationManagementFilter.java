@@ -115,7 +115,8 @@ public class AuthenticationManagementFilter implements Filter {
 				(requestURI.equals("/") || requestURI.equals("/HomeAutomationEngine/")) ||
 				(requestURI.contains(".html") && requestURI.contains(".htm")) ||
 				(requestURI.contains("/login")) ||
-				(requestURI.contains("/bedroomOneTabletView"))) {
+				(requestURI.contains("/bedroomOneTabletView")) ||
+				(requestURI.startsWith("/alexa-authorisor"))) {
 			return true;
 		}
 		
