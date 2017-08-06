@@ -2,8 +2,11 @@ package co.uk.rob.apartment.automation.controller.alexa;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import co.uk.rob.apartment.automation.model.DeviceListManager;
 import co.uk.rob.apartment.automation.model.Zone;
+import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 
 /**
@@ -12,10 +15,14 @@ import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
  */
 public class LoungeAlexaController {
 	
+	private Logger log = Logger.getLogger(LoungeAlexaController.class);
+	
     private ControllableDevice lampOneLounge;
     private ControllableDevice ledRodLounge;
     private ControllableDevice lampTwoLounge;
     private ControllableDevice bobbyLoungeLamp;
+    private ControllableDevice kitchenLedRod;
+    private Blind loungePatioBlind;
     
 	public LoungeAlexaController() {
 		List<ControllableDevice> devicesInLoungeAndKitchen = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE);
@@ -25,6 +32,8 @@ public class LoungeAlexaController {
 		this.ledRodLounge = devicesInLoungeAndKitchen.get(1);
 		this.lampTwoLounge = devicesInLoungeAndKitchen.get(2);
 		this.bobbyLoungeLamp = devicesInLoungeAndKitchen.get(5);
+		this.kitchenLedRod = devicesInLoungeAndKitchen.get(6);
+		this.loungePatioBlind = (Blind) devicesInLoungeAndKitchen.get(4);
 	}
 	
 	public boolean informLounge(final String action) {
@@ -92,6 +101,19 @@ public class LoungeAlexaController {
 						bobbyLoungeLamp.resetAutoOverridden();
 					}
 				}
+			}
+		}
+		else if ("kitchenoff".equals(action)) {
+			if (this.kitchenLedRod.isDeviceOn() && !this.kitchenLedRod.isAutoOverridden() && !this.kitchenLedRod.isManuallyOverridden()) {
+				successfulCall = this.kitchenLedRod.turnDeviceOff(false);
+				this.log.info("Alexa request: switching off kitchen LED rod");
+			}
+		}
+		else if ("backdoor".equals(action)) {
+			if ("0".equals(this.loungePatioBlind.getDeviceLevel()) || "40".equals(this.loungePatioBlind.getDeviceLevel()) ||
+					"55".equals(this.loungePatioBlind.getDeviceLevel())) {
+				successfulCall = this.loungePatioBlind.turnDeviceOn(false, "60");
+				this.log.info("Alexa request: moving patio blind so back door can be openend");
 			}
 		}
 		
