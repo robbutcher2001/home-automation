@@ -82,13 +82,13 @@ public class AlexaRequestAuthorisationController extends HttpServlet {
 				if (authHeaderTokenised.length == 2) {
 					if (this.symmetricKey.equals(authHeaderTokenised[0])) {
 						try {
-							final Calendar oneMinuteInFuture = Calendar.getInstance();
-							oneMinuteInFuture.add(Calendar.MINUTE, 1);
+							final Calendar oneMinuteAgo = Calendar.getInstance();
+							oneMinuteAgo.add(Calendar.MINUTE, -1);
 							
 							final Calendar requestTime = Calendar.getInstance();
 							requestTime.setTimeInMillis(Long.parseLong(authHeaderTokenised[1]));
 							
-							if (oneMinuteInFuture.after(requestTime)) {
+							if (requestTime.after(oneMinuteAgo)) {
 								String pathInfo = request.getPathInfo();
 								if (pathInfo != null && !"".equals(pathInfo)) {
 									final String[] pathInfoTidied = pathInfo.split("/");
