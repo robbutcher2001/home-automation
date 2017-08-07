@@ -10,6 +10,7 @@ import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
 import co.uk.rob.apartment.automation.utilities.CommonQueries;
+import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 /**
  * @author Rob
@@ -77,7 +78,7 @@ public class LoungeAlexaController {
 			
 			this.log.info("Alexa request: lights off in lounge");
 		}
-		else if ("down".equals(action)) {
+		else if ("down".equals(action) || "dim".equals(action)) {
 			this.lampOneLounge.turnDeviceOn(true, "40");
 			this.lampOneLounge.resetAutoOverridden();
 			
@@ -92,7 +93,7 @@ public class LoungeAlexaController {
 			
 			this.log.info("Alexa request: lights dimmer in lounge");
 		}
-		else if ("up".equals(action)) {
+		else if ("up".equals(action) || "brighten".equals(action)) {
 			this.lampOneLounge.turnDeviceOn(true, "99");
 			this.lampOneLounge.resetAutoOverridden();
 			
@@ -136,16 +137,16 @@ public class LoungeAlexaController {
 			spokenResponse = "There you go.";
 			this.log.info("Alexa request: moving patio blind so back door can be openend");
 		}
-		else if ("blindsup".equals(action)) {
+		else if ("blindsup".equals(action) || "blindsopen".equals(action)) {
 			if (!this.patioDoor.isTriggered()) {
 				boolean moved = false;
 				if (!CommonQueries.isBrightnessBelow20()) {
-					if (!"80".equals(this.loungeWindowBlind.getDeviceLevel()) && !this.loungeWindowBlind.isManuallyOverridden()) {
+					if (!"80".equals(this.loungeWindowBlind.getDeviceLevel())) {
 						moved = this.loungeWindowBlind.turnDeviceOff(true);
 						this.loungeWindowBlind.resetAutoOverridden();
 					}
 					
-					if (!"80".equals(this.loungePatioBlind.getDeviceLevel()) && !this.loungePatioBlind.isManuallyOverridden()) {
+					if (!"80".equals(this.loungePatioBlind.getDeviceLevel())) {
 						moved = this.loungePatioBlind.turnDeviceOff(true);
 						this.loungePatioBlind.resetAutoOverridden();
 					}
@@ -165,12 +166,12 @@ public class LoungeAlexaController {
 		else if ("blindshalfmast".equals(action)) {
 			if (!this.patioDoor.isTriggered()) {
 				boolean moved = false;
-				if (!"55".equals(this.loungeWindowBlind.getDeviceLevel()) && !this.loungeWindowBlind.isManuallyOverridden()) {
+				if (!"55".equals(this.loungeWindowBlind.getDeviceLevel())) {
 					moved = this.loungeWindowBlind.turnDeviceOn(true, "55");
 					this.loungeWindowBlind.resetAutoOverridden();
 				}
 				
-				if (!"55".equals(this.loungePatioBlind.getDeviceLevel()) && !this.loungePatioBlind.isManuallyOverridden()) {
+				if (!"55".equals(this.loungePatioBlind.getDeviceLevel())) {
 					moved = this.loungePatioBlind.turnDeviceOn(true, "55");
 					this.loungePatioBlind.resetAutoOverridden();
 				}
@@ -183,15 +184,15 @@ public class LoungeAlexaController {
 				spokenResponse = "You'll have to close the back door first.";
 			}
 		}
-		else if ("blindsclose".equals(action)) {
+		else if ("blindsclose".equals(action) || "blindsdown".equals(action)) {
 			if (!this.patioDoor.isTriggered()) {
 				boolean moved = false;
-				if (!"0".equals(this.loungeWindowBlind.getDeviceLevel()) && !this.loungeWindowBlind.isManuallyOverridden()) {
+				if (!"0".equals(this.loungeWindowBlind.getDeviceLevel())) {
 					moved = this.loungeWindowBlind.turnDeviceOn(true, "0");
 					this.loungeWindowBlind.resetAutoOverridden();
 				}
 				
-				if (!"0".equals(this.loungePatioBlind.getDeviceLevel()) && !this.loungePatioBlind.isManuallyOverridden()) {
+				if (!"0".equals(this.loungePatioBlind.getDeviceLevel())) {
 					moved = this.loungePatioBlind.turnDeviceOn(true, "0");
 					this.loungePatioBlind.resetAutoOverridden();
 				}
@@ -203,6 +204,16 @@ public class LoungeAlexaController {
 			else {
 				spokenResponse = "You'll have to close the back door first.";
 			}
+		}
+		else if ("bedroommodeon".equals(action)) {
+			HomeAutomationProperties.setOrUpdateProperty("LoungeBedroomMode", "true");
+			spokenResponse = "Bedroom mode is now on, please wait a few minutes for the room to adjust.";
+			this.log.info("Request for full bedroom mode in Lounge [alexa]");
+		}
+		else if ("bedroommodeoff".equals(action)) {
+			HomeAutomationProperties.setOrUpdateProperty("LoungeBedroomMode", "false");
+			spokenResponse = "Bedroom mode is now off, please wait a few minutes for the room to reset.";
+			this.log.info("Request for normal bedroom mode in Lounge [alexa]");
 		}
 		else if ("outsidebrightness".equals(action)) {
 			float currentBrightness = -1;
