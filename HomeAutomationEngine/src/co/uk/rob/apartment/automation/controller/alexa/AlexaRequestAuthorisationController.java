@@ -94,14 +94,14 @@ public class AlexaRequestAuthorisationController extends HttpServlet {
 									final String[] pathInfoTidied = pathInfo.split("/");
 									
 									if (pathInfoTidied.length == 3 && "lounge".equals(pathInfoTidied[1])) {
-										final boolean rsp = this.loungeController.informLounge(pathInfoTidied[2]);
-										JSONObject actioned = new JSONObject();
-										actioned.put("actioned", rsp);
-										responseMessage = this.responder.createSuccessAsJson(actioned);
+										final String rsp = this.loungeController.informLounge(pathInfoTidied[2]);
+										JSONObject message = new JSONObject();
+										message.put("message", rsp);
+										responseMessage = this.responder.createSuccessAsJson(message);
 									}
 									else {
 										responseMessage = this.responder.createFailAsJson("Too many URL tokens passed.");
-										this.log.error("Too many URL tokens passed " + Arrays.toString(pathInfoTidied));
+										this.log.info("Too many URL tokens passed " + Arrays.toString(pathInfoTidied));
 									}
 								}
 							}

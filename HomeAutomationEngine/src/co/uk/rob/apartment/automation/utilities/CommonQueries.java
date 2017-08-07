@@ -165,7 +165,7 @@ public class CommonQueries {
 		return true;
 	}
 	
-	private static Float[] getCurrentBrightness() {
+	public static Float[] getCurrentBrightness() {
 		ReportingDevice patioReportingDevice = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(0);
 		Float[] outsideLux = patioReportingDevice.getLuminiscence();
 		

@@ -95,7 +95,7 @@ public class DecryptAuthorisationHeader {
 		return symmetricKey;
 	}
 	
-	public String decryptText(String msg, PrivateKey key) throws InvalidKeyException,
+	public synchronized String decryptText(String msg, PrivateKey key) throws InvalidKeyException,
 			UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 		this.cipher.init(Cipher.DECRYPT_MODE, key);
 		

@@ -82,7 +82,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						log.info("Lounge occupancy detected, auto overridden and blinds are closed: turning up stick lounge lamp");
 					}
 					
-					if (!kitchenLedRod.isDeviceOn() && !kitchenLedRod.isAutoOverridden()) {
+					if (!kitchenLedRod.isDeviceOn() && !kitchenLedRod.isAutoOverridden() && !kitchenLedRod.isManuallyOverridden()) {
 						kitchenLedRod.turnDeviceOn(false);
 						log.info("Lounge occupancy detected, not auto overridden and blinds are closed: switching on kitchen LED rod");
 					}
