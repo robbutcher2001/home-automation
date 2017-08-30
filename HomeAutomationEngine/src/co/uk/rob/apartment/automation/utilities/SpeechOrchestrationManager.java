@@ -66,7 +66,7 @@ public class SpeechOrchestrationManager extends Thread {
 			}
 			
 			if (news) {
-				log.info("Played M25 information through speaker");
+				log.info("Played BBC News information through speaker");
 			}
 		}
 		else {
@@ -81,7 +81,7 @@ public class SpeechOrchestrationManager extends Thread {
 			}
 			
 			if (news) {
-				log.error("Could not speak M25 information through speaker");
+				log.error("Could not speak BBC News information through speaker");
 			}
 		}
 	}

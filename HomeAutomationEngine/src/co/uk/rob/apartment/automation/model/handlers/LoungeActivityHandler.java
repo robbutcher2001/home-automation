@@ -1,6 +1,7 @@
 package co.uk.rob.apartment.automation.model.handlers;
 
 import java.util.Calendar;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -25,6 +26,14 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 	private Blind loungeWindowBlind;
 	private Blind loungePatioBlind;
 	private ReportingDevice patioDoor;
+	private static final Random random;
+	
+	private static final String[] aliceNames =
+		{"Alice", "Bum", "Slawice", "Ali-bum-bum", "Ali", "Slice", "Slices", "Queso", "Suplemento de Queso"};
+	
+	static {
+		random = new Random();
+	}
 	
 	@Override
 	public void run() {
@@ -48,12 +57,16 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 			if (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode))) {
 				
 				Calendar fiveAM = (Calendar) now.clone();
+				Calendar eightAM = (Calendar) now.clone();
 				Calendar nineAM = (Calendar) now.clone();
 				Calendar midday = (Calendar) now.clone();
 				Calendar threePM = (Calendar) now.clone();
 				
 				fiveAM.set(Calendar.HOUR_OF_DAY, 5);
 				fiveAM.set(Calendar.MINUTE, 00);
+				
+				eightAM.set(Calendar.HOUR_OF_DAY, 8);
+				eightAM.set(Calendar.MINUTE, 00);
 				
 				nineAM.set(Calendar.HOUR_OF_DAY, 9);
 				nineAM.set(Calendar.MINUTE, 00);
@@ -106,14 +119,15 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				if ((now.after(fiveAM) && now.before(midday) && !CommonQueries.isItTheWeekendOrBankHoliday()) || 
 						(now.after(nineAM) && now.before(midday) && CommonQueries.isItTheWeekendOrBankHoliday())) {
 					String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
-					if (played != null && "false".equals(played)) {
+					if (played != null && "false".equals(played) && now.before(eightAM)) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
 						
 						if (openBlinds) {
 							runBlindControl();
 						}
 						
-						String sliceWelcomeText = "Good morning <prosody pitch=\"+25%\">Alice. </prosody>";
+						int nameToUse = random.nextInt(aliceNames.length);
+						String sliceWelcomeText = "Good morning <prosody pitch=\"-25%\">" + aliceNames[nameToUse] + ". </prosody>";
 						if (openBlinds) {
 							sliceWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
 						}
@@ -128,7 +142,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					}
 					
 					played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
-					if (played != null && "false".equals(played)) {
+					if (played != null && "false".equals(played) && now.after(eightAM)) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
 						
 						if (openBlinds) {

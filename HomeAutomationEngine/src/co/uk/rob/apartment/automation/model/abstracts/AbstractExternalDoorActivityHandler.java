@@ -99,6 +99,7 @@ public abstract class AbstractExternalDoorActivityHandler extends AbstractActivi
 					". Alarm will trigger. Deactivate now: "
 					+ "https://robsflat.co.uk/disableApartmentAlarm/" + alarmOneTimeUrl;
 			SMSHelper.sendSMS("07965502960", smsText);
+			SMSHelper.sendSMS("07909522243", smsText);
 			
 			//trigger outdoor AlarmUnit in 1 minute
 			//TODO: http://examples.javacodegeeks.com/core-java/util/timer-util/java-timer-example/
