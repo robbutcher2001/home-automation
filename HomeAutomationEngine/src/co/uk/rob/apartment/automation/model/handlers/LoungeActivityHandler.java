@@ -59,6 +59,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				Calendar fiveAM = (Calendar) now.clone();
 				Calendar eightAM = (Calendar) now.clone();
 				Calendar nineAM = (Calendar) now.clone();
+				Calendar elevenAM = (Calendar) now.clone();
 				Calendar midday = (Calendar) now.clone();
 				Calendar threePM = (Calendar) now.clone();
 				
@@ -70,6 +71,9 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				
 				nineAM.set(Calendar.HOUR_OF_DAY, 9);
 				nineAM.set(Calendar.MINUTE, 00);
+				
+				elevenAM.set(Calendar.HOUR_OF_DAY, 11);
+				elevenAM.set(Calendar.MINUTE, 00);
 				
 				midday.set(Calendar.HOUR_OF_DAY, 12);
 				midday.set(Calendar.MINUTE, 00);
@@ -115,52 +119,67 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 				}
 				
 				//if it's a weekday, speak and move blinds after 5am
-				//if it's a weekend, speak and move blinds after 9am
-				if ((now.after(fiveAM) && now.before(midday) && !CommonQueries.isItTheWeekendOrBankHoliday()) || 
-						(now.after(nineAM) && now.before(midday) && CommonQueries.isItTheWeekendOrBankHoliday())) {
+				if (now.after(fiveAM) && now.before(midday) && !CommonQueries.isItTheWeekendOrBankHoliday()) {
+					if (openBlinds) {
+						runBlindControl();
+					}
+					
 					String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
-					if (played != null && "false".equals(played) && now.before(eightAM)) {
+					if (played != null && "false".equals(played)) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
-						
-						if (openBlinds) {
-							runBlindControl();
-						}
 						
 						int nameToUse = random.nextInt(aliceNames.length);
 						String sliceWelcomeText = "Good morning <prosody pitch=\"-25%\">" + aliceNames[nameToUse] + ". </prosody>";
 						if (openBlinds) {
 							sliceWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
 						}
-						if (!CommonQueries.isItTheWeekendOrBankHoliday()) {
-							log.info("Saying good morning to Slice, opening blinds, relaying current weather information, latest train information and BBC News headlines");
-							new SpeechOrchestrationManager(sliceWelcomeText, true, true, true, "0803", "NWD/ECR").start();
-						}
-						else {
-							log.info("Saying generic good morning to Slice and opening blinds");
-							new SpeechOrchestrationManager(sliceWelcomeText, false, false, false, null, null).start();
-						}
+						
+						log.info("Saying good morning to Slice, opening blinds, relaying current weather information, latest train information and BBC News headlines");
+						new SpeechOrchestrationManager(sliceWelcomeText, true, true, true, "0750", "NWD/VIC").start();
 					}
 					
 					played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
-					if (played != null && "false".equals(played) && now.after(eightAM)) {
+					if (played != null && "false".equals(played)) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
-						
-						if (openBlinds) {
-							runBlindControl();
-						}
 						
 						String robWelcomeText = "Good morning <prosody pitch=\"+25%\">Robert. </prosody>";
 						if (openBlinds) {
 							robWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
 						}
-						if (!CommonQueries.isItTheWeekendOrBankHoliday()) {
-							log.info("Saying good morning to Rob, opening blinds, relaying current weather information, latest train information and BBC News headlines");
-							new SpeechOrchestrationManager(robWelcomeText, true, true, true, "0845", "NWD/LBG").start();
+						
+						log.info("Saying good morning to Rob, opening blinds, relaying current weather information, latest train information and BBC News headlines");
+						new SpeechOrchestrationManager(robWelcomeText, true, true, true, "0845", "NWD/LBG").start();
+					}
+				}
+				
+				//if it's a weekend, speak and move blinds after 9am
+				if (now.after(nineAM) && now.before(midday) && CommonQueries.isItTheWeekendOrBankHoliday()) {
+					if (openBlinds) {
+						runBlindControl();
+					}
+					
+					String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
+					played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
+					
+					if (played != null && "false".equals(played)) {
+						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
+						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
+						
+						String welcomeText = "Thank <prosody pitch=\"+40%\" volume=\"+10dB\">fuck</prosody> it's the weekend. ";
+						
+						if (now.after(elevenAM)) {
+							welcomeText += "Although getting up after 11 is taking the piss a bit. LOL.";
 						}
 						else {
-							log.info("Saying generic good morning to Rob and opening blinds");
-							new SpeechOrchestrationManager(robWelcomeText, false, false, false, null, null).start();
+							welcomeText += "<break time=\"1s\"/> Sick. ";
 						}
+						
+						if (openBlinds) {
+							welcomeText += "Anyway, I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you both. ";
+						}
+						
+						log.info("Saying generic good morning to Slib and opening blinds");
+						new SpeechOrchestrationManager(welcomeText, true, false, true, null, null).start();
 					}
 				}
 				

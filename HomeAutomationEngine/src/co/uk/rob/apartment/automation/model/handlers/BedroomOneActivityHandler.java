@@ -43,7 +43,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		tenPM.set(Calendar.MINUTE, 00);
 		
 		halfSevenAM.set(Calendar.HOUR_OF_DAY, 7);
-		halfSevenAM.set(Calendar.MINUTE, 35);
+		halfSevenAM.set(Calendar.MINUTE, 48);
 		
 		String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
 		

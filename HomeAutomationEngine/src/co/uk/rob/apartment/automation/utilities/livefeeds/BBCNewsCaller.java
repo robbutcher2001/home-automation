@@ -50,7 +50,7 @@ public class BBCNewsCaller {
 								}
 								
 								if (newsItemCount > 0) {
-									textToSpeak += "<break time=\"2s\"/><p>Next article. </p>";
+									textToSpeak += "<break time=\"1s\"/><p>Next article. </p>";
 								}
 							}
 						}
