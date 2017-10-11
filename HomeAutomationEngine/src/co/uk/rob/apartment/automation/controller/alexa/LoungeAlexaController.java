@@ -163,7 +163,7 @@ public class LoungeAlexaController {
 				spokenResponse = "You'll have to close the back door first.";
 			}
 		}
-		else if ("blindshalfmast".equals(action)) {
+		else if ("blindshalfway".equals(action)) {
 			if (!this.patioDoor.isTriggered()) {
 				boolean moved = false;
 				if (!"55".equals(this.loungeWindowBlind.getDeviceLevel())) {

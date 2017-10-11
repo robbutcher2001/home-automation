@@ -125,7 +125,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					}
 					
 					String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
-					if (played != null && "false".equals(played)) {
+					if (played != null && "false".equals(played) && now.before(eightAM)) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
 						
 						int nameToUse = random.nextInt(aliceNames.length);
@@ -139,7 +139,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 					}
 					
 					played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
-					if (played != null && "false".equals(played)) {
+					if (played != null && "false".equals(played) && now.after(eightAM)) {
 						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
 						
 						String robWelcomeText = "Good morning <prosody pitch=\"+25%\">Robert. </prosody>";
