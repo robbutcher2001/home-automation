@@ -6,8 +6,9 @@
   <name>home-automation</name>
   <packaging>war</packaging>
 
-  <!-- <build>
-    <plugins>
+  <build>
+    <finalName>ROOT</finalName>
+    <!-- <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -17,8 +18,8 @@
           <target>1.6</target>
         </configuration>
       </plugin>
-    </plugins>
-  </build> -->
+    </plugins> -->
+  </build>
 
   <dependencies>
     <dependency>
