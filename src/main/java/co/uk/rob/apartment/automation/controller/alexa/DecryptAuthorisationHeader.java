@@ -28,26 +28,26 @@ import com.amazonaws.util.IOUtils;
  *
  */
 public class DecryptAuthorisationHeader {
-	
+
 	private Cipher cipher;
 	private KeyFactory keyFactory;
-	
+
 	public DecryptAuthorisationHeader() throws NoSuchAlgorithmException, NoSuchPaddingException {
 		Security.addProvider(new BouncyCastleProvider());
 		this.keyFactory = KeyFactory.getInstance("RSA");
 		this.cipher = Cipher.getInstance("RSA/ECB/OAEPPadding");
 	}
-	
+
 	public PrivateKey getPrivateKey(ServletContext context, String filename) {
 		PrivateKey privateKey = null;
 		InputStream is = context.getResourceAsStream(filename);
-		
+
 		try {
 			byte[] fileContents = IOUtils.toByteArray(is);
-			
+
 			final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(fileContents);
 			privateKey = this.keyFactory.generatePrivate(spec);
-			
+
 		}
 		catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
@@ -65,17 +65,17 @@ public class DecryptAuthorisationHeader {
 				}
 			}
 		}
-		
+
 		return privateKey;
 	}
-	
+
 	public String getSymmetricKey(ServletContext context, String filename) {
 		String symmetricKey = null;
 		InputStream is = context.getResourceAsStream(filename);
-		
+
 		try {
 			symmetricKey = IOUtils.toString(is);
-			
+
 		}
 		catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
@@ -91,14 +91,14 @@ public class DecryptAuthorisationHeader {
 				}
 			}
 		}
-		
+
 		return symmetricKey;
 	}
-	
+
 	public synchronized String decryptText(String msg, PrivateKey key) throws InvalidKeyException,
 			UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 		this.cipher.init(Cipher.DECRYPT_MODE, key);
-		
+
 		return new String(this.cipher.doFinal(Base64.decode(msg)), "UTF-8");
 	}
 }
