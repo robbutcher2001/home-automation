@@ -16,9 +16,9 @@ import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 public class LoungeEnvironmentMonitor extends Thread {
-	
+
 	private Logger log = Logger.getLogger(LoungeEnvironmentMonitor.class);
-	
+
 	private List<ControllableDevice> devicesToControl;
 	private ControllableDevice loungeLamp;
 	private ControllableDevice stickLoungeLamp;
@@ -29,26 +29,26 @@ public class LoungeEnvironmentMonitor extends Thread {
 	private ReportingDevice patioDoor;
 	private Random randomLightsOff;
 	private int randomMinuteLightsOff;
-	
+
 	public LoungeEnvironmentMonitor() {
 		devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE);
 		devicesToControl.addAll(DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN));
 		patioDoor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
-		
+
 		loungeLamp = devicesToControl.get(0);
 		stickLoungeLamp = devicesToControl.get(2);
 		bobbyLoungeLamp = devicesToControl.get(5);
 		loungeWindowBlind = (Blind) devicesToControl.get(3);
 		loungePatioBlind = (Blind) devicesToControl.get(4);
-		
+
 		loungeReportingDevice = DeviceListManager.getReportingDeviceByLocation(Zone.LOUNGE).get(0);
-		
+
 		randomLightsOff = new Random();
 		randomMinuteLightsOff = randomLightsOff.nextInt(60);
-		
+
 		log.info("Lounge room environment monitor started");
 	}
-	
+
 	@Override
 	public void run() {
 		while (!this.isInterrupted()) {
@@ -58,67 +58,67 @@ public class LoungeEnvironmentMonitor extends Thread {
 			Calendar eightPM = (Calendar) now.clone();
 			Calendar elevenPM = (Calendar) now.clone();
 			Calendar elevenPmRandomMinute = (Calendar) now.clone();
-			
+
 			nineAM.set(Calendar.HOUR_OF_DAY, 9);
 			nineAM.set(Calendar.MINUTE, 00);
-			
+
 			halfThreePM.set(Calendar.HOUR_OF_DAY, 15);
 			halfThreePM.set(Calendar.MINUTE, 30);
-			
+
 			eightPM.set(Calendar.HOUR_OF_DAY, 20);
 			eightPM.set(Calendar.MINUTE, 00);
-			
+
 			elevenPM.set(Calendar.HOUR_OF_DAY, 23);
 			elevenPM.set(Calendar.MINUTE, 00);
-			
+
 			elevenPmRandomMinute.set(Calendar.HOUR_OF_DAY, 23);
 			elevenPmRandomMinute.set(Calendar.MINUTE, randomMinuteLightsOff);
-			
+
 			//if blinds are tilted open and apartment becomes unoccupied, un-tilt
 			if (CommonQueries.isApartmentAlarmEnabled() && !CommonQueries.isApartmentOccupied()) {
 				if (loungeWindowBlind.isTilted()) {
 					loungeWindowBlind.tiltBlindClosed();
 					log.info("Lounge window blind is tilted but now no one is home so un-tilting");
 				}
-				
+
 				if (loungePatioBlind.isTilted()) {
 					loungePatioBlind.tiltBlindClosed();
 					log.info("Lounge patio door blind is tilted but now no one is home so un-tilting");
 				}
 			}
-			
+
 			//if after 11pm and blinds are still not 0%, presume patio sensor is offline - close blinds
 			if (now.after(elevenPM)) {
 				boolean moved = false;
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
 					moved = loungeWindowBlind.turnDeviceOn(true);
 				}
-				
+
 				if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !patioDoor.isTriggered()) {
 					moved = loungePatioBlind.turnDeviceOn(true);
 				}
-				
+
 				if (moved) {
 					log.info("Patio sensor appears to be offline, closing blinds as precaution");
 				}
 			}
-			
+
 			String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
 			if (loungeBedroomMode == null || (loungeBedroomMode != null && "true".equals(loungeBedroomMode))) {
 				boolean moved = false;
 				if (!"0".equals(loungeWindowBlind.getDeviceLevel())) {
 					moved = loungeWindowBlind.turnDeviceOn(false);
 				}
-				
+
 				if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !patioDoor.isTriggered()) {
 					moved = loungePatioBlind.turnDeviceOn(false);
 				}
-				
+
 				if (moved) {
 					log.info("Lounge bedroom mode is on, closing blinds");
 				}
 			}
-			
+
 			//if patio blinds are 100% open, move back to where others are
 			if ("100".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 				if (!"80".equals(loungeWindowBlind.getDeviceLevel())) {
@@ -129,7 +129,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 				}
 				log.info("Moving patio blind back to where the other blinds are now door is shut [" + loungeWindowBlind.getDeviceLevel() + "%]");
 			}
-			
+
 			if (now.after(nineAM) && (loungeBedroomMode == null || (loungeBedroomMode != null && "false".equals(loungeBedroomMode)))) {
 				//blinds
 				if (CommonQueries.isBrightnessGreaterThan800()) {
@@ -137,11 +137,11 @@ public class LoungeEnvironmentMonitor extends Thread {
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
 					}
-					
+
 					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOffAutoOverride();
 					}
-					
+
 					if (moved) {
 						log.info("Outside brightness has fallen into > 800 bucket, moving blinds to 80% (max)");
 					}
@@ -151,11 +151,11 @@ public class LoungeEnvironmentMonitor extends Thread {
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
 					}
-					
+
 					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOffAutoOverride();
 					}
-					
+
 					if (moved) {
 						log.info("Outside brightness has fallen into 600-800 bucket, moving blinds to 80% (max)");
 					}
@@ -165,27 +165,43 @@ public class LoungeEnvironmentMonitor extends Thread {
 					if (!"80".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOffAutoOverride();
 					}
-					
+
 					if (!"80".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOffAutoOverride();
 					}
-					
+
 					if (moved) {
 						log.info("Outside brightness has fallen into 400-600 bucket, moving blinds to 80% (max)");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetweenXandY(200f, 400f) && now.after(halfThreePM)) {
 					boolean moved = false;
-					if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
-						moved = loungeWindowBlind.turnDeviceOnAutoOverride("55");
+
+					if (!CommonQueries.isApartmentOccupied()) {
+						if (!"55".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
+							moved = loungeWindowBlind.turnDeviceOnAutoOverride("55");
+						}
+
+						if (!"55".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
+							moved = loungePatioBlind.turnDeviceOnAutoOverride("55");
+						}
+
+						if (moved) {
+							log.info("Outside brightness has fallen into 200-400 bucketand apartment is unoccupied, moving blinds to 55%");
+						}
 					}
-					
-					if (!"55".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
-						moved = loungePatioBlind.turnDeviceOnAutoOverride("55");
-					}
-					
-					if (moved) {
-						log.info("Outside brightness has fallen into 200-400 bucket, moving blinds to 55%");
+					else {
+						if (!"70".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
+							moved = loungeWindowBlind.turnDeviceOnAutoOverride("70");
+						}
+
+						if (!"70".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
+							moved = loungePatioBlind.turnDeviceOnAutoOverride("70");
+						}
+
+						if (moved) {
+							log.info("Outside brightness has fallen into 200-400 bucket and apartment is occupied, moving blinds to 70%");
+						}
 					}
 				}
 				else if (CommonQueries.isBrightnessBetweenXandY(20f, 200f) && now.after(halfThreePM)) {
@@ -193,11 +209,11 @@ public class LoungeEnvironmentMonitor extends Thread {
 					if (!"40".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("40");
 					}
-					
+
 					if (!"40".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOnAutoOverride("40");
 					}
-					
+
 					if (moved) {
 						log.info("Outside brightness has fallen into 20-200 bucket, moving blinds to 40%");
 					}
@@ -207,32 +223,32 @@ public class LoungeEnvironmentMonitor extends Thread {
 					if (!"0".equals(loungeWindowBlind.getDeviceLevel()) && !loungeWindowBlind.isManuallyOverridden()) {
 						moved = loungeWindowBlind.turnDeviceOnAutoOverride("0");
 					}
-					
+
 					if (!"0".equals(loungePatioBlind.getDeviceLevel()) && !loungePatioBlind.isManuallyOverridden() && !patioDoor.isTriggered()) {
 						moved = loungePatioBlind.turnDeviceOnAutoOverride("0");
 					}
-					
+
 					if (moved) {
 						log.info("Outside brightness has fallen into < 20 bucket, moving blinds to 0%");
 					}
-					
+
 					if (loungeWindowBlind.isTilted()) {
 						loungeWindowBlind.tiltBlindClosed();
 						log.info("Lounge window blind is down and tilted but it's now dark so un-tilting");
 					}
-					
+
 					if (loungePatioBlind.isTilted()) {
 						loungePatioBlind.tiltBlindClosed();
 						log.info("Lounge patio door blind is down and tilted but it's now dark so un-tilting");
 					}
 				}
 			}
-			
+
 			Calendar twoPM = Calendar.getInstance();
-			
+
 			twoPM.set(Calendar.HOUR_OF_DAY, 14);
 			twoPM.set(Calendar.MINUTE, 00);
-			
+
 			//lights
 			if (now.after(twoPM) && now.before(elevenPM)) {
 				if (CommonQueries.isBrightnessGreaterThan800()) {
@@ -240,12 +256,12 @@ public class LoungeEnvironmentMonitor extends Thread {
 						loungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into > 800 bucket, lounge lamp auto off");
 					}
-					
+
 					if (!"0".equals(stickLoungeLamp.getDeviceLevel()) && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into > 800 bucket, stick lamp auto off");
 					}
-					
+
 					if (!"0".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
 						bobbyLoungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into > 800 bucket, Bobby lamp auto off");
@@ -256,12 +272,12 @@ public class LoungeEnvironmentMonitor extends Thread {
 						loungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into 600-800 bucket, lounge lamp auto off");
 					}
-					
+
 					if (!"0".equals(stickLoungeLamp.getDeviceLevel()) && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into 600-800 bucket, stick lamp auto off");
 					}
-					
+
 					if (!"20".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
 						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 600-800 bucket, Bobby lamp auto on 40%");
@@ -272,23 +288,23 @@ public class LoungeEnvironmentMonitor extends Thread {
 						loungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into 400-600 bucket, lounge lamp auto off");
 					}
-					
+
 					if (!"0".equals(stickLoungeLamp.getDeviceLevel()) && !stickLoungeLamp.isManuallyOverridden()) {
 						stickLoungeLamp.turnDeviceOffAutoOverride();
 						log.info("Outside brightness has fallen into 400-600 bucket, stick lamp auto off");
 					}
-					
+
 					if (!"20".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
 						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 400-600 bucket, Bobby lamp auto on 40%");
 					}
 				}
 				else if (CommonQueries.isBrightnessBetweenXandY(200f, 400f) && now.after(halfThreePM)) {
-					if (!"30".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
+					if (!"30".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !CommonQueries.isApartmentOccupied() && !patioDoor.isTriggered()) {
 						loungeLamp.turnDeviceOnAutoOverride("30");
 						log.info("Outside brightness has fallen into 200-400 bucket and patio door shut, lounge lamp auto on 30%");
 					}
-					
+
 					if (!"20".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
 						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 200-400 bucket, Bobby lamp auto on 40%");
@@ -299,7 +315,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						loungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 20-200 bucket and patio door shut, lounge lamp auto up to 40%");
 					}
-					
+
 					if (!"20".equals(bobbyLoungeLamp.getDeviceLevel()) && !"40".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
 						bobbyLoungeLamp.turnDeviceOnAutoOverride("40");
 						log.info("Outside brightness has fallen into 20-200 bucket, Bobby lamp auto on 40%");
@@ -310,7 +326,7 @@ public class LoungeEnvironmentMonitor extends Thread {
 						log.info("Outside brightness has fallen into < 20 bucket, lounge lamp auto up to 55% (max)");
 						log.info("Outside brightness has fallen into < 20 bucket, lounge stick lamp auto up to 40%");
 					}
-					
+
 					//turn Bobby lamp up to 60% if apartment is occupied and before 8pm then up/down upon kitchen occupancy
 					if (CommonQueries.isApartmentOccupied() && now.before(eightPM)) {
 						if (!"60".equals(bobbyLoungeLamp.getDeviceLevel()) && !bobbyLoungeLamp.isManuallyOverridden()) {
@@ -320,47 +336,47 @@ public class LoungeEnvironmentMonitor extends Thread {
 					}
 				}
 			}
-			
+
 			if (!CommonQueries.isApartmentOccupied() && now.after(elevenPmRandomMinute)) {
 				if (loungeLamp.isDeviceOn() && !loungeLamp.isManuallyOverridden() && loungeLamp.isAutoOverridden()) {
 					loungeLamp.turnDeviceOffAutoOverride();
 					log.info("Lounge lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
 				}
-				
+
 				if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isManuallyOverridden() && stickLoungeLamp.isAutoOverridden()) {
 					stickLoungeLamp.turnDeviceOffAutoOverride();
 					log.info("Lounge stick lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
 				}
-				
+
 				if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isManuallyOverridden() && bobbyLoungeLamp.isAutoOverridden()) {
 					bobbyLoungeLamp.turnDeviceOffAutoOverride();
 					log.info("Bobby lamp auto off at randomised 23:" + randomMinuteLightsOff + " as apartment is unoccupied");
-					
+
 					//generate random minute for next day
 					randomMinuteLightsOff = randomLightsOff.nextInt(60);
 				}
 			}
-			
+
 			//switch lights off at midnight if they're still on regardless - i.e. above randomised time didn't apply
 			if (now.before(twoPM)) {
 				if (loungeLamp.isDeviceOn() && !loungeLamp.isManuallyOverridden() && loungeLamp.isAutoOverridden()) {
 					loungeLamp.turnDeviceOffAutoOverride();
 					log.info("Lounge lamp auto off at midnight");
 				}
-				
+
 				if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isManuallyOverridden() && stickLoungeLamp.isAutoOverridden()) {
 					stickLoungeLamp.turnDeviceOffAutoOverride();
 					log.info("Lounge stick lamp auto off at midnight");
 				}
-				
+
 				if (bobbyLoungeLamp.isDeviceOn() && !bobbyLoungeLamp.isManuallyOverridden() && bobbyLoungeLamp.isAutoOverridden()) {
 					bobbyLoungeLamp.turnDeviceOffAutoOverride();
 					log.info("Bobby lamp auto off at midnight");
 				}
 			}
-			
+
 			checkOccupancyTimeout();
-			
+
 			try {
 				int oneMinute = 60000;
 				Thread.sleep(oneMinute);
@@ -369,32 +385,32 @@ public class LoungeEnvironmentMonitor extends Thread {
 			}
 		}
 	}
-	
+
 	private boolean lampsOnFull() {
 		boolean switched = false;
-		
+
 		if (!"55".equals(loungeLamp.getDeviceLevel()) && !loungeLamp.isManuallyOverridden() && !patioDoor.isTriggered()) {
 			loungeLamp.turnDeviceOnAutoOverride("55");
-			
+
 			switched = true;
 		}
-		
+
 		if (!"99".equals(stickLoungeLamp.getDeviceLevel()) && !"40".equals(stickLoungeLamp.getDeviceLevel()) && !stickLoungeLamp.isManuallyOverridden()) {
 			stickLoungeLamp.turnDeviceOnAutoOverride("40");
-			
+
 			switched = true;
 		}
-		
+
 		return switched;
 	}
-	
+
 	private void checkOccupancyTimeout() {
 		Calendar lastDateOccupied = Calendar.getInstance();
 		lastDateOccupied.setTime(new Date(loungeReportingDevice.getLastUpdated()));
 		lastDateOccupied.add(Calendar.MINUTE, 60);
-		
+
 		Calendar now = Calendar.getInstance();
-		
+
 		int index = 1;
 		if (now.after(lastDateOccupied)) {
 			for (ControllableDevice device : devicesToControl) {

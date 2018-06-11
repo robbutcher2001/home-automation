@@ -17,11 +17,11 @@ import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
  *
  */
 public class LoungeAlexaController {
-	
+
 	private Logger log = Logger.getLogger(LoungeAlexaController.class);
-	
+
 	private List<ControllableDevice> allDevicesInLoungeAndKitchen;
-	
+
     private ControllableDevice lampOneLounge;
     private ControllableDevice ledRodLounge;
     private ControllableDevice lampTwoLounge;
@@ -30,11 +30,11 @@ public class LoungeAlexaController {
     private Blind loungeWindowBlind;
 	private Blind loungePatioBlind;
 	private ReportingDevice patioDoor;
-    
+
 	public LoungeAlexaController() {
 		allDevicesInLoungeAndKitchen = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE);
 		allDevicesInLoungeAndKitchen.addAll(DeviceListManager.getControllableDeviceByLocation(Zone.KITCHEN));
-		
+
 		this.lampOneLounge = allDevicesInLoungeAndKitchen.get(0);
 		this.ledRodLounge = allDevicesInLoungeAndKitchen.get(1);
 		this.lampTwoLounge = allDevicesInLoungeAndKitchen.get(2);
@@ -44,87 +44,87 @@ public class LoungeAlexaController {
 		this.loungePatioBlind = (Blind) allDevicesInLoungeAndKitchen.get(4);
 		this.patioDoor = DeviceListManager.getReportingDeviceByLocation(Zone.PATIO).get(1);
 	}
-	
+
 	public String informLounge(final String action) {
 		String spokenResponse = "none";
-		
+
 		if ("on".equals(action)) {
 			this.lampOneLounge.turnDeviceOn(true, "99");
 			this.lampOneLounge.resetAutoOverridden();
-			
+
 			this.ledRodLounge.turnDeviceOff(true);
 			this.ledRodLounge.resetAutoOverridden();
-			
+
 			this.lampTwoLounge.turnDeviceOn(true, "99");
 			this.lampTwoLounge.resetAutoOverridden();
-			
+
 			this.bobbyLoungeLamp.turnDeviceOn(true, "99");
 			this.bobbyLoungeLamp.resetAutoOverridden();
-			
+
 			this.log.info("Alexa request: lights on in lounge");
 		}
 		else if ("off".equals(action)) {
 			this.lampOneLounge.turnDeviceOff(true);
 			this.lampOneLounge.resetAutoOverridden();
-			
+
 			this.ledRodLounge.turnDeviceOff(true);
 			this.ledRodLounge.resetAutoOverridden();
-			
+
 			this.lampTwoLounge.turnDeviceOff(true);
 			this.lampTwoLounge.resetAutoOverridden();
-			
+
 			this.bobbyLoungeLamp.turnDeviceOff(true);
 			this.bobbyLoungeLamp.resetAutoOverridden();
-			
+
 			this.log.info("Alexa request: lights off in lounge");
 		}
 		else if ("down".equals(action) || "dim".equals(action)) {
 			this.lampOneLounge.turnDeviceOn(true, "40");
 			this.lampOneLounge.resetAutoOverridden();
-			
+
 			this.ledRodLounge.turnDeviceOff(true);
 			this.ledRodLounge.resetAutoOverridden();
-			
+
 			this.lampTwoLounge.turnDeviceOn(true, "0");
 			this.lampTwoLounge.resetAutoOverridden();
-			
+
 			this.bobbyLoungeLamp.turnDeviceOn(true, "30");
 			this.bobbyLoungeLamp.resetAutoOverridden();
-			
+
 			this.log.info("Alexa request: lights dimmer in lounge");
 		}
 		else if ("up".equals(action) || "brighten".equals(action)) {
 			this.lampOneLounge.turnDeviceOn(true, "99");
 			this.lampOneLounge.resetAutoOverridden();
-			
+
 			this.ledRodLounge.turnDeviceOff(true);
 			this.ledRodLounge.resetAutoOverridden();
-			
+
 			this.lampTwoLounge.turnDeviceOn(true, "99");
 			this.lampTwoLounge.resetAutoOverridden();
-			
+
 			this.bobbyLoungeLamp.turnDeviceOn(true, "99");
 			this.bobbyLoungeLamp.resetAutoOverridden();
-			
+
 			this.log.info("Alexa request: lights brighter in lounge");
 		}
 		else if ("largelampon".equals(action)) {
 			this.lampOneLounge.turnDeviceOn(true, "99");
 			this.lampOneLounge.resetAutoOverridden();
-			
+
 			this.log.info("Alexa request: large lamp on in lounge");
 		}
 		else if ("largelampoff".equals(action)) {
 			this.lampOneLounge.turnDeviceOff(true);
 			this.lampOneLounge.resetAutoOverridden();
-			
+
 			this.log.info("Alexa request: large lamp off in lounge");
 		}
 		else if ("kitchenoff".equals(action)) {
 			if (this.kitchenLedRod.isDeviceOn() && !this.kitchenLedRod.isAutoOverridden() && !this.kitchenLedRod.isManuallyOverridden()) {
 				this.kitchenLedRod.turnDeviceOff(true);
 			}
-			
+
 			this.log.info("Alexa request: switching off kitchen LED rod");
 		}
 		else if ("door".equals(action)) {
@@ -133,7 +133,7 @@ public class LoungeAlexaController {
 				this.loungePatioBlind.turnDeviceOn(true, "60");
 				this.loungePatioBlind.resetAutoOverridden();
 			}
-			
+
 			spokenResponse = "There you go.";
 			this.log.info("Alexa request: moving patio blind so back door can be openend");
 		}
@@ -145,12 +145,12 @@ public class LoungeAlexaController {
 						moved = this.loungeWindowBlind.turnDeviceOff(true);
 						this.loungeWindowBlind.resetAutoOverridden();
 					}
-					
+
 					if (!"80".equals(this.loungePatioBlind.getDeviceLevel())) {
 						moved = this.loungePatioBlind.turnDeviceOff(true);
 						this.loungePatioBlind.resetAutoOverridden();
 					}
-					
+
 					if (moved) {
 						this.log.info("Alexa request: moving blinds up to 80% (max)");
 					}
@@ -170,12 +170,12 @@ public class LoungeAlexaController {
 					moved = this.loungeWindowBlind.turnDeviceOn(true, "55");
 					this.loungeWindowBlind.resetAutoOverridden();
 				}
-				
+
 				if (!"55".equals(this.loungePatioBlind.getDeviceLevel())) {
 					moved = this.loungePatioBlind.turnDeviceOn(true, "55");
 					this.loungePatioBlind.resetAutoOverridden();
 				}
-				
+
 				if (moved) {
 					this.log.info("Alexa request: moving blinds to 55%");
 				}
@@ -191,12 +191,12 @@ public class LoungeAlexaController {
 					moved = this.loungeWindowBlind.turnDeviceOn(true, "0");
 					this.loungeWindowBlind.resetAutoOverridden();
 				}
-				
+
 				if (!"0".equals(this.loungePatioBlind.getDeviceLevel())) {
 					moved = this.loungePatioBlind.turnDeviceOn(true, "0");
 					this.loungePatioBlind.resetAutoOverridden();
 				}
-				
+
 				if (moved) {
 					this.log.info("Alexa request: moving blinds to 0%");
 				}
@@ -217,12 +217,12 @@ public class LoungeAlexaController {
 		}
 		else if ("outsidebrightness".equals(action)) {
 			float currentBrightness = -1;
-			
+
 			Float[] outsideLux = CommonQueries.getCurrentBrightness();
 			if (outsideLux != null && outsideLux.length == 3) {
 				currentBrightness = outsideLux[2];
 			}
-			
+
 			spokenResponse = "Outside brightness is about " + currentBrightness + " lux.";
 			this.log.info("Alexa request: current outside brightness");
 		}
@@ -234,17 +234,17 @@ public class LoungeAlexaController {
 					index++;
 				}
 			}
-			
+
 			if (index > 0) {
 				spokenResponse = "I've reset " + index + " devices in the lounge and kitchen for you.";
 			}
 			else {
 				spokenResponse = "There were actually no devices to reset.";
 			}
-			
+
 			this.log.info("Alexa request: reset all devices in lounge");
 		}
-		
+
 		return spokenResponse;
 	}
 
