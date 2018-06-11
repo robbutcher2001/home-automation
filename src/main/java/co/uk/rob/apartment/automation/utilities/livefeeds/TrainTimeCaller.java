@@ -11,8 +11,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class TrainTimeCaller {
-	
-	public static String getCurrentTrainStatus(String requestedTrainTime, String stationsString) {
+
+	public static String getCurrentTrainStatus(String requestedTrainTime, String stationsString, String verboseTargetStation) {
 		boolean timesFound = false;
 		Map<String, String> trainTimes = new HashMap<String, String>();
 		String textToSpeak = "";
@@ -57,28 +57,28 @@ public class TrainTimeCaller {
 				}
 			}
 		}
-		
+
 		if (timesFound) {
 			for (Map.Entry<String, String> entry : trainTimes.entrySet()) {
-				if ("07:52".equals(entry.getKey()) || "08:48".equals(entry.getKey())) {
+				if ("08:07".equals(entry.getKey()) || "08:37".equals(entry.getKey())) {
 					if (entry.getValue().startsWith("bus")) {
-						textToSpeak = "<p>Your usual " + entry.getKey() + " train is unfortunately a " + entry.getValue() + " service today.</p> ";
+						textToSpeak = "<p>Your usual " + entry.getKey() + " train to " + verboseTargetStation + " is unfortunately a " + entry.getValue() + " service today.</p> ";
 					}
 					else {
-						textToSpeak = "<p>Your usual " + entry.getKey() + " train is " + entry.getValue() + " today.</p> ";
+						textToSpeak = "<p>Your usual " + entry.getKey() + " train to " + verboseTargetStation + " is " + entry.getValue() + " today.</p> ";
 					}
 					break;
 				}
 			}
-			
+
 			if ("".equals(textToSpeak)) {
-				textToSpeak = "<p>I'm afraid I cannot find information on your usual train.</p> ";
+				textToSpeak = "<p>I'm afraid I cannot find information on your usual train to " + verboseTargetStation + ".</p> ";
 			}
 		}
 		else {
 			textToSpeak = "<p><prosody pitch=\"+40%\">Shit.</prosody> I couldn't get any details on your normal train times <prosody pitch=\"-10%\">today. Sorry. </prosody></p>";
 		}
-		
+
 		return textToSpeak;
 	}
 }

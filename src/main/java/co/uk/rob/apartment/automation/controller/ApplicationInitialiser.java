@@ -40,13 +40,13 @@ import co.uk.rob.apartment.automation.utilities.SystemVerifier;
 public class ApplicationInitialiser implements ServletContextListener {
 
 	private Logger log = Logger.getLogger(ApplicationInitialiser.class);
-	
+
 	@Override
 	public void contextInitialized(ServletContextEvent servlet) {
 		log.info("SYSTEM: Automation system coming online..");
 		InputStream is = servlet.getServletContext().getResourceAsStream("/WEB-INF/properties");
 		Properties properties = new Properties();
-		
+
 		try {
 			try {
 				properties.load(is);
@@ -65,7 +65,7 @@ public class ApplicationInitialiser implements ServletContextListener {
 				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RobWindowWarningSent", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ScarlettWindowWarningSent", "false");
-				
+
 				is = servlet.getServletContext().getResourceAsStream("/WEB-INF/audiofiles");
 				properties = new Properties();
 				properties.load(is);
@@ -81,9 +81,9 @@ public class ApplicationInitialiser implements ServletContextListener {
 				e.printStackTrace();
 			}
         }
-		
+
 		boolean online = SystemVerifier.doCheck();
-		
+
 		if (online) {
 			baselineDevices();
 			monitorApartmentActivity();
@@ -98,60 +98,60 @@ public class ApplicationInitialiser implements ServletContextListener {
 		else {
 			log.info("Automation Engine not reachable - continuing without monitors and probes");
 		}
-		
+
 		beginManagingDailyFlags();
 	}
-	
+
 	private void baselineDevices() {
 		BaselineDevices.trigger();
 	}
-	
+
 	private void monitorApartmentActivity() {
 		new ApartmentActivityManager().start();
 	}
-	
+
 	private void monitorApartmentEnvironment() {
 		new LoungeEnvironmentMonitor().start();
 		new BedroomOneEnvironmentMonitor().start();
 		new BedroomTwoEnvironmentMonitor().start();
 		//new PatioEnvironmentMonitor().start();
 	}
-	
+
 	private void probeReportingDevices() {
 		new ReportingDeviceProber().start();
 	}
-	
+
 	private void implementDailyTimer() {
 		Timer timer = new Timer("Daily battery monitor");
-		
+
 		TimerTask task = new TimerTask() {
-			
+
 			@Override
 			public void run() {
 				List<ReportingDevice> reportingDevices = DeviceListManager.getReportingDevices();
 				for (ReportingDevice device : reportingDevices) {
 					device.requestNewBatteryReport();
 				}
-				
+
 				List<ControllableDevice> controllableDevices = DeviceListManager.getControllableDevices();
 				for (ControllableDevice device : controllableDevices) {
 					if (device instanceof BatteryOperable) {
 						((BatteryOperable) device).requestNewBatteryReport();
 					}
 				}
-				
+
 				log.info("All battery operated devices probed for latest battery status, sleeping for one day");
 			}
 		};
-		
+
 		timer.schedule(task, 0, 86400000);
 	}
-	
+
 	private void implementDailyIPChecker() {
 		Timer timer = new Timer("Hourly IP monitor");
-		
+
 		TimerTask task = new TimerTask() {
-			
+
 			@Override
 			public void run() {
 				String newIP;
@@ -159,10 +159,10 @@ public class ApplicationInitialiser implements ServletContextListener {
 				try {
 					bufferedReader = new BufferedReader(new FileReader("/home/pi/apache-tomcat-7.0.40/webapps/ROOT/WEB-INF/ip"));
 					newIP = bufferedReader.readLine();
-					
+
 					if (newIP != null) {
 						String currentIP = HomeAutomationProperties.getProperty("RouterIP");
-						
+
 						if (!newIP.equals(currentIP)) {
 							HomeAutomationProperties.setOrUpdateProperty("RouterIP", newIP);
 							log.info("IP address of remote host has changed [" + newIP + "], sleeping for one hour");
@@ -184,28 +184,28 @@ public class ApplicationInitialiser implements ServletContextListener {
 				}
 			}
 		};
-		
+
 		//sleep for one hour, 10 minute delay
 		timer.schedule(task, 600000, 3600000);
 	}
-	
+
 	private void monitorForNewUsers() {
 		new NewUserMonitor().start();
 	}
-	
+
 	private void monitorBatteryStatuses() {
 		new BatteryStatusMonitor().start();
 	}
-	
+
 	private void beginManagingDailyFlags() {
 		new DailyFlagManager().start();
 	}
-	
+
 	private void playOnlineAudio() {
 		new SpeechOrchestrationManager("Hello. The automation engine is now <prosody pitch=\"+15%\">online. </prosody>I will begin managing the apartment <prosody pitch=\"-15%\">for you.</prosody>",
-				false, false, false, null, null).start();
+				false, false, false, null, null, null).start();
 	}
-	
+
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		log.info("SYSTEM: Automation system shutting down..");

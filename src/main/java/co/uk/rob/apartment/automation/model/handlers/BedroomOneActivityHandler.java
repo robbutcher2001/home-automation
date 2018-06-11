@@ -16,7 +16,7 @@ import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 public class BedroomOneActivityHandler extends AbstractActivityHandler {
-	
+
 	private Logger log = Logger.getLogger(BedroomOneActivityHandler.class);
 	private List<ControllableDevice> devicesToControl;
 	private ControllableDevice lamp;
@@ -24,35 +24,35 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 	private Blind robWindowBlind;
 	private ReportingDevice reportingDeviceMotionSensor;
 	private ReportingDevice reportingDeviceDoorSensor;
-	
+
 	@Override
 	public void run() {
 		devicesToControl = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM);
 		lamp = devicesToControl.get(0);
 		ceilingLight = devicesToControl.get(1);
 		robWindowBlind = (Blind) devicesToControl.get(5);
-		
+
 		reportingDeviceMotionSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(0);
 		reportingDeviceDoorSensor = DeviceListManager.getReportingDeviceByLocation(Zone.ROB_ROOM).get(1);
-		
+
 		Calendar tenPM = Calendar.getInstance();
 		Calendar halfSevenAM = Calendar.getInstance();
 		Calendar now = Calendar.getInstance();
-		
+
 		tenPM.set(Calendar.HOUR_OF_DAY, 22);
 		tenPM.set(Calendar.MINUTE, 00);
-		
+
 		halfSevenAM.set(Calendar.HOUR_OF_DAY, 7);
 		halfSevenAM.set(Calendar.MINUTE, 48);
-		
+
 		String robRoomBedroomMode = HomeAutomationProperties.getProperty("RobRoomBedroomMode");
-		
+
 		if (reportingDeviceMotionSensor.isTriggered()) {
 			//door is open
 			if (reportingDeviceDoorSensor.isTriggered()) {
-				if (!CommonQueries.isBrightnessGreaterThan800() && !"88".equals(robWindowBlind.getDeviceLevel())) {
+				if (!"88".equals(robWindowBlind.getDeviceLevel())) {
 					log.info("Rob room occupied, dark enough outside and not bedtime mode, lamp off and ceiling light on");
-					
+
 					ceilingLightOnLampOff();
 				}
 			}
@@ -64,14 +64,14 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 					if ((now.after(tenPM) || now.before(halfSevenAM) || CommonQueries.isItTheWeekendOrBankHoliday())) {
 						if (!lamp.isDeviceOn() && !CommonQueries.isBrightnessBetweenXandY(500f, 1001f)) {
 							log.info("Rob room occupied during bed time mode, lamp on 20%");
-							
+
 							lamp.turnDeviceOn(false, "20");
 						}
 					}
 					else {
 						if (!ceilingLight.isDeviceOn()) {
 							log.info("Rob room occupied and not bedtime mode but door still closed, lamp off and ceiling light on");
-							
+
 							ceilingLightOnLampOff();
 						}
 					}
@@ -91,7 +91,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 				}
 				index++;
 			}
-			
+
 			if (!lamp.isDeviceOn() && lamp.isAutoOverridden() &&
 					(robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode)))) {
 				//hack to fade lamp back on
@@ -100,12 +100,12 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 			}
 		}
 	}
-	
+
 	private void ceilingLightOnLampOff() {
 		if (!ceilingLight.isDeviceOn()) {
 			ceilingLight.turnDeviceOn(false);
 		}
-		
+
 		if (lamp.isDeviceOn()) {
 			lamp.turnDeviceOff(true);
 		}

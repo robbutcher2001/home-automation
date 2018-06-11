@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 public class LiveWeatherCaller {
 
 	private static Map<String, String> weatherType;
-	
+
 	static {
 		weatherType = new HashMap<String, String>();
 		weatherType.put("NA", "not available, sorry about that. ");
@@ -34,8 +34,8 @@ public class LiveWeatherCaller {
 		weatherType.put("3", "going to be partly cloudy ");
 		weatherType.put("4", "not available, sorry about that. ");
 		weatherType.put("5", "going to be a little misty ");
-		weatherType.put("6", "going to be a foggy ");
-		weatherType.put("7", "going to be a cloudy ");
+		weatherType.put("6", "going to be foggy ");
+		weatherType.put("7", "going to be cloudy ");
 		weatherType.put("8", "going to be a little overcast ");
 		weatherType.put("9", "going to consist of some light rain ");
 		weatherType.put("10", "going to consist of some light rain ");
@@ -60,18 +60,18 @@ public class LiveWeatherCaller {
 		weatherType.put("28", "going to be a gloomy thunder shower ");
 		weatherType.put("28", "going to be horrid thunder and lightening ");
 	}
-	
+
 	public static String getCurrentWeatherInLondon() {
 		final DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'Z'");
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		final String date = sdf.format(Calendar.getInstance().getTime());
-		
+
 		String textToSpeak = "";
 		URL url;
 		try {
 			url = new URL("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/353605?res=daily&key=a4d1ac06-3f2e-490a-88b6-70acfe9e5913");
 			URLConnection conn = url.openConnection();
-			
+
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(conn.getInputStream());
@@ -93,18 +93,18 @@ public class LiveWeatherCaller {
 									Node Dm = morningNodeAttrMap.getNamedItem("Dm");
 									Node FDm = morningNodeAttrMap.getNamedItem("FDm");
 									Node PPd = morningNodeAttrMap.getNamedItem("PPd");
-									
+
 									if (w != null && w.getNodeValue() != null) {
 										textToSpeak += "<p>Today's weather is " + weatherType.get(w.getNodeValue());
 										if ("NA".equals(w.getNodeValue()) || "4".equals(w.getNodeValue())) {
 											break;
 										}
 									}
-									
+
 									if (Dm != null && Dm.getNodeValue() != null) {
 										textToSpeak += "with a high of " + Dm.getNodeValue() + " degrees Celsius ";
 									}
-									
+
 									if (FDm != null && FDm.getNodeValue() != null) {
 										textToSpeak += "and a feels-like temperature of " + FDm.getNodeValue() + ". ";
 									}
@@ -127,11 +127,11 @@ public class LiveWeatherCaller {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		if ("".equals(textToSpeak)) {
 			textToSpeak = "<p><prosody pitch=\"+40%\">Shit.</prosody> I couldn't find any weather info <prosody pitch=\"-10%\">for you. Sorry. </prosody></p>";
 		}
-		
+
 		return textToSpeak;
 	}
 }
