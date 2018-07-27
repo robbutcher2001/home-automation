@@ -49,7 +49,7 @@ public class SpeechOrchestrationManager extends Thread {
 		}
 
 		if (weather || trainTimes || news) {
-			textToSpeak += "<p>That's all from me this morning. Have <prosody pitch=\"+30%\">a nice day. </prosody></p>";
+			textToSpeak += "<p>That's all from me this morning. Have a nice day.</p>";
 		}
 
 		String fileToPlay = HomeAutomationAudioFiles.getAudioFileLocation("firstAudioFile");
