@@ -22,12 +22,12 @@ public class LoungeAlexaController {
 
 	private List<ControllableDevice> allDevicesInLoungeAndKitchen;
 
-    private ControllableDevice lampOneLounge;
-    private ControllableDevice ledRodLounge;
-    private ControllableDevice lampTwoLounge;
-    private ControllableDevice bobbyLoungeLamp;
-    private ControllableDevice kitchenLedRod;
-    private Blind loungeWindowBlind;
+  private ControllableDevice lampOneLounge;
+  private ControllableDevice ledRodLounge;
+  private ControllableDevice lampTwoLounge;
+  private ControllableDevice bobbyLoungeLamp;
+  private ControllableDevice kitchenLedRod;
+  private Blind loungeWindowBlind;
 	private Blind loungePatioBlind;
 	private ReportingDevice patioDoor;
 
@@ -138,9 +138,9 @@ public class LoungeAlexaController {
 			this.log.info("Alexa request: moving patio blind so back door can be openend");
 		}
 		else if ("blindsup".equals(action) || "blindsopen".equals(action)) {
-			if (!this.patioDoor.isTriggered()) {
-				boolean moved = false;
-				if (!CommonQueries.isBrightnessBelow20()) {
+			boolean moved = false;
+			if (!CommonQueries.isBrightnessBelow20()) {
+				if (!this.patioDoor.isTriggered()) {
 					if (!"80".equals(this.loungeWindowBlind.getDeviceLevel())) {
 						moved = this.loungeWindowBlind.turnDeviceOff(true);
 						this.loungeWindowBlind.resetAutoOverridden();
@@ -150,22 +150,25 @@ public class LoungeAlexaController {
 						moved = this.loungePatioBlind.turnDeviceOff(true);
 						this.loungePatioBlind.resetAutoOverridden();
 					}
-
-					if (moved) {
-						this.log.info("Alexa request: moving blinds up to 80% (max)");
-					}
 				}
 				else {
-					spokenResponse = "It's too dark outside to do this really.";
+					if (!"80".equals(this.loungeWindowBlind.getDeviceLevel())) {
+						moved = this.loungeWindowBlind.turnDeviceOff(true);
+						this.loungeWindowBlind.resetAutoOverridden();
+					}
+				}
+
+				if (moved) {
+					this.log.info("Alexa request: moving blinds up to 80% (max)");
 				}
 			}
 			else {
-				spokenResponse = "You'll have to close the back door first.";
+				spokenResponse = "It's too dark outside to do this really.";
 			}
 		}
 		else if ("blindshalfway".equals(action)) {
+			boolean moved = false;
 			if (!this.patioDoor.isTriggered()) {
-				boolean moved = false;
 				if (!"55".equals(this.loungeWindowBlind.getDeviceLevel())) {
 					moved = this.loungeWindowBlind.turnDeviceOn(true, "55");
 					this.loungeWindowBlind.resetAutoOverridden();
@@ -175,18 +178,21 @@ public class LoungeAlexaController {
 					moved = this.loungePatioBlind.turnDeviceOn(true, "55");
 					this.loungePatioBlind.resetAutoOverridden();
 				}
-
-				if (moved) {
-					this.log.info("Alexa request: moving blinds to 55%");
-				}
 			}
 			else {
-				spokenResponse = "You'll have to close the back door first.";
+				if (!"55".equals(this.loungeWindowBlind.getDeviceLevel())) {
+					moved = this.loungeWindowBlind.turnDeviceOn(true, "55");
+					this.loungeWindowBlind.resetAutoOverridden();
+				}
+			}
+
+			if (moved) {
+				this.log.info("Alexa request: moving blinds to 55%");
 			}
 		}
 		else if ("blindsclose".equals(action) || "blindsdown".equals(action)) {
+			boolean moved = false;
 			if (!this.patioDoor.isTriggered()) {
-				boolean moved = false;
 				if (!"0".equals(this.loungeWindowBlind.getDeviceLevel())) {
 					moved = this.loungeWindowBlind.turnDeviceOn(true, "0");
 					this.loungeWindowBlind.resetAutoOverridden();
@@ -196,13 +202,16 @@ public class LoungeAlexaController {
 					moved = this.loungePatioBlind.turnDeviceOn(true, "0");
 					this.loungePatioBlind.resetAutoOverridden();
 				}
-
-				if (moved) {
-					this.log.info("Alexa request: moving blinds to 0%");
-				}
 			}
 			else {
-				spokenResponse = "You'll have to close the back door first.";
+				if (!"0".equals(this.loungeWindowBlind.getDeviceLevel())) {
+					moved = this.loungeWindowBlind.turnDeviceOn(true, "0");
+					this.loungeWindowBlind.resetAutoOverridden();
+				}
+			}
+
+			if (moved) {
+				this.log.info("Alexa request: moving blinds to 0%");
 			}
 		}
 		else if ("bedroommodeon".equals(action)) {
@@ -235,8 +244,13 @@ public class LoungeAlexaController {
 				}
 			}
 
-			if (index > 0) {
-				spokenResponse = "I've reset " + index + " devices in the lounge and kitchen for you.";
+			final String resetSpokenResponse = "I've reset %d %s in the lounge and kitchen for you.";
+
+			if (index > 1) {
+				spokenResponse = String.format(resetSpokenResponse, index, "devices");
+			}
+			else if (index == 1) {
+				spokenResponse = String.format(resetSpokenResponse, 1, "device");
 			}
 			else {
 				spokenResponse = "There were actually no devices to reset.";
