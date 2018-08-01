@@ -65,6 +65,7 @@ public class ApplicationInitialiser implements ServletContextListener {
 				HomeAutomationProperties.setOrUpdateProperty("CameraOffAlertSent", "false");
 				HomeAutomationProperties.setOrUpdateProperty("RobWindowWarningSent", "false");
 				HomeAutomationProperties.setOrUpdateProperty("ScarlettWindowWarningSent", "false");
+				HomeAutomationProperties.setOrUpdateProperty("MorningAnnouncementsMuted", "false");
 
 				is = servlet.getServletContext().getResourceAsStream("/WEB-INF/audiofiles");
 				properties = new Properties();

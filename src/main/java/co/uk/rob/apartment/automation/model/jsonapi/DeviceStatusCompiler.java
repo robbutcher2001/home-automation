@@ -24,20 +24,20 @@ import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 public class DeviceStatusCompiler {
-	
+
 	//utilities
 	private DateFormat dateFormat = null;
 	private String user;
-	
+
 	public DeviceStatusCompiler() {
 		this.dateFormat = new SimpleDateFormat("dd/MM HH:mm");
 		this.user = "unknown";
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void getZoneStatus(Zone zone, JSONObject rootObject) {
 		JSONObject zoneStatuses = new JSONObject();
-		
+
 		//modes
 		if (Zone.LOUNGE.equals(zone)) {
 			String loungeBedroomMode = HomeAutomationProperties.getProperty("LoungeBedroomMode");
@@ -56,7 +56,7 @@ public class DeviceStatusCompiler {
 			else {
 				zoneStatuses.put("full_bedroom_mode", "disabled");
 			}
-			
+
 			zoneStatuses.put("next_lighting_state", HomeAutomationProperties.getProperty("RobRoomNextLightingState"));
 		}
 		else if (Zone.APARTMENT.equals(zone)) {
@@ -67,7 +67,7 @@ public class DeviceStatusCompiler {
 			else {
 				zoneStatuses.put("continuous_alarm_mode", "disabled");
 			}
-			
+
 			String forceDisableAlarm = HomeAutomationProperties.getProperty("ForceDisableAlarm");
 			if (forceDisableAlarm != null && "true".equals(forceDisableAlarm)) {
 				zoneStatuses.put("force_disabled", true);
@@ -75,13 +75,21 @@ public class DeviceStatusCompiler {
 			else {
 				zoneStatuses.put("force_disabled", false);
 			}
+
+			String announcementsMuted = HomeAutomationProperties.getProperty("MorningAnnouncementsMuted");
+			if (announcementsMuted != null && "true".equals(announcementsMuted)) {
+				zoneStatuses.put("announcements_muted", true);
+			}
+			else {
+				zoneStatuses.put("announcements_muted", false);
+			}
 		}
-		
+
 		//sensors and devices
 		if (!Zone.APARTMENT.equals(zone)) {
 			List<ReportingDevice> sensors = DeviceListManager.getReportingDeviceByLocation(zone);
 			List<ControllableDevice> devices = DeviceListManager.getControllableDeviceByLocation(zone);
-			
+
 			for (ReportingDevice sensor : sensors) {
 				if (sensor != null) {
 					JSONObject sensorStatuses = new JSONObject();
@@ -102,9 +110,9 @@ public class DeviceStatusCompiler {
 						sensorStatuses.put("open", sensor.isTriggered());
 						sensorStatuses.put("last_triggered", dateFormat.format(lastOccupied.getTime()));
 					}
-					
+
 					sensorStatuses.put("battery_level", Integer.toString(sensor.getBatteryLevel()));
-					
+
 					if (sensor instanceof Multisensor) {
 						zoneStatuses.put("multisensor", sensorStatuses);
 					}
@@ -122,7 +130,7 @@ public class DeviceStatusCompiler {
 					}
 				}
 			}
-			
+
 			int blindCount = 1, dehumidifierCount = 1, alarmUnitCount = 1, electricBlanket = 1;
 			for (ControllableDevice device : devices) {
 				if (device instanceof Blind) {
@@ -159,9 +167,9 @@ public class DeviceStatusCompiler {
 			else {
 				zoneStatuses.put("bedroom_to_render", user);
 			}
-			
+
 			zoneStatuses.put("unexpected_occupancy", HomeAutomationProperties.getProperty("ApartmentUnexpectedOccupancy"));
-			
+
 			//check false occupancy
 			if (CommonQueries.isApartmentAlarmEnabled()) {
 				zoneStatuses.put("alarm_system", true);
@@ -169,7 +177,7 @@ public class DeviceStatusCompiler {
 			else {
 				zoneStatuses.put("alarm_system", false);
 			}
-			
+
 			boolean isApartmentOccupied = CommonQueries.isApartmentOccupied();
 			zoneStatuses.put("occupied", isApartmentOccupied);
 			Calendar lastOccupancy = CommonQueries.getLastApartmentOccupancyTime();
@@ -180,10 +188,10 @@ public class DeviceStatusCompiler {
 				zoneStatuses.put("last_occupied", null);
 			}
 		}
-		
+
 		rootObject.put(zone.toString(), zoneStatuses);
 	}
-	
+
 	/**
      * @param failText text to display in browser, sends JSend 'fail' status
      *        http://labs.omniti.com/labs/jsend
@@ -213,7 +221,7 @@ public class DeviceStatusCompiler {
 
         return rootObject.toJSONString();
     }
-    
+
     public void setUser(String user) {
 		this.user = user;
 	}

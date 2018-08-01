@@ -40,7 +40,7 @@ $(document).ready(function(){
 	window.setInterval(function() { DeliveryHelper.getDeviceStatuses(); }, 1000);
 
 	window.setInterval(function() { DeliveryHelper.refreshCamera(); }, 2000);
-	
+
 });
 
 var lat = "";
@@ -67,7 +67,7 @@ var DeliveryHelper = {
 					else if (response.data.mso_message == null) {
 						$('.msoBar').slideUp(200);
 					}
-					
+
 					if (response.data.mso_message == 'Alarm system triggered. Click to disarm.') {
 						$('#mso').bind('click', function() {
 							DeliveryHelper.issueCommand('appDisableAlarm', '?', 'Disarmed');
@@ -192,7 +192,7 @@ var DeliveryHelper = {
 						$('#flat-unexp-ocp').html('');
 						$('#flat-unexp-ocp').hide();
 					}
-					
+
 					if (response.apartment.alarm_system == true) {
 						if (response.apartment.continuous_alarm_mode == 'enabled') {
 							$('#flat-alarm-system').html('Alarm system continuously monitoring');
@@ -219,13 +219,13 @@ var DeliveryHelper = {
 						$('#flat-last-ocp').html('Last occupancy ' + response.apartment.last_occupied);
 						$('#flat-last-ocp').show();
 						$('.statusTitle').html('Apartment | Unoccupied');
-						
+
 						$('#forceDisableAlarm').hide();
 					}
 					else {
 						$('#flat-last-ocp').hide();
 						$('.statusTitle').html('Apartment | Occupied');
-						
+
 						if (response.apartment.force_disabled == true) {
 							$('#forceDisableAlarm').html('Resume normal alarm operation');
 							$('#forceDisableAlarm').removeClass('error');
@@ -276,7 +276,7 @@ var DeliveryHelper = {
 							$('.top-title').html($('.top-title').html() + ' | Blinds open ' + response.lounge.blind1.percent_open + '%');
 						}
 					}
-					
+
 					$('.top-title').html($('.top-title').html() + ' | ' + response.lounge.multisensor.temperature + '&deg;C');
 
 					$('#flat-door-last-ocp').html('Front door last opened ' + response.hallway.door_sensor.last_triggered);
@@ -302,6 +302,15 @@ var DeliveryHelper = {
 					$('#patio-humidity').html('Outside humidity is ' + response.patio.multisensor.humidity + '%');
 					$('#patio-temp').html('Outside temperature is ' + response.patio.multisensor.temperature + '&deg;C');
 
+					if (response.apartment.announcements_muted == true) {
+						$('#lounge-announcements-muted').html('Morning announcements are muted');
+						$('#lounge-announcements-muted').show();
+					}
+					else {
+						$('#lounge-announcements-muted').html('');
+						$('#lounge-announcements-muted').hide();
+					}
+
 					$('#lounge-last-ocp').html('Lounge last occupied ' + response.lounge.multisensor.last_occupied);
 					$('#lounge-lux').html('Lounge brightness is ' + response.lounge.multisensor.luminiscence);
 					$('#lounge-humidity').html('Lounge humidity is ' + response.lounge.multisensor.humidity + '%');
@@ -314,7 +323,7 @@ var DeliveryHelper = {
 						$('#rob-bed-warming').html('');
 						$('#rob-bed-warming').hide();
 					}
-					
+
 					$('#rob-last-ocp').html('Room last occupied ' + response.rob_room.multisensor.last_occupied);
 
 					if (response.rob_room.door_sensor.open == true) {
@@ -323,21 +332,21 @@ var DeliveryHelper = {
 					else {
 						$('#rob-door-last-ocp').html('Room door closed at ' + response.rob_room.door_sensor.last_triggered);
 					}
-					
+
 					if (response.rob_room.window_sensor.open == true) {
 						$('#rob-window-last-ocp').html('Room window opened at ' + response.rob_room.window_sensor.last_triggered);
 					}
 					else {
 						$('#rob-window-last-ocp').html('Room window closed at ' + response.rob_room.window_sensor.last_triggered);
 					}
-					
+
 					if (response.scarlett_room.window_sensor.open == true) {
 						$('#scat-window-last-ocp').html('Scat window opened at ' + response.scarlett_room.window_sensor.last_triggered);
 					}
 					else {
 						$('#scat-window-last-ocp').html('Scat window closed at ' + response.scarlett_room.window_sensor.last_triggered);
 					}
-					
+
 					$('#bathroom-lux').html('Bathroom brightness is ' + response.bathroom.multisensor.luminiscence);
 					$('#bathroom-humidity').html('Bathroom humidity is ' + response.bathroom.multisensor.humidity + '%');
 					$('#bathroom-temp').html('Bathroom temperature is ' + response.bathroom.multisensor.temperature + '&deg;C');
@@ -349,14 +358,14 @@ var DeliveryHelper = {
 						else {
 							$('.rob-room-title').html($('.rob-room-title').html() + ' | Unoccupied');
 						}
-						
+
 						if (response.rob_room.blind1.percent_open == '0') {
 							$('.rob-room-title').html($('.rob-room-title').html() + ' | Blinds closed');
 						}
 						else {
 							$('.rob-room-title').html($('.rob-room-title').html() + ' | Blinds open ' + response.rob_room.blind1.percent_open + '%');
 						}
-						
+
 						$('.rob-room-title').html($('.rob-room-title').html() + ' | ' + response.rob_room.multisensor.temperature + '&deg;C');
 					}
 
@@ -368,7 +377,7 @@ var DeliveryHelper = {
 					else {
 						$('#rob-humidity').html('Room humidity is ' + response.rob_room.multisensor.humidity + '%');
 					}
-					
+
 					if (response.rob_room.next_lighting_state == 'soft') {
 						$('#lightToggleRobRoom').html('Lights on Soft');
 					}
@@ -378,7 +387,7 @@ var DeliveryHelper = {
 					else if (response.rob_room.next_lighting_state == 'full') {
 						$('#lightToggleRobRoom').html('Lights on Full');
 					}
-					
+
 					$('#toggleBlanket').html(response.rob_room.electric_blanket1.next_state);
 
 					if (response.rob_room.blind1.tilted == false) {
@@ -387,7 +396,7 @@ var DeliveryHelper = {
 					else {
 						$('#blindTiltToggleRobRoom').html('Tilt blinds back up');
 					}
-					
+
 					if (response.lounge.blind1.tilted == false) {
 						$('#blindTiltToggleLounge').html('Tilt blinds');
 					}
@@ -505,7 +514,7 @@ var Utilities = {
 					$('.top-title').addClass('error-text');
 					$('.rob-room-title').addClass('error-text');
 					$('.statusTitle').addClass('error-text');
-					
+
 					DeliveryHelper.checkMSO();
 				}
 			}

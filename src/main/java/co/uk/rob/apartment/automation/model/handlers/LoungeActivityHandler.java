@@ -29,7 +29,7 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 	private static final Random random;
 
 	private static final String[] aliceNames =
-		{"Alice", "Bum", "Slawice", "Ali-bum-bum", "Ali", "Slice", "Slices", "Queso", "Suplemento de Queso"};
+		{"Alice", "Bum", "Slawice", "Ali-bum-bum", "Ali", "Slice", "Slices", "Queso", "Suplemento de Queso", "Bun", "Hot Cross Bun", "Bun bo's"};
 
 	static {
 		random = new Random();
@@ -124,31 +124,34 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						runBlindControl();
 					}
 
-					String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
-					if (played != null && "false".equals(played) && now.before(eightAM)) {
-						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
+					String announcementsMuted = HomeAutomationProperties.getProperty("MorningAnnouncementsMuted");
+					if (announcementsMuted == null || "false".equals(announcementsMuted)) {
+						String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
+						if (played != null && "false".equals(played) && now.before(eightAM)) {
+							HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
 
-						int nameToUse = random.nextInt(aliceNames.length);
-						String sliceWelcomeText = "Good morning <prosody pitch=\"-25%\">" + aliceNames[nameToUse] + ". </prosody>";
-						if (openBlinds) {
-							sliceWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
+							int nameToUse = random.nextInt(aliceNames.length);
+							String sliceWelcomeText = "Good morning <prosody pitch=\"-25%\">" + aliceNames[nameToUse] + ". </prosody>";
+							if (openBlinds) {
+								sliceWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
+							}
+
+							log.info("Saying good morning to Slice, opening blinds, relaying current weather information, latest train information and BBC News headlines");
+							new SpeechOrchestrationManager(sliceWelcomeText, true, true, true, "0805", "NWD/LBG", "London Bridge").start();
 						}
 
-						log.info("Saying good morning to Slice, opening blinds, relaying current weather information, latest train information and BBC News headlines");
-						new SpeechOrchestrationManager(sliceWelcomeText, true, true, true, "0805", "NWD/LBG", "London Bridge").start();
-					}
+						played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
+						if (played != null && "false".equals(played) && now.after(eightAM)) {
+							HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
 
-					played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
-					if (played != null && "false".equals(played) && now.after(eightAM)) {
-						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
+							String robWelcomeText = "Good morning <prosody pitch=\"+25%\">Robert. </prosody>";
+							if (openBlinds) {
+								robWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
+							}
 
-						String robWelcomeText = "Good morning <prosody pitch=\"+25%\">Robert. </prosody>";
-						if (openBlinds) {
-							robWelcomeText += "I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you. ";
+							log.info("Saying good morning to Rob, opening blinds, relaying current weather information, latest train information and BBC News headlines");
+							new SpeechOrchestrationManager(robWelcomeText, true, true, true, "0835", "NWD/LBG", "London Bridge").start();
 						}
-
-						log.info("Saying good morning to Rob, opening blinds, relaying current weather information, latest train information and BBC News headlines");
-						new SpeechOrchestrationManager(robWelcomeText, true, true, true, "0835", "NWD/LBG", "London Bridge").start();
 					}
 				}
 
@@ -158,28 +161,31 @@ public class LoungeActivityHandler extends AbstractActivityHandler {
 						runBlindControl();
 					}
 
-					String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
-					played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
+					String announcementsMuted = HomeAutomationProperties.getProperty("MorningAnnouncementsMuted");
+					if (announcementsMuted == null || "false".equals(announcementsMuted)) {
+						String played = HomeAutomationProperties.getProperty("LoungeWelcomedSlice");
+						played = HomeAutomationProperties.getProperty("LoungeWelcomedRob");
 
-					if (played != null && "false".equals(played)) {
-						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
-						HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
+						if (played != null && "false".equals(played)) {
+							HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedSlice", "true");
+							HomeAutomationProperties.setOrUpdateProperty("LoungeWelcomedRob", "true");
 
-						String welcomeText = "Thank <prosody pitch=\"+40%\" volume=\"+10dB\">fuck</prosody> it's the weekend. ";
+							String welcomeText = "Thank <prosody pitch=\"+40%\" volume=\"+10dB\">fuck</prosody> it's the weekend. ";
 
-						if (now.after(elevenAM)) {
-							welcomeText += "Although getting up after 11 is taking the piss a bit. LOL.";
+							if (now.after(elevenAM)) {
+								welcomeText += "Although getting up after 11 is taking the piss a bit. LOL.";
+							}
+							else {
+								welcomeText += "<break time=\"1s\"/> Sick. ";
+							}
+
+							if (openBlinds) {
+								welcomeText += "Anyway, I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you both. ";
+							}
+
+							log.info("Saying generic good morning to Slib and opening blinds");
+							new SpeechOrchestrationManager(welcomeText, true, false, true, null, null, null).start();
 						}
-						else {
-							welcomeText += "<break time=\"1s\"/> Sick. ";
-						}
-
-						if (openBlinds) {
-							welcomeText += "Anyway, I've opened the blinds a <prosody pitch=\"-15%\">little for </prosody>you both. ";
-						}
-
-						log.info("Saying generic good morning to Slib and opening blinds");
-						new SpeechOrchestrationManager(welcomeText, true, false, true, null, null, null).start();
 					}
 				}
 

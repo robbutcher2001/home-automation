@@ -190,6 +190,44 @@ public class LoungeAlexaController {
 				this.log.info("Alexa request: moving blinds to 55%");
 			}
 		}
+		else if ("blindstilt".equals(action)) {
+			if (!CommonQueries.isBrightnessBelow20()) {
+				boolean tilted = false;
+				if (!this.patioDoor.isTriggered()) {
+					tilted = loungeWindowBlind.tiltBlindOpen();
+					tilted = loungePatioBlind.tiltBlindOpen();
+				}
+				else {
+					tilted = loungeWindowBlind.tiltBlindOpen();
+				}
+
+				if (tilted) {
+					this.log.info("Alexa request: tilted blinds in lounge");
+				}
+			}
+			else {
+				spokenResponse = "It's too dark outside to tilt those bad boys, sorry.";
+			}
+		}
+		else if ("blindsuntilt".equals(action)) {
+			if (!CommonQueries.isBrightnessBelow20()) {
+				boolean untilted = false;
+				if (!this.patioDoor.isTriggered()) {
+					untilted = loungeWindowBlind.tiltBlindClosed();
+					untilted = loungePatioBlind.tiltBlindClosed();
+				}
+				else {
+					untilted = loungeWindowBlind.tiltBlindClosed();
+				}
+
+				if (untilted) {
+					this.log.info("Alexa request: untilted blinds in lounge");
+				}
+			}
+			else {
+				spokenResponse = "It's too dark outside to untilt those bad boys, sorry.";
+			}
+		}
 		else if ("blindsclose".equals(action) || "blindsdown".equals(action)) {
 			boolean moved = false;
 			if (!this.patioDoor.isTriggered()) {
@@ -234,6 +272,16 @@ public class LoungeAlexaController {
 
 			spokenResponse = "Outside brightness is about " + currentBrightness + " lux.";
 			this.log.info("Alexa request: current outside brightness");
+		}
+		else if ("announcementsoff".equals(action) || "announcementsmute".equals(action)) {
+			HomeAutomationProperties.setOrUpdateProperty("MorningAnnouncementsMuted", "true");
+			spokenResponse = "The morning announcements have now been muted, please use Alexa to unmute them again.";
+			this.log.info("Request for morning announcements to be muted [alexa]");
+		}
+		else if ("announcementson".equals(action) || "announcementsunmute".equals(action)) {
+			HomeAutomationProperties.setOrUpdateProperty("MorningAnnouncementsMuted", "false");
+			spokenResponse = "The morning announcements have now been unmuted. You can mute them again in the future with Alexa.";
+			this.log.info("Request for morning announcements to be unmuted [alexa]");
 		}
 		else if ("reset".equals(action)) {
 			int index = 0;
