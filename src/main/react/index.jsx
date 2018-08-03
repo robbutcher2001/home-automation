@@ -1,10 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const Title = () => {
-  return (
-    <h1>Hello</h1>
-  );
-}
+import Homepage from './app/homepage';
 
-ReactDOM.render(<Title />, document.getElementById('mnt'));
+ReactDOM.render(<Homepage />, document.getElementById('mnt'));
