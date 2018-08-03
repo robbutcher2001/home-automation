@@ -1,4 +1,5 @@
 const random = require('../util/random');
+const jsend = require('../util/jsend');
 
 const lounge = () => {
   const humidity = random(100);
@@ -7,7 +8,7 @@ const lounge = () => {
   const temp = random(40);
   const percentOpen = random(80);
 
-  return {
+  return jsend('lounge', {
     "bedroom_mode": "disabled",
     "multisensor": {
       "occupied": false,
@@ -25,7 +26,7 @@ const lounge = () => {
       "tilted": true,
       "percent_open": percentOpen
     }
-  }
+  })
 };
 
 module.exports = lounge;
