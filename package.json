@@ -1,0 +1,12 @@
+{
+  "name": "home-automation-frontend",
+  "version": "0.1.0",
+  "description": "Frontend for Home Automation",
+  "author": "Rob Butcher",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+
+  }
+}
