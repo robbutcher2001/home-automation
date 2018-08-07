@@ -37,7 +37,8 @@ const baseConfig = {
     })
   ],
   devServer: {
-    historyApiFallback: true
+    historyApiFallback: true,
+    // contentBase: path.resolve(__dirname, '../src/main/react')
   }
 };
 
