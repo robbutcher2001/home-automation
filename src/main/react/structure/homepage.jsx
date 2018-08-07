@@ -6,7 +6,7 @@ import RoomStatus from '../components/roomStatus';
 
 const Homepage = () => {
   return (
-    <div id="main">
+    <div id="wrapper">
       <Title text="Rob's Apartment" />
       <Button buttonText="Get lounge data" />
       <RoomStatus title="Lounge Info"/>

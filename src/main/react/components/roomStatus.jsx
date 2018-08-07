@@ -12,7 +12,7 @@ class RoomStatus extends Component {
     }
 
     return (
-      <div>
+      <div id="main">
         <h3>{this.props.title}</h3>
         <p>Last occupied: {statuses.multisensor.last_occupied}</p>
         <p>Temperature: {statuses.multisensor.temperature}</p>
