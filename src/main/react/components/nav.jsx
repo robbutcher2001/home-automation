@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Nav = () => {
   return (
     <nav id="nav">
-      <a href="#" className="icon fa-home active"><span>Home</span></a>
-      <a href="#work" className="icon fa-folder"><span>Work</span></a>
-      <a href="#contact" className="icon fa-envelope"><span>Contact</span></a>
-      <a href="#more" className="icon fa-pencil"><span>Twitter</span></a>
+      <Link to="/" className="icon fa-home active"><span>Home</span></Link>
+      <Link to="/lounge" className="icon fa-folder"><span>Work</span></Link>
+      <Link to="/bedrooms" className="icon fa-envelope"><span>Contact</span></Link>
+      <Link to="/other" className="icon fa-pencil"><span>Twitter</span></Link>
     </nav>
   );
 }
