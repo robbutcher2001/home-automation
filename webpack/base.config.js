@@ -4,6 +4,7 @@ const htmlWebpack = require('html-webpack-plugin');
 
 const baseConfig = {
   entry: [
+    'babel-polyfill',
     './src/main/react/index.jsx'
   ],
   output: {
