@@ -6,7 +6,7 @@ import createSagaMiddleware from 'redux-saga'
 import ReduxPromise from 'redux-promise';
 
 import reducers from './redux/reducers';
-import sagas from './redux/sagas'
+import loungeStatusSaga from './redux/sagas/loungeStatus'
 
 import App from './structure/app';
 
@@ -17,7 +17,7 @@ const store = createStore(
   applyMiddleware(ReduxPromise, sagaMiddleware)
 );
 
-sagaMiddleware.run(sagas);
+sagaMiddleware.run(loungeStatusSaga);
 
 ReactDOM.render(
   <Provider store={store}>
@@ -25,5 +25,5 @@ ReactDOM.render(
   </Provider>
   , document.getElementById('mnt'));
 
-const pollStartAction = () => ({ type: 'POLL_START' });
-// store.dispatch(pollStartAction());
+// const pollStartAction = () => ({ type: 'POLL_START' });
+// store.dispatch({ type: 'POLL_START' });

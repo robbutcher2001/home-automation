@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
-import { doGet } from '../actions/loungeAction';
+import { LOUNGE_STATUS_REQUEST } from '../globals';
 
 class Button extends Component {
   constructor(props) {
@@ -12,7 +11,7 @@ class Button extends Component {
   render() {
     return (
       <div>
-        <button onClick={event => this.props.fetchLoungeStatus()}>
+        <button onClick={event => this.props.getLoungeStatus()}>
           {this.props.buttonText}
         </button>
       </div>
@@ -20,8 +19,11 @@ class Button extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchLoungeStatus: doGet }, dispatch);
-}
+const mapDispatchToProps = dispatch => {
+  return {
+    getLoungeStatus: () => dispatch({ type: LOUNGE_STATUS_REQUEST })
+  };
+};
+
 
 export default connect(null, mapDispatchToProps)(Button);
