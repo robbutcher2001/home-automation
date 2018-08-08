@@ -4,8 +4,9 @@
   "description": "Frontend for Home Automation",
   "author": "Rob Butcher",
   "scripts": {
+    "mock-server": "node mock-server/server.js",
     "dev": "NODE_ENV=development webpack-dev-server --config webpack/base.config.js",
-    "mock-server": "node mock-server/server.js"
+    "build": "NODE_ENV=production webpack --config webpack/base.config.js"
   },
   "dependencies": {
     "react": "^16.4.2",
