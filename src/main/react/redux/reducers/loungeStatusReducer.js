@@ -13,8 +13,8 @@ export default function(state = {}, action) {
         ...action.payload.lounge
       };
     case LOUNGE_STATUS_FAILURE:
-      console.log(`Argh, error - server said: ${action.payload.status}`);
-      return state;
+      console.log(`Argh, error - server said: ${action.payload}`);
+      return action.payload;
     default:
       return state;
   }

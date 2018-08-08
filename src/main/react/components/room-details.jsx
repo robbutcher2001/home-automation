@@ -1,9 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { LOUNGE_STATUS_POLL_START, LOUNGE_STATUS_POLL_STOP } from '../globals';
+
 import Button from '../components/button';
 
 class RoomStatus extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    this.props.startLoungeStatusPolling();
+  }
+
+  componentWillUnmount() {
+    this.props.stopLoungeStatusPolling();
+  }
+
   render() {
     const statuses = this.props.lounge;
 
@@ -46,4 +60,11 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(RoomStatus);
+const mapDispatchToProps = dispatch => {
+  return {
+    startLoungeStatusPolling: () => dispatch({ type: LOUNGE_STATUS_POLL_START }),
+    stopLoungeStatusPolling: () => dispatch({ type: LOUNGE_STATUS_POLL_STOP })
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RoomStatus);
