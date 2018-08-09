@@ -6,10 +6,10 @@ import Footer from '../components/footer';
 
 const LandingPage = () => {
   return (
-    <div id="wrapper">
+    <div id='wrapper'>
       <Nav />
-      <div id="main">
-        <RoomDetails title="Lounge"/>
+      <div id='main'>
+        <RoomDetails title='Lounge'/>
       </div>
       <Footer />
     </div>

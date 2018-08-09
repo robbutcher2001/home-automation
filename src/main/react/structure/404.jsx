@@ -5,9 +5,9 @@ import Footer from '../components/footer';
 
 const NoMatch = () => {
   return (
-    <div id="wrapper">
+    <div id='wrapper'>
       <Nav />
-      <div id="main">
+      <div id='main'>
         <h1>Page doesn't exist yet!</h1>
       </div>
       <Footer />

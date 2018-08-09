@@ -23,15 +23,15 @@ class RoomStatus extends Component {
 
     if (!Object.keys(statuses).length) {
       return (
-        <article id="work" className="panel">
+        <article id='work' className='panel'>
           <p>No data yet</p>
-          <Button buttonText="Get lounge data" />
+          <Button buttonText='Get lounge data' />
         </article>
       )
     }
 
     return (
-      <article id="work" className="panel">
+      <article id='work' className='panel'>
         <header>
           <h2>{this.props.title}</h2>
           <p>A sub title</p>
@@ -41,7 +41,7 @@ class RoomStatus extends Component {
           Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
           luctus elit eget interdum.
         </p>
-        <Button buttonText="Refresh lounge data" />
+        <Button buttonText='Refresh lounge data' />
         <p>Last occupied: {statuses.multisensor.last_occupied}</p>
         <p>Temperature: {statuses.multisensor.temperature}</p>
         <p>Brightness: {statuses.multisensor.luminiscence}</p>
