@@ -15,7 +15,8 @@ export default function* watcherSaga() {
 }
 
 // worker saga: makes the api call when watcher saga sees the action
-function* workerSaga() {
+function* workerSaga({ payload }) {
+  console.log(payload.hello);
   try {
     const response = yield call(() => fetch(LOUNGE_URL).then(data => data.json()));
     // dispatch a success action to the store with the new dog

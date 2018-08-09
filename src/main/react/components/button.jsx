@@ -20,8 +20,11 @@ class Button extends Component {
 }
 
 const mapDispatchToProps = dispatch => {
+  let payload = {
+    hello: 'rob'
+  };
   return {
-    getLoungeStatus: () => dispatch({ type: LOUNGE_STATUS_REQUEST })
+    getLoungeStatus: () => dispatch({ type: LOUNGE_STATUS_REQUEST, payload })
   };
 };
 

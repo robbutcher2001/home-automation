@@ -8,6 +8,7 @@ import ReduxPromise from 'redux-promise';
 import reducers from './redux/reducers';
 import loungeStatusSaga from './redux/sagas/loungeStatus';
 import loungeStatusPollerSaga from './redux/sagas/loungeStatusPoller';
+import determineUserGeolocationSaga from './redux/sagas/determineUserGeolocation';
 
 import App from './structure/app';
 
@@ -17,7 +18,7 @@ const store = createStore(
   applyMiddleware(ReduxPromise, sagaMiddleware)
 );
 
-sagaMiddleware.run(loungeStatusPollerSaga);
+sagaMiddleware.run(determineUserGeolocationSaga);
 
 ReactDOM.render(
   <Provider store={store}>
