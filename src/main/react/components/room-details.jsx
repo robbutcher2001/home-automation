@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 
 import { LOUNGE_STATUS_POLL_START, LOUNGE_STATUS_POLL_STOP } from '../globals';
 
+import { Zones } from '../globals';
+console.log(Zones.LOUNGE);
+
 import Button from '../components/button';
+import ButtonNotification from '../components/buttonNotification';
 
 class RoomStatus extends Component {
   constructor(props) {
@@ -42,6 +46,7 @@ class RoomStatus extends Component {
           luctus elit eget interdum.
         </p>
         <Button buttonText='Refresh lounge data' />
+        <ButtonNotification buttonText='Create temp notification' />
         <p>Last occupied: {statuses.multisensor.last_occupied}</p>
         <p>Temperature: {statuses.multisensor.temperature}</p>
         <p>Brightness: {statuses.multisensor.luminiscence}</p>
