@@ -2,18 +2,20 @@ import { NOTIFICATION_REQUEST_SHOW, NOTIFICATION_REQUEST_HIDE } from '../../glob
 
 export default function(state = {
   text: null,
-  show: false
+  type: '',
+  show: false,
+  persist: false
 }, action) {
   switch (action.type) {
     case NOTIFICATION_REQUEST_SHOW:
-      console.log(`Showing notification bar: ${JSON.stringify(action)}`);
       return {
-        ...action.payload.notificationBar
+        ...action.payload
       };
     case NOTIFICATION_REQUEST_HIDE:
-      console.log(`Hiding notification bar: ${JSON.stringify(action)}`);
       return {
-        ...action.payload.notificationBar
+        text: state.text,
+        type: state.type,
+        show: false
       };
     default:
       return state;

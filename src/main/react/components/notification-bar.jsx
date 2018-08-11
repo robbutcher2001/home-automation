@@ -14,10 +14,8 @@ class NotificationBar extends Component {
     return (
       <label htmlFor='notify'>
         <input id='notify' type='checkbox' readOnly checked={!notificationBar.show} />
-        <div id='notification-bar'>
-          <div className={`container ${getHide(notificationBar)}`}>
-            <i className='fa fa-times-circle'></i>
-            <i className='fa fa-exclamation'></i>
+        <div id='notification-bar' className={notificationBar.type}>
+          <div className={`container ${notificationBar.type} ${getHide(notificationBar)}`}>
             <p>{notificationBar.text}</p>
           </div>
         </div>

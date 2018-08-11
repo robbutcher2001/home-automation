@@ -4,6 +4,8 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import { DETERMINE_USER_LOCATION } from '../globals';
 
+import { getShowSuccessNotificationAction } from '../globals/utils';
+
 import NotificationBar from '../components/notification-bar';
 import LandingPage from './landing-page';
 import NoMatch from './404';
@@ -14,6 +16,10 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.props.notifyUserGeolocation({
+      text: 'Determining your location..',
+      persist: true
+    });
     this.props.determineUserGeolocation();
   }
 
@@ -34,6 +40,7 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
+    notifyUserGeolocation: payload => dispatch(getShowSuccessNotificationAction(payload)),
     determineUserGeolocation: () => dispatch({ type: DETERMINE_USER_LOCATION })
   };
 };

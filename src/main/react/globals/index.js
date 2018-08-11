@@ -1,3 +1,5 @@
+export const utils = require('./utils');
+
 export const LOUNGE_STATUS_REQUEST = 'LOUNGE_STATUS_REQUEST';
 export const LOUNGE_STATUS_POLL_START = 'LOUNGE_STATUS_POLL_START';
 export const LOUNGE_STATUS_POLL_STOP = 'LOUNGE_STATUS_POLL_STOP';
@@ -11,8 +13,14 @@ export const DETERMINE_USER_LOCATION_FAILURE = 'DETERMINE_USER_LOCATION_FAILURE'
 export const NOTIFICATION_REQUEST = 'NOTIFICATION_REQUEST';
 export const NOTIFICATION_REQUEST_SHOW = 'NOTIFICATION_REQUEST_SHOW';
 export const NOTIFICATION_REQUEST_HIDE = 'NOTIFICATION_REQUEST_HIDE';
+export const NOTIFICATION_BAR_DISPLAY_TIME = '3000';
 
 export const Zones = Object.freeze({
   LOUNGE: 'lounge',
   ROBS_ROOM: 'robs_room'
+});
+
+export const NotificationType = Object.freeze({
+  WARNING: 'warning',
+  SUCCESS: 'success'
 });

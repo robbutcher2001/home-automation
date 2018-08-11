@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { NOTIFICATION_REQUEST } from '../globals';
+import { getShowSuccessNotificationAction } from '../globals/utils';
 
 class Button extends Component {
   constructor(props) {
@@ -11,7 +11,7 @@ class Button extends Component {
   render() {
     return (
       <div>
-        <button onClick={event => this.props.doNotification()}>
+        <button onClick={event => this.props.doNotification({ text: 'This is a test notification' })}>
           {this.props.buttonText}
         </button>
       </div>
@@ -21,7 +21,7 @@ class Button extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    doNotification: () => dispatch({ type: NOTIFICATION_REQUEST })
+    doNotification: payload => dispatch(getShowSuccessNotificationAction(payload))
   };
 };
 

@@ -1,10 +1,5 @@
 import { LOUNGE_STATUS_SUCCESS, LOUNGE_STATUS_FAILURE } from '../../globals';
 
-// const initialState = {
-//   lounge: {},
-//   error: null
-// };
-
 export default function(state = {}, action) {
   switch (action.type) {
     case LOUNGE_STATUS_SUCCESS:

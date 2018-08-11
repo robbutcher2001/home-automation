@@ -3,8 +3,11 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import {
   DETERMINE_USER_LOCATION,
   DETERMINE_USER_LOCATION_SUCCESS,
-  DETERMINE_USER_LOCATION_FAILURE
+  DETERMINE_USER_LOCATION_FAILURE,
+  NotificationType
 } from '../../globals';
+
+import { getShowErrorNotificationAction, getHideNotificationAction } from '../../globals/utils';
 
 const getDataSuccessAction = payload => ({ type: DETERMINE_USER_LOCATION_SUCCESS, payload });
 const getDataFailureAction = payload => ({ type: DETERMINE_USER_LOCATION_FAILURE, payload });
@@ -21,21 +24,21 @@ function* workerSaga() {
       longitude: response.coords.longitude
     };
     yield put(getDataSuccessAction(location));
-
+    yield put(getHideNotificationAction());
   } catch (error) {
-    yield put(getDataFailureAction(error));
+    yield put(getShowErrorNotificationAction({ text: error, persist: true }));
   }
 }
 
 const getGeolocation = () =>
   new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      reject(`Your browser doesn't support geolocation, app must exit`);
+      reject(`Geolocation isn't supported. App cannot run.`);
       return;
     };
 
     const locationObtained = location => resolve(location);
-    const locationNotObtained = () => reject('Cannot get geolocation, app must exit');
+    const locationNotObtained = () => reject('Cannot get geolocation. App will not run.');
     const geoOptions = {
       enableHighAccuracy: true,
       timeout: 60000,

@@ -4,31 +4,22 @@ import { delay } from 'redux-saga';
 import {
   NOTIFICATION_REQUEST,
   NOTIFICATION_REQUEST_SHOW,
-  NOTIFICATION_REQUEST_HIDE
+  NOTIFICATION_BAR_DISPLAY_TIME
 } from '../../globals';
 
-const getShowAction = payload => ({ type: NOTIFICATION_REQUEST_SHOW, payload });
-const getHideAction = payload => ({ type: NOTIFICATION_REQUEST_HIDE, payload });
+import { getHideNotificationAction } from '../../globals/utils';
+
+const getShowNotificationAction = payload => ({ type: NOTIFICATION_REQUEST_SHOW, payload });
 
 export default function* watcherSaga() {
   yield takeLatest(NOTIFICATION_REQUEST, workerSaga);
 }
 
-function* workerSaga() {
-  const payload = {
-    notificationBar: {
-      text: 'Hello, there.',
-      show: true
-    }
-  };
-  yield put(getShowAction(payload));
-  yield call(delay, 2000);
+function* workerSaga({ payload }) {
+  yield put(getShowNotificationAction(payload));
 
-  const resetPayload = {
-    notificationBar: {
-      text: 'Hello, there.',
-      show: false
-    }
-  };
-  yield put(getHideAction(resetPayload));
+  if (!payload.persist) {
+    yield call(delay, NOTIFICATION_BAR_DISPLAY_TIME);
+    yield put(getHideNotificationAction());
+  }
 }

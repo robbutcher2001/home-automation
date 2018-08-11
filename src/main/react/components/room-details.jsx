@@ -30,6 +30,7 @@ class RoomStatus extends Component {
         <article id='work' className='panel'>
           <p>No data yet</p>
           <Button buttonText='Get lounge data' />
+          <ButtonNotification buttonText='Create temp notification' />
         </article>
       )
     }
