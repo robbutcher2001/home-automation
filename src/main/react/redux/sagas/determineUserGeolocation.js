@@ -3,14 +3,12 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import {
   DETERMINE_USER_LOCATION,
   DETERMINE_USER_LOCATION_SUCCESS,
-  DETERMINE_USER_LOCATION_FAILURE,
   NotificationType
 } from '../../globals';
 
 import { getShowErrorNotificationAction, getHideNotificationAction } from '../../globals/utils';
 
 const getDataSuccessAction = payload => ({ type: DETERMINE_USER_LOCATION_SUCCESS, payload });
-const getDataFailureAction = payload => ({ type: DETERMINE_USER_LOCATION_FAILURE, payload });
 
 export default function* watcherSaga() {
   yield takeLatest(DETERMINE_USER_LOCATION, workerSaga);
