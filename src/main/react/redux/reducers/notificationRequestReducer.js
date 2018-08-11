@@ -1,6 +1,9 @@
 import { NOTIFICATION_REQUEST_SHOW, NOTIFICATION_REQUEST_HIDE } from '../../globals';
 
-export default function(state = {}, action) {
+export default function(state = {
+  text: null,
+  show: false
+}, action) {
   switch (action.type) {
     case NOTIFICATION_REQUEST_SHOW:
       console.log(`Showing notification bar: ${JSON.stringify(action)}`);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import AnimationControl from './animation-control';
+const getHide = notificationBar => notificationBar.text === null ? 'hide' : '';
 
 class NotificationBar extends Component {
   constructor(props) {
@@ -11,16 +11,11 @@ class NotificationBar extends Component {
   render() {
     const notificationBar = this.props.notificationBar;
 
-    console.log(notificationBar.text);
-    if (!notificationBar.text) {
-      return (<div />);
-    }
-
     return (
       <label htmlFor='notify'>
-        <input id='notify' type='checkbox' checked={!notificationBar.text} />
+        <input id='notify' type='checkbox' readOnly checked={!notificationBar.show} />
         <div id='notification-bar'>
-          <div className='container'>
+          <div className={`container ${getHide(notificationBar)}`}>
             <i className='fa fa-times-circle'></i>
             <i className='fa fa-exclamation'></i>
             <p>{notificationBar.text}</p>

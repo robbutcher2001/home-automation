@@ -36,6 +36,7 @@ function* pollingWorkerSaga(action) {
       yield call(delay, 2000);
     } catch (err) {
       yield put(getDataFailureAction(err));
+      yield call(delay, 2000);
     }
   }
 }

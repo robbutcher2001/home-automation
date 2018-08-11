@@ -25,7 +25,10 @@ function* workerSaga() {
   yield call(delay, 2000);
 
   const resetPayload = {
-    notificationBar: {}
+    notificationBar: {
+      text: 'Hello, there.',
+      show: false
+    }
   };
   yield put(getHideAction(resetPayload));
 }

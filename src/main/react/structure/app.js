@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import { DETERMINE_USER_LOCATION } from '../globals';
 
+import NotificationBar from '../components/notification-bar';
 import LandingPage from './landing-page';
 import NoMatch from './404';
 
@@ -18,12 +19,15 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
-        <Switch>
-          <Route exact path='/' component={LandingPage} />
-          <Route component={NoMatch} />
-        </Switch>
-      </BrowserRouter>
+      <div>
+        <NotificationBar />
+        <BrowserRouter>
+          <Switch>
+            <Route exact path='/' component={LandingPage} />
+            <Route component={NoMatch} />
+          </Switch>
+        </BrowserRouter>
+      </div>
     );
   }
 }
