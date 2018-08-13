@@ -3,7 +3,7 @@ import { push } from 'react-router-redux';
 
 import {
   VERIFY_ONLINE_REQUEST,
-  START_INITIAL_STATUS_POLLER_REQUEST
+  START_INITIAL_STATUS_POLLER_REQUEST //not used yet
 } from '../../globals';
 
 import { getShowSuccessNotificationAction, getShowErrorNotificationAction } from '../../globals/utils';
@@ -23,7 +23,7 @@ function* workerSaga({ payload }) {
     }));
 
     const FULL_URL = `${VERIFY_ONLINE_URL}?lat=${payload.latitude}&lng=${payload.longitude}`;
-    const response = yield call(() => fetch(FULL_URL, {credentials: 'include'}));
+    const response = yield call(() => fetch(FULL_URL, { credentials: 'include' }));
 
     if (response.status === 200) {
       yield put(getStartInitialStatusPollerAction(payload));
@@ -43,6 +43,6 @@ function* workerSaga({ payload }) {
       throw 'Cannot reach apartment, check your connection'
     }
   } catch (error) {
-    yield put(getShowErrorNotificationAction({ text: error, persist: true }));
+    yield put(getShowErrorNotificationAction({ text: error.message, persist: true }));
   }
 }

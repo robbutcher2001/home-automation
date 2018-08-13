@@ -8,13 +8,13 @@ const bathroom = () => {
   const temp = random(40);
 
   return jsend('bathroom', {
-    "multisensor": {
-      "occupied": false,
-      "humidity": humidity,
-      "battery_level": batteryLevel,
-      "last_occupied": "03\/08 23:13",
-      "luminiscence": lux,
-      "temperature": temp
+    'multisensor': {
+      'occupied': false,
+      'humidity': humidity,
+      'battery_level': batteryLevel,
+      'last_occupied': '03\/08 23:13',
+      'luminiscence': lux,
+      'temperature': temp
     }
   })
 };

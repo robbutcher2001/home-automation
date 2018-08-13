@@ -8,6 +8,7 @@ import { DETERMINE_USER_LOCATION } from '../globals';
 import { getShowSuccessNotificationAction } from '../globals/utils';
 
 import NotificationBar from '../components/notification-bar';
+import LoginPage from './login-page';
 import LandingPage from './landing-page';
 import NoMatch from './404';
 
@@ -31,6 +32,7 @@ class App extends Component {
         <ConnectedRouter history={this.props.history}>
           <Switch>
             <Route exact path='/' component={LandingPage} />
+            <Route exact path='/login' component={LoginPage} />
             <Route component={NoMatch} />
           </Switch>
         </ConnectedRouter>

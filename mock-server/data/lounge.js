@@ -9,22 +9,22 @@ const lounge = () => {
   const percentOpen = random(80);
 
   return jsend('lounge', {
-    "bedroom_mode": "disabled",
-    "multisensor": {
-      "occupied": false,
-      "humidity": humidity,
-      "battery_level": batteryLevel,
-      "last_occupied": "03\/08 23:11",
-      "luminiscence": lux,
-      "temperature": temp
+    'bedroom_mode': 'disabled',
+    'multisensor': {
+      'occupied': false,
+      'humidity': humidity,
+      'battery_level': batteryLevel,
+      'last_occupied': '03\/08 23:11',
+      'luminiscence': lux,
+      'temperature': temp
     },
-    "blind1": {
-      "tilted": false,
-      "percent_open": percentOpen
+    'blind1': {
+      'tilted': false,
+      'percent_open': percentOpen
     },
-    "blind2": {
-      "tilted": true,
-      "percent_open": percentOpen
+    'blind2': {
+      'tilted': true,
+      'percent_open': percentOpen
     }
   })
 };
