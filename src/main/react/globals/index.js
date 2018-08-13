@@ -3,15 +3,6 @@ export const SECOND_PAGE_PATH = '/lounge';
 export const THIRD_PAGE_PATH = '/bedrooms';
 export const FOURTH_PAGE_PATH = '/other';
 
-export const getPagePaths = () => {
-  return [
-    LANDING_PAGE_PATH,
-    SECOND_PAGE_PATH,
-    THIRD_PAGE_PATH,
-    FOURTH_PAGE_PATH
-  ]
-};
-
 export const VERIFY_ONLINE_REQUEST = 'VERIFY_ONLINE_REQUEST';
 export const START_INITIAL_STATUS_POLLER_REQUEST = 'START_INITIAL_STATUS_POLLER_REQUEST';
 
@@ -30,6 +21,16 @@ export const NOTIFICATION_REQUEST = 'NOTIFICATION_REQUEST';
 export const NOTIFICATION_REQUEST_SHOW = 'NOTIFICATION_REQUEST_SHOW';
 export const NOTIFICATION_REQUEST_HIDE = 'NOTIFICATION_REQUEST_HIDE';
 export const NOTIFICATION_BAR_DISPLAY_TIME = '3000';
+
+export const getPathPollerMapping = path => {
+  const mapping = {};
+  mapping[LANDING_PAGE_PATH] = LOUNGE_STATUS_POLL_START;
+  mapping[SECOND_PAGE_PATH] = 'nothing';
+  mapping[THIRD_PAGE_PATH] = 'nothing';
+  mapping[FOURTH_PAGE_PATH] = 'nothing';
+
+  return mapping[path];
+};
 
 export const Zones = Object.freeze({
   LOUNGE: 'lounge',
