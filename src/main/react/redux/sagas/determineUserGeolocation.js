@@ -3,12 +3,13 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import {
   DETERMINE_USER_LOCATION,
   DETERMINE_USER_LOCATION_SUCCESS,
-  NotificationType
+  VERIFY_ONLINE_REQUEST
 } from '../../globals';
 
-import { getShowErrorNotificationAction, getHideNotificationAction } from '../../globals/utils';
+import { getShowErrorNotificationAction } from '../../globals/utils';
 
 const getDataSuccessAction = payload => ({ type: DETERMINE_USER_LOCATION_SUCCESS, payload });
+const getVerifyOnlineAction = payload => ({ type: VERIFY_ONLINE_REQUEST, payload });
 
 export default function* watcherSaga() {
   yield takeLatest(DETERMINE_USER_LOCATION, workerSaga);
@@ -22,7 +23,7 @@ function* workerSaga() {
       longitude: response.coords.longitude
     };
     yield put(getDataSuccessAction(location));
-    yield put(getHideNotificationAction());
+    yield put(getVerifyOnlineAction(location));
   } catch (error) {
     yield put(getShowErrorNotificationAction({ text: error, persist: true }));
   }

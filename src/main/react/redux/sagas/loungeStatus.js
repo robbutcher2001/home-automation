@@ -18,7 +18,7 @@ export default function* watcherSaga() {
 function* workerSaga({ payload }) {
   console.log(payload.hello);
   try {
-    const response = yield call(() => fetch(LOUNGE_URL).then(data => data.json()));
+    const response = yield call(() => fetch(LOUNGE_URL, {credentials: 'include'}).then(data => data.json()));
     // dispatch a success action to the store with the new dog
     yield put(getDataSuccessAction(response));
 

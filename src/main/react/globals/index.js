@@ -1,3 +1,20 @@
+export const LANDING_PAGE_PATH = '/';
+export const SECOND_PAGE_PATH = '/lounge';
+export const THIRD_PAGE_PATH = '/bedrooms';
+export const FOURTH_PAGE_PATH = '/other';
+
+export const getPagePaths = () => {
+  return [
+    LANDING_PAGE_PATH,
+    SECOND_PAGE_PATH,
+    THIRD_PAGE_PATH,
+    FOURTH_PAGE_PATH
+  ]
+};
+
+export const VERIFY_ONLINE_REQUEST = 'VERIFY_ONLINE_REQUEST';
+export const START_INITIAL_STATUS_POLLER_REQUEST = 'START_INITIAL_STATUS_POLLER_REQUEST';
+
 export const LOUNGE_STATUS_REQUEST = 'LOUNGE_STATUS_REQUEST';
 export const LOUNGE_STATUS_POLL_START = 'LOUNGE_STATUS_POLL_START';
 export const LOUNGE_STATUS_POLL_STOP = 'LOUNGE_STATUS_POLL_STOP';
@@ -18,6 +35,6 @@ export const Zones = Object.freeze({
 });
 
 export const NotificationType = Object.freeze({
-  WARNING: 'warning',
+  ERROR: 'error',
   SUCCESS: 'success'
 });

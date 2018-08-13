@@ -15,7 +15,14 @@ class RoomStatus extends Component {
   }
 
   componentDidMount() {
-    this.props.startLoungeStatusPolling();
+    const latitude = this.props.userGeolocation.latitude;
+    const longitude = this.props.userGeolocation.longitude;
+    if (latitude && longitude) {
+      this.props.startLoungeStatusPolling({
+        latitude,
+        longitude
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -62,13 +69,14 @@ class RoomStatus extends Component {
 
 function mapStateToProps(state) {
   return {
-    lounge: state.lounge
+    lounge: state.lounge,
+    userGeolocation: state.userGeolocation
   };
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    startLoungeStatusPolling: () => dispatch({ type: LOUNGE_STATUS_POLL_START }),
+    startLoungeStatusPolling: payload => dispatch({ type: LOUNGE_STATUS_POLL_START, payload }),
     stopLoungeStatusPolling: () => dispatch({ type: LOUNGE_STATUS_POLL_STOP })
   };
 };

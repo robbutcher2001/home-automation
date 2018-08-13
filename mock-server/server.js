@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const app = express();
 const port = 3000;
 
@@ -10,43 +11,52 @@ const study = require('./data/study');
 const hallway = require('./data/hallway');
 const bathroom = require('./data/bathroom');
 
+app.use(cookieParser());
+
+const wrapResponse = response => {
+  response.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+  response.setHeader('Access-Control-Allow-Credentials', true);
+
+  return response;
+};
+
 app.get('/', (request, response) => {
   response.send('Mock backend');
 });
 
+app.get('/verifyEngineOnline', (request, response) => {
+  setTimeout(() => {
+    wrapResponse(response).status(406).send();
+  }, 3000);
+});
+
 app.get('/deviceStatus/apartment', (request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(apartment());
+  wrapResponse(response).json(apartment());
 });
 
 app.get('/deviceStatus/lounge', (request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(lounge());
+  console.log('Cookies: ', request.cookies);
+  wrapResponse(response).json(lounge());
 });
 
 app.get('/deviceStatus/patio', (request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(patio());
+  wrapResponse(response).json(patio());
 });
 
 app.get('/deviceStatus/rob_room', (request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(robRoom());
+  wrapResponse(response).json(robRoom());
 });
 
 app.get('/deviceStatus/scarlett_room', (request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(study());
+  wrapResponse(response).json(study());
 });
 
 app.get('/deviceStatus/hallway', (request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(hallway());
+  wrapResponse(response).json(hallway());
 });
 
 app.get('/deviceStatus/bathroom', (request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(bathroom());
+  wrapResponse(response).json(bathroom());
 });
 
 app.listen(port, (err) => {

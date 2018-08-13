@@ -1,17 +1,19 @@
-import { fork } from 'redux-saga/effects';
+import { all, fork } from 'redux-saga/effects';
 
+import verifyEngineOnline from './verifyEngineOnline';
 import determineUserGeolocation from './determineUserGeolocation';
-import loungeStatus from './loungeStatus';
-import loungeStatusPoller from './loungeStatusPoller';
 import notificationRequest from './notificationRequest';
+import loungeStatusPoller from './loungeStatusPoller';
+import loungeStatus from './loungeStatus';
 
 export default function* rootSaga() {
-  yield [
+  yield all([
+    fork(verifyEngineOnline),
     fork(determineUserGeolocation),
-    fork(loungeStatus),
+    fork(notificationRequest),
     fork(loungeStatusPoller),
-    fork(notificationRequest)
-  ];
+    fork(loungeStatus)
+  ]);
 
   console.log('[rootSaga] App started');
 }

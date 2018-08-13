@@ -12,26 +12,21 @@ const LOUNGE_URL = "http://localhost:3000/deviceStatus/lounge";
 const getDataSuccessAction = payload => ({ type: LOUNGE_STATUS_SUCCESS, payload });
 const getDataFailureAction = payload => ({ type: LOUNGE_STATUS_FAILURE, payload });
 
-/**
- * Saga watcher.
- */
 export default function* pollingWatcherSaga() {
   while (true) {
-    yield take(LOUNGE_STATUS_POLL_START);
+    const { payload } = yield take(LOUNGE_STATUS_POLL_START);
     yield race([
-      call(pollingWorkerSaga),
+      call(pollingWorkerSaga, payload),
       take(LOUNGE_STATUS_POLL_STOP)
     ]);
   }
 }
 
-/**
- * Saga worker.
- */
-function* pollingWorkerSaga(action) {
+function* pollingWorkerSaga(payload) {
+  const FULL_URL = `${LOUNGE_URL}?lat=${payload.latitude}&lng=${payload.longitude}`;
   while (true) {
     try {
-      const response = yield call(() => fetch(LOUNGE_URL).then(data => data.json()));
+      const response = yield call(() => fetch(FULL_URL, {credentials: 'include'}).then(data => data.json()));
       yield put(getDataSuccessAction(response));
       yield call(delay, 2000);
     } catch (err) {

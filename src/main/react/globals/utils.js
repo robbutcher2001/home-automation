@@ -17,7 +17,7 @@ export const getShowErrorNotificationAction = payload => {
     type: NOTIFICATION_REQUEST,
     payload: {
       text: payload.text,
-      type: NotificationType.WARNING,
+      type: NotificationType.ERROR,
       show: true,
       persist: payload.persist
     }
