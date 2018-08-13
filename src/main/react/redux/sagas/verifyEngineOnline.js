@@ -33,7 +33,7 @@ function* workerSaga({ payload }) {
       }));
     }
     else if (response.status === 406) {
-      yield put(push('/other'));
+      yield put(push('/login'));
       yield put(getShowErrorNotificationAction({
         text: `You're not authorised yet`,
         persist: false

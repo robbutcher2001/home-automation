@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
+import { ConnectedRouter } from 'react-router-redux';
 
 import { DETERMINE_USER_LOCATION } from '../globals';
 
@@ -27,12 +28,12 @@ class App extends Component {
     return (
       <div>
         <NotificationBar />
-        <BrowserRouter>
+        <ConnectedRouter history={this.props.history}>
           <Switch>
             <Route exact path='/' component={LandingPage} />
             <Route component={NoMatch} />
           </Switch>
-        </BrowserRouter>
+        </ConnectedRouter>
       </div>
     );
   }
