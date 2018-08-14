@@ -4,16 +4,16 @@ import Nav from '../components/nav';
 import RoomDetails from '../components/room-details';
 import Footer from '../components/footer';
 
-const LandingPage = () => {
+const LoungePage = () => {
   return (
     <div id='wrapper'>
       <Nav />
       <div id='main'>
-        <RoomDetails title='Apartment'/>
+        <RoomDetails title='Lounge'/>
       </div>
       <Footer />
     </div>
   );
 }
 
-export default LandingPage;
+export default LoungePage;

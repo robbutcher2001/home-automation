@@ -45,8 +45,8 @@ class RoomStatus extends Component {
     return (
       <article id='work' className='panel'>
         <header>
-          <h2>{this.props.title}</h2>
-          <p>A sub title</p>
+          <h3>{this.props.title}</h3>
+          <span>Last occupied {statuses.multisensor.last_occupied}</span>
         </header>
         <p>
           Phasellus enim sapien, blandit ullamcorper elementum eu, condimentum eu elit.
@@ -55,7 +55,7 @@ class RoomStatus extends Component {
         </p>
         <Button buttonText='Refresh lounge data' />
         <ButtonNotification buttonText='Create temp notification' />
-        <p>Last occupied: {statuses.multisensor.last_occupied}</p>
+        <p></p>
         <p>Temperature: {statuses.multisensor.temperature}</p>
         <p>Brightness: {statuses.multisensor.luminiscence}</p>
         <p>Humidity: {statuses.multisensor.humidity}</p>
