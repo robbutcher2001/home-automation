@@ -2,13 +2,14 @@ import { call, put, take, race } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 
 import {
+  LOUNGE_STATUS_API_PATH,
   LOUNGE_STATUS_POLL_START,
   LOUNGE_STATUS_POLL_STOP,
   LOUNGE_STATUS_SUCCESS,
   LOUNGE_STATUS_FAILURE
 } from '../../globals';
 
-const LOUNGE_URL = 'http://localhost:3000/deviceStatus/lounge';
+const LOUNGE_URL = `http://localhost:3000${LOUNGE_STATUS_API_PATH}`;
 const getDataSuccessAction = payload => ({ type: LOUNGE_STATUS_SUCCESS, payload });
 const getDataFailureAction = payload => ({ type: LOUNGE_STATUS_FAILURE, payload });
 

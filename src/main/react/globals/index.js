@@ -3,6 +3,14 @@ export const SECOND_PAGE_PATH = '/lounge';
 export const THIRD_PAGE_PATH = '/bedrooms';
 export const FOURTH_PAGE_PATH = '/other';
 
+export const APARTMENT_STATUS_API_PATH = '/deviceStatus/apartment';
+export const LOUNGE_STATUS_API_PATH = '/deviceStatus/lounge';
+export const ROB_ROOM_STATUS_API_PATH = '/deviceStatus/rob_room';
+export const STUDY_STATUS_API_PATH = '/deviceStatus/scarlett_room';
+export const PATIO_STATUS_API_PATH = '/deviceStatus/patio';
+export const HALLWAY_STATUS_API_PATH = '/deviceStatus/hallway';
+export const BATHROOM_STATUS_API_PATH = '/deviceStatus/bathroom';
+
 export const VERIFY_ONLINE_REQUEST = 'VERIFY_ONLINE_REQUEST';
 export const START_INITIAL_STATUS_POLLER_REQUEST = 'START_INITIAL_STATUS_POLLER_REQUEST';
 
