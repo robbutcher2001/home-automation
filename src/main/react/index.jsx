@@ -6,6 +6,7 @@ import createSagaMiddleware from 'redux-saga';
 import { routerMiddleware } from 'react-router-redux';
 import ReduxPromise from 'redux-promise';
 import createHistory from 'history/createBrowserHistory';
+import Promise from 'promise-polyfill';
 
 import reducers from './redux/reducers';
 import sagas from './redux/sagas';
@@ -19,6 +20,10 @@ const store = createStore(
   reducers,
   applyMiddleware(ReduxPromise, historyMiddleware, sagaMiddleware)
 );
+
+if (!window.Promise) {
+  window.Promise = Promise;
+}
 
 sagaMiddleware.run(sagas);
 
