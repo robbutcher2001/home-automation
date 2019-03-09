@@ -59,9 +59,9 @@ scarlettWindowSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[24].instances[0]
 
 
 //Patio
-multisensorPatioUpdateEndpoint=/ZWaveAPI/Run/devices[4].instances[0].commandClasses[49].Get()
-multisensorPatioBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[4].instances[0].commandClasses[128].Get()
-multisensorPatioEndpoint=devices.4.instances.0.commandClasses.
+multisensorPatioUpdateEndpoint=/ZWaveAPI/Run/devices[27].instances[0].commandClasses[49].Get()
+multisensorPatioBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[27].instances[0].commandClasses[128].Get()
+multisensorPatioEndpoint=devices.27.instances.0.commandClasses.
 
 patioWindowShockSensorEndpoint=devices.26.instances.0.commandClasses.
 patioWindowShockSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[26].instances[0].commandClasses[128].Get()
@@ -73,9 +73,9 @@ frontDoorSensorBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[9].instances[0].comma
 
 
 //Bathroom
-multisensorBathroomUpdateEndpoint=/ZWaveAPI/Run/devices[27].instances[0].commandClasses[49].Get()
-multisensorBathroomBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[27].instances[0].commandClasses[128].Get()
-multisensorBathroomEndpoint=devices.27.instances.0.commandClasses.
+multisensorBathroomUpdateEndpoint=/ZWaveAPI/Run/devices[4].instances[0].commandClasses[49].Get()
+multisensorBathroomBatteryUpdateEndpoint=/ZWaveAPI/Run/devices[4].instances[0].commandClasses[128].Get()
+multisensorBathroomEndpoint=devices.4.instances.0.commandClasses.
 
 
 //Alarms
