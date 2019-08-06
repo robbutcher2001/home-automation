@@ -4,6 +4,7 @@ const htmlWebpack = require('html-webpack-plugin');
 
 const baseConfig = {
   entry: [
+    'whatwg-fetch',
     'babel-polyfill',
     './src/main/react/index.jsx'
   ],
