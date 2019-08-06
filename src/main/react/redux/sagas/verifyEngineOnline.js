@@ -3,7 +3,7 @@ import { push } from 'react-router-redux';
 
 import {
   VERIFY_ONLINE_REQUEST,
-  START_INITIAL_STATUS_POLLER_REQUEST //not used yet
+  START_INITIAL_STATUS_POLLER_REQUEST
 } from '../../globals';
 
 import { getShowSuccessNotificationAction, getShowErrorNotificationAction } from '../../globals/utils';

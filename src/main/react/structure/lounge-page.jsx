@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Nav from '../components/nav';
-import RoomDetails from '../components/room-details';
+import Button from '../components/buttonStartPollers';
 import Footer from '../components/footer';
 
 const LoungePage = () => {
@@ -9,7 +9,7 @@ const LoungePage = () => {
     <div id='wrapper'>
       <Nav />
       <div id='main'>
-        <RoomDetails title='Lounge'/>
+        <Button buttonText='Start pollers'/>
       </div>
       <Footer />
     </div>

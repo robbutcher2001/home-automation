@@ -14,6 +14,8 @@ const getDataSuccessAction = payload => ({ type: LOUNGE_STATUS_SUCCESS, payload 
 const getDataFailureAction = payload => ({ type: LOUNGE_STATUS_FAILURE, payload });
 
 export default function* pollingWatcherSaga() {
+  // get a payload here with array of URLs we need to poll
+  // can call a worker saga for each URL 
   while (true) {
     const { payload } = yield take(LOUNGE_STATUS_POLL_START);
     yield race([
