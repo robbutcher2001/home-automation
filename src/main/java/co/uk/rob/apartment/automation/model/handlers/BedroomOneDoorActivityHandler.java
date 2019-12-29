@@ -23,6 +23,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 	private ControllableDevice ledRodRobRoom;
 	private ControllableDevice electricBlanket;
 	private ControllableDevice loungeLamp;
+	private ControllableDevice ledRodLounge;
 	private ControllableDevice stickLoungeLamp;
 	private ControllableDevice bobbyLoungeLamp;
 	private Blind robWindowBlind;
@@ -37,6 +38,7 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 		robWindowBlind = (Blind) devicesToControl.get(5);
 		
 		loungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(0);
+		ledRodLounge = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(1);
 		stickLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(2);
 		bobbyLoungeLamp = DeviceListManager.getControllableDeviceByLocation(Zone.LOUNGE).get(5);
 	}
@@ -86,6 +88,12 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 					loungeLamp.resetAutoOverridden();
 					log.info("Lounge lamp auto off as everyone has gone to bed");
 				}
+
+				if (ledRodLounge.isDeviceOn() && !ledRodLounge.isManuallyOverridden() && ledRodLounge.isAutoOverridden()) {
+					ledRodLounge.turnDeviceOff(true);
+					ledRodLounge.resetAutoOverridden();
+					log.info("Lounge LED auto off as everyone has gone to bed");
+				}
 				
 				if (stickLoungeLamp.isDeviceOn() && !stickLoungeLamp.isManuallyOverridden() && stickLoungeLamp.isAutoOverridden()) {
 					stickLoungeLamp.turnDeviceOff(true);
@@ -116,9 +124,9 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 				
 				if (!lamp.isDeviceOn()) {
 					lamp.resetAutoOverridden();
-					lamp.turnDeviceOn(false, "99");
+					lamp.turnDeviceOn(false);
 					
-					dimLamps();
+					delayLampsOff();
 				}
 			}
 			else {
@@ -146,35 +154,17 @@ public class BedroomOneDoorActivityHandler extends AbstractActivityHandler {
 		}
 	}
 	
-	private void dimLamps() {
-		Timer timer = new Timer("Lamp dimming timer");
+	private void delayLampsOff() {
+		Timer timer = new Timer("Lamp delay timer");
 		
-		TimerTask dimTo60 = new TimerTask() {
+		TimerTask delayLampsOff = new TimerTask() {
 			@Override
 			public void run() {
 				ControllableDevice lamp = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(0);
-				lamp.turnDeviceOn(false, "60");
+				lamp.turnDeviceOn(false);
 			}
 		};
 		
-		TimerTask dimTo40 = new TimerTask() {
-			@Override
-			public void run() {
-				ControllableDevice lamp = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(0);
-				lamp.turnDeviceOn(false, "40");
-			}
-		};
-		
-		TimerTask dimTo20 = new TimerTask() {
-			@Override
-			public void run() {
-				ControllableDevice lamp = DeviceListManager.getControllableDeviceByLocation(Zone.ROB_ROOM).get(0);
-				lamp.turnDeviceOn(false, "30");
-			}
-		};
-		
-		timer.schedule(dimTo60, 60000);
-		timer.schedule(dimTo40, 90000);
-		timer.schedule(dimTo20, 120000);
+		timer.schedule(delayLampsOff, 90000);
 	}
 }

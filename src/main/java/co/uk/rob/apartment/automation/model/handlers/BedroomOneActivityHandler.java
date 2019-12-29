@@ -2,6 +2,8 @@ package co.uk.rob.apartment.automation.model.handlers;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
@@ -63,9 +65,9 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 					//occupancy between 10pm and 7:30am next day on a weekday
 					if ((now.after(tenPM) || now.before(halfSevenAM) || CommonQueries.isItTheWeekendOrBankHoliday())) {
 						if (!lamp.isDeviceOn() && !CommonQueries.isBrightnessBetweenXandY(500f, 1001f)) {
-							log.info("Rob room occupied during bed time mode, lamp on 20%");
+							log.info("Rob room occupied during bed time mode, lamp on 100%");
 
-							lamp.turnDeviceOn(false, "20");
+							lamp.turnDeviceOn(false);
 						}
 					}
 					else {
@@ -94,9 +96,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 
 			if (!lamp.isDeviceOn() && lamp.isAutoOverridden() &&
 					(robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode)))) {
-				//hack to fade lamp back on
-				lamp.resetManuallyOverridden();
-				lamp.turnDeviceOnAutoOverride("300");
+				lamp.turnDeviceOnAutoOverride("100");
 			}
 		}
 	}
@@ -107,7 +107,16 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		}
 
 		if (lamp.isDeviceOn()) {
-			lamp.turnDeviceOff(true);
+			Timer timer = new Timer("Lamp delay timer off");
+		
+			TimerTask delayLampsOff = new TimerTask() {
+				@Override
+				public void run() {
+					lamp.turnDeviceOff(true);
+				}
+			};
+			
+			timer.schedule(delayLampsOff, 20000);
 		}
 	}
 }
