@@ -14,7 +14,6 @@ import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
-import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 public class BedroomOneActivityHandler extends AbstractActivityHandler {
@@ -39,7 +38,6 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 
 		Calendar tenPM = Calendar.getInstance();
 		Calendar halfSevenAM = Calendar.getInstance();
-		Calendar now = Calendar.getInstance();
 
 		tenPM.set(Calendar.HOUR_OF_DAY, 22);
 		tenPM.set(Calendar.MINUTE, 00);
@@ -56,30 +54,6 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 					log.info("Rob room occupied, dark enough outside and not bedtime mode, lamp off and ceiling light on");
 
 					ceilingLightOnLampOff();
-				}
-			}
-			//door is closed
-			else {
-				//bedroom mode not enabled
-				if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode))) {
-					//occupancy between 10pm and 7:30am next day on a weekday
-					if ((now.after(tenPM) || now.before(halfSevenAM) || CommonQueries.isItTheWeekendOrBankHoliday())) {
-						if (!lamp.isDeviceOn() && !CommonQueries.isBrightnessBetweenXandY(500f, 1001f)) {
-							log.info("Rob room occupied during bed time mode, lamp on 100%");
-
-							lamp.turnDeviceOn(false);
-						}
-					}
-					else {
-						if (!ceilingLight.isDeviceOn()) {
-							log.info("Rob room occupied and not bedtime mode but door still closed, lamp off and ceiling light on");
-
-							ceilingLightOnLampOff();
-						}
-					}
-				}
-				else {
-					log.info("Rob room occupied and door closed but full bedroom mode is enabled so not reacting");
 				}
 			}
 		}
@@ -116,7 +90,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 				}
 			};
 			
-			timer.schedule(delayLampsOff, 20000);
+			timer.schedule(delayLampsOff, 15000);
 		}
 	}
 }
