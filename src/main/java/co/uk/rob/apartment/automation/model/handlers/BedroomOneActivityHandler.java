@@ -2,6 +2,8 @@ package co.uk.rob.apartment.automation.model.handlers;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
@@ -12,7 +14,6 @@ import co.uk.rob.apartment.automation.model.devices.Blind;
 import co.uk.rob.apartment.automation.model.devices.Dehumidifier;
 import co.uk.rob.apartment.automation.model.interfaces.ControllableDevice;
 import co.uk.rob.apartment.automation.model.interfaces.ReportingDevice;
-import co.uk.rob.apartment.automation.utilities.CommonQueries;
 import co.uk.rob.apartment.automation.utilities.HomeAutomationProperties;
 
 public class BedroomOneActivityHandler extends AbstractActivityHandler {
@@ -37,7 +38,6 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 
 		Calendar tenPM = Calendar.getInstance();
 		Calendar halfSevenAM = Calendar.getInstance();
-		Calendar now = Calendar.getInstance();
 
 		tenPM.set(Calendar.HOUR_OF_DAY, 22);
 		tenPM.set(Calendar.MINUTE, 00);
@@ -56,30 +56,6 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 					ceilingLightOnLampOff();
 				}
 			}
-			//door is closed
-			else {
-				//bedroom mode not enabled
-				if (robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode))) {
-					//occupancy between 10pm and 7:30am next day on a weekday
-					if ((now.after(tenPM) || now.before(halfSevenAM) || CommonQueries.isItTheWeekendOrBankHoliday())) {
-						if (!lamp.isDeviceOn() && !CommonQueries.isBrightnessBetweenXandY(500f, 1001f)) {
-							log.info("Rob room occupied during bed time mode, lamp on 20%");
-
-							lamp.turnDeviceOn(false, "20");
-						}
-					}
-					else {
-						if (!ceilingLight.isDeviceOn()) {
-							log.info("Rob room occupied and not bedtime mode but door still closed, lamp off and ceiling light on");
-
-							ceilingLightOnLampOff();
-						}
-					}
-				}
-				else {
-					log.info("Rob room occupied and door closed but full bedroom mode is enabled so not reacting");
-				}
-			}
 		}
 		else {
 			int index = 1;
@@ -94,9 +70,7 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 
 			if (!lamp.isDeviceOn() && lamp.isAutoOverridden() &&
 					(robRoomBedroomMode == null || (robRoomBedroomMode != null && "false".equals(robRoomBedroomMode)))) {
-				//hack to fade lamp back on
-				lamp.resetManuallyOverridden();
-				lamp.turnDeviceOnAutoOverride("300");
+				lamp.turnDeviceOnAutoOverride("100");
 			}
 		}
 	}
@@ -107,7 +81,16 @@ public class BedroomOneActivityHandler extends AbstractActivityHandler {
 		}
 
 		if (lamp.isDeviceOn()) {
-			lamp.turnDeviceOff(true);
+			Timer timer = new Timer("Lamp delay timer off");
+		
+			TimerTask delayLampsOff = new TimerTask() {
+				@Override
+				public void run() {
+					lamp.turnDeviceOff(true);
+				}
+			};
+			
+			timer.schedule(delayLampsOff, 15000);
 		}
 	}
 }
